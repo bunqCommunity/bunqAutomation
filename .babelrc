@@ -1,0 +1,15 @@
+{
+    "presets": [
+        [
+          "@babel/preset-env",
+            {
+                "targets": { "node": "10" }
+            }
+        ]
+    ],
+    "plugins": [
+        "@babel/transform-async-to-generator",
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-proposal-object-rest-spread"
+    ]
+}

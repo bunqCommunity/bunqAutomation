@@ -1,0 +1,6 @@
+apps:
+  - script: build-server/Server.js
+    name: fastify
+    instances: 4
+    max_restarts: 3
+    exec_mode: cluster

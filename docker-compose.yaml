@@ -1,0 +1,13 @@
+version: "3.6"
+services:
+  fastify:
+    image: node:alpine
+    container_name: bunq-automation
+    environment:
+      VIRTUAL_HOST: bunq-automation.local.test
+    expose:
+      - 8881
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: npm run start
