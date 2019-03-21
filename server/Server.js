@@ -3,8 +3,17 @@ import os from "os";
 import cluster from "cluster";
 
 const numCPUs = os.cpus().length;
+const isDevelopment = process.env.NODE_ENV === "development";
+const allowDevWorkers = process.env.USE_WORKERS_IN_DEV === "true";
+const useWorkers = !isDevelopment || (allowDevWorkers && isDevelopment);
 
-if (cluster.isMaster) {
+if (!cluster.isMaster) {
+    // run the app if we're on a fork
+    require("./App.js");
+} else if (useWorkers === false) {
+    // run the app in development with workers disabled
+    require("./App.js");
+} else {
     // setup the master process
     console.log(`Master ${process.pid} is running`);
 
@@ -17,7 +26,4 @@ if (cluster.isMaster) {
     cluster.on("exit", (worker, code, signal) => {
         console.log(`Worker ${worker.process.pid} died`);
     });
-} else {
-    // run the app if we're on a fork
-    require("./App.js");
 }
