@@ -10,7 +10,7 @@ export default (app, opts, next) => {
 
         if (app.bunqAutomation.status === "PASSWORD_READY") await app.bunqAutomation.loadApiKey();
 
-        reply.code(200).send("alive");
+        reply.code(200).send("Done");
     });
 
     next();

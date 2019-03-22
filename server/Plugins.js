@@ -15,7 +15,7 @@ export default app => {
     app.register(fastifyCompress);
     app.register(fastifyHelmet);
     app.register(fastifyStatic, {
-        root: `${__dirname}${path.sep}..${path.sep}public`
+        root: `${__dirname}${path.sep}..${path.sep}build`
     });
 
     // https://github.com/fastify/fastify-swagger

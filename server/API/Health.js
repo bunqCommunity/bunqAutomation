@@ -9,7 +9,12 @@ export default (app, opts, next) => {
                 response: {
                     200: {
                         description: "Successful response",
-                        type: "string"
+                        type: "object",
+                        properties: {
+                            status: {
+                                type: "string"
+                            }
+                        }
                     }
                 },
                 security: [
@@ -21,7 +26,7 @@ export default (app, opts, next) => {
         },
         async (request, reply) => {
             console.log("Health check:", app.bunqAutomation.status);
-            reply.code(200).send({
+            reply.send({
                 status: app.bunqAutomation.status
             });
         }

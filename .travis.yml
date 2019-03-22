@@ -1,0 +1,19 @@
+matrix:
+  include:
+    - os: osx
+      language: nodejs
+      node_js:
+        - '10'
+        - '9'
+    - os: linux
+      language: nodejs
+      node_js:
+        - '10'
+        - '9'
+
+cache: yarn
+
+before_script:
+  - git lfs pull
+
+script: yarn run build
