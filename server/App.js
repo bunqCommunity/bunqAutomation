@@ -7,10 +7,8 @@ import * as Errors from "./Errors";
 import Routes from "./Routes";
 import Plugins from "./Plugins";
 
-const HTTP_PORT = process.env.HTTP_PORT;
-const SSL_PORT = process.env.SSL_PORT;
+const PORT = process.env.PORT || process.env.HTTP_PORT || 8080;
 const SSL_ENABLED = process.env.SSL_ENABLED === "true";
-const SERVER_PORT = SSL_ENABLED ? SSL_PORT : HTTP_PORT;
 
 const fastifyOptions = {};
 if (SSL_ENABLED) {
@@ -50,15 +48,15 @@ app.setErrorHandler((error, request, reply) => {
     }
 });
 
-app.listen(SERVER_PORT, "0.0.0.0", (err, address) => {
+app.listen(PORT, "0.0.0.0", (err, address) => {
     if (err) {
         console.error(err);
         throw err;
     }
     const httpString = SSL_ENABLED ? "https" : "http";
-    const portString = SERVER_PORT == 80 || SERVER_PORT === 443 ? "" : `:${SERVER_PORT}`;
+    const portString = PORT == 80 || PORT === 443 ? "" : `:${PORT}`;
     console.log(
-        `Process ${process.pid} Running at port ${chalk.green(SERVER_PORT)} - ${chalk.yellow(
+        `Process ${process.pid} Running at port ${chalk.green(PORT)} - ${chalk.yellow(
             `${httpString}://${process.env.SERVER_HOSTNAME}${portString}`
         )}`
     );

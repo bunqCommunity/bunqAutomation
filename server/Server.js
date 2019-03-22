@@ -4,13 +4,14 @@ import cluster from "cluster";
 
 const numCPUs = os.cpus().length;
 const isDevelopment = process.env.NODE_ENV === "development";
+const allowWorkers = process.env.USE_WORKERS === "true";
 const allowDevWorkers = process.env.USE_WORKERS_IN_DEV === "true";
-const useWorkers = !isDevelopment || (allowDevWorkers && isDevelopment);
+const useDevWorkers = !isDevelopment || (allowDevWorkers && isDevelopment);
 
-if (!cluster.isMaster) {
+if (!cluster.isMaster || !allowWorkers) {
     // run the app if we're on a fork
     require("./App.js");
-} else if (useWorkers === false) {
+} else if (useDevWorkers === false) {
     // run the app in development with workers disabled
     require("./App.js");
 } else {
