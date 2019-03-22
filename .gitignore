@@ -1,6 +1,6 @@
 .idea
-temp
-!temp/.gitkeep
+storage
+!storage/.gitkeep
 
 # dotenv environment variables file
 .env
