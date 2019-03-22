@@ -1,17 +1,15 @@
 import Health from "./Health";
+import Setup from "./Setup";
 
 export default (app, opts, next) => {
     app.register(Health, { prefix: "/health" });
+    app.register(Setup, { prefix: "/setup" });
 
-    app.get("/", async (request, reply) => {
-        await app.bunqAutomation.setPassword("testpassword1234");
+    // Authenticated routes
+    app.register((app, opts,next) => {
 
-        await app.bunqAutomation.setApiKey("Fake_Api_Key");
-
-        if (app.bunqAutomation.status === "PASSWORD_READY") await app.bunqAutomation.loadApiKey();
-
-        reply.code(200).send("Done");
-    });
+        next();
+    })
 
     next();
 };

@@ -27,11 +27,12 @@ export class LevelDbWrapper {
     }
 }
 
-function levelDbPlugin(fastify, options, next) {
+const levelDbPlugin = (fastify, options, next) => {
     const db = level("storage/db");
+
 
     fastify.decorate("levelDb", new LevelDbWrapper(db));
     next();
-}
+};
 
 export default fastifyPlugin(levelDbPlugin);

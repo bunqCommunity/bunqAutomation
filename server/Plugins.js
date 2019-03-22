@@ -2,18 +2,19 @@ import * as path from "path";
 const fastifyCompress = require("fastify-compress");
 const fastifySwagger = require("fastify-swagger");
 const fastifyHelmet = require("fastify-helmet");
+const fastifyAuth = require("fastify-auth");
 const fastifyStatic = require("fastify-static");
 import packageJson from "../package.json";
 import LevelDbPlugin from "./Plugins/LevelDbPlugin";
 import BunqJSClientPlugin from "./Plugins/BunqJSClientPlugin";
 import BunqAutomationPlugin from "./Plugins/BunqAutomationPlugin";
-
-// const fastfiyResponseTime = require("fastify-response-time");
+import AuthenticationPlugin from "./Plugins/Authentication/AuthenticationPlugin";
+import ApiKeyAuthenticationPlugin from "./Plugins/Authentication/ApiKeyAuthenticationPlugin";
 
 export default app => {
-    // app.register(fastfiyResponseTime, { digits: 3 });
     app.register(fastifyCompress);
     app.register(fastifyHelmet);
+    app.register(fastifyAuth);
     app.register(fastifyStatic, {
         root: `${__dirname}${path.sep}..${path.sep}build`
     });
@@ -43,6 +44,8 @@ export default app => {
     });
 
     app.register(LevelDbPlugin);
+    app.register(AuthenticationPlugin);
+    app.register(ApiKeyAuthenticationPlugin);
     app.register(BunqJSClientPlugin);
     app.register(BunqAutomationPlugin);
 };

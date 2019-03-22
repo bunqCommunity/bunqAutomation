@@ -6,7 +6,9 @@ export const API_KEY_LOCATION = "API_KEY";
 export const ENVIRONMENT_LOCATION = "ENVIRONMENT";
 
 export const statusList = {
-    // noting is ready, no password or api key is set yet
+    // first time installing the application
+    FIRST_INSTALL: "FIRST_INSTALL",
+    // nothing is ready, no password or api key is set yet
     UNINITIALIZED: "UNINITIALIZED",
     // initialized with a password
     PASSWORD_READY: "PASSWORD_READY",
@@ -15,17 +17,27 @@ export const statusList = {
 };
 
 export default class BunqAutomation {
-    constructor(bunqJSClient) {
+    constructor(bunqJSClient, authentication) {
         this.bunqJSClient = bunqJSClient;
+        this.authentication = authentication;
         this.encryption = new Encryption();
 
-        this.status = statusList.UNINITIALIZED;
+        // by default set as first install status
+        this.status = statusList.FIRST_INSTALL;
+        this.statusList = statusList;
 
         this.encryptionKey = null;
         this.encryptionIv = null;
     }
 
     async startupCheck() {
+        // check if a password has been previously set
+        const storedPasswordIv = await this.bunqJSClient.storageInterface.get(PASSWORD_IV_LOCATION);
+        if (storedPasswordIv) {
+            this.status = statusList.UNINITIALIZED;
+        }
+
+        // check if
         if (process.env.ENCRYPTION_PASSWORD) {
             Logger.debug("Attempting to use encryption password from .env file");
             await this.setPassword(process.env.ENCRYPTION_PASSWORD);
@@ -70,15 +82,15 @@ export default class BunqAutomation {
      * @returns {Promise<void>}
      */
     async setApiKey(apiKey, environment = "SANDBOX") {
-        // await this.bunqJSClient.run(apiKey, [], environment, this.encryptionKey);
-        //
-        // // disable keep-alive
-        // this.bunqJSClient.setKeepAlive(false);
-        //
-        // // attempt to register the API key
-        // await this.bunqJSClient.install();
-        // await this.bunqJSClient.registerDevice(process.env.DEVICE_NAME || "bunqAutomation");
-        // await this.bunqJSClient.registerSession();
+        await this.bunqJSClient.run(apiKey, [], environment, this.encryptionKey);
+
+        // disable keep-alive
+        this.bunqJSClient.setKeepAlive(false);
+
+        // attempt to register the API key
+        await this.bunqJSClient.install();
+        await this.bunqJSClient.registerDevice(process.env.DEVICE_NAME || "bunqAutomation");
+        await this.bunqJSClient.registerSession();
 
         // encrypt the API key
         const { iv, encryptedString: encryptedApiKey } = await this.encryption.encrypt(
@@ -93,7 +105,7 @@ export default class BunqAutomation {
         await this.bunqJSClient.storageInterface.set(ENVIRONMENT_LOCATION, environment);
 
         // set api status to ready
-        // this.status = statusList.API_READY;
+        this.status = statusList.API_READY;
     }
 
     /**
@@ -110,9 +122,23 @@ export default class BunqAutomation {
         const apiKey = await this.encryption.decrypt(storedEncryptedApiKey, this.encryptionKey, storedApiKeyIv);
 
         if (apiKey) {
-            await this.setApiKey(apiKey, storedEncryptedApiKey);
+            await this.setApiKey(apiKey, storedEnvironment);
         }
 
         return;
+    }
+
+    /**
+     * Removes all stored private data and attempts to go back to a "fresh" state as much as possible
+     * @returns {Promise<void>}
+     */
+    async reset() {
+        await Promise.all([
+            this.bunqJSClient.storageInterface.remove(API_KEY_LOCATION),
+            this.bunqJSClient.storageInterface.remove(`${API_KEY_LOCATION}_IV`),
+            this.bunqJSClient.storageInterface.remove(PASSWORD_IV_LOCATION),
+            this.bunqJSClient.storageInterface.remove(ENVIRONMENT_LOCATION),
+            this.authentication.reset()
+        ]);
     }
 }

@@ -12,7 +12,7 @@
         "react": "react-scripts start",
         "build:client": "react-scripts build",
         "postinstall": "node scripts/install.js",
-        "prettier": "./node_modules/.bin/prettier --tab-width 4 --print-width 120 --write \"+(tests|src)/**/**.+(js|jsx|scss)\""
+        "prettier": "./node_modules/.bin/prettier --tab-width 4 --print-width 120 --write \"+(tests|src|server)/**/**.+(ts|js|jsx|scss|css)\""
     },
     "dependencies": {
         "@babel/cli": "^7.2.3",
