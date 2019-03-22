@@ -6,8 +6,8 @@
     "license": "MIT",
     "scripts": {
         "build": "yarn run build:server && yarn run build:client",
-        "start": "nodemon -L --exec babel-node server/Server.js",
-        "serve": "node build-server/Server.js",
+        "dev": "nodemon -L --exec babel-node server/Server.js",
+        "start": "node build-server/Server.js",
         "build:server": "babel server --out-dir build-server",
         "react": "react-scripts start",
         "build:client": "react-scripts build",
