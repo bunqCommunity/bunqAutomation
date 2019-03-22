@@ -20,7 +20,10 @@ export default (app, opts, next) => {
             }
         },
         async (request, reply) => {
-            reply.code(200).send("alive");
+            console.log("Health check:", app.bunqAutomation.status);
+            reply.code(200).send({
+                status: app.bunqAutomation.status
+            });
         }
     );
 

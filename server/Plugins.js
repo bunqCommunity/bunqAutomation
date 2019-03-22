@@ -3,9 +3,12 @@ const fastifyCompress = require("fastify-compress");
 const fastifySwagger = require("fastify-swagger");
 const fastifyHelmet = require("fastify-helmet");
 const fastifyStatic = require("fastify-static");
-// const fastfiyResponseTime = require("fastify-response-time");
 import packageJson from "../package.json";
+import LevelDbPlugin from "./Plugins/LevelDbPlugin";
 import BunqJSClientPlugin from "./Plugins/BunqJSClientPlugin";
+import BunqAutomationPlugin from "./Plugins/BunqAutomationPlugin";
+
+// const fastfiyResponseTime = require("fastify-response-time");
 
 export default app => {
     // app.register(fastfiyResponseTime, { digits: 3 });
@@ -39,5 +42,7 @@ export default app => {
         }
     });
 
+    app.register(LevelDbPlugin);
     app.register(BunqJSClientPlugin);
+    app.register(BunqAutomationPlugin);
 };
