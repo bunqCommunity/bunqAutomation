@@ -41,7 +41,6 @@
         "react-router": "^4.3.1",
         "react-router-dom": "^4.3.1",
         "react-scripts": "^2.1.8",
-        "react-snap": "^1.23.0",
         "react-use": "^5.1.1",
         "storm-react-diagrams": "^5.2.1",
         "uuid": "^3.3.2"
