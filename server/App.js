@@ -3,6 +3,7 @@ import * as fs from "fs";
 import chalk from "chalk";
 const fastify = require("fastify");
 
+import * as Errors from "./Errors";
 import Routes from "./Routes";
 import Plugins from "./Plugins";
 
@@ -12,7 +13,6 @@ const SSL_ENABLED = process.env.SSL_ENABLED === "true";
 const SERVER_PORT = SSL_ENABLED ? SSL_PORT : HTTP_PORT;
 
 const fastifyOptions = {};
-
 if (SSL_ENABLED) {
     fastifyOptions.https = {
         key: fs.readFileSync(process.env.SSL_KEY_FILE),
@@ -28,11 +28,26 @@ Plugins(app);
 // register the routes
 Routes(app);
 
+// Overwrite all error handlers at the top level after ready event
 app.setErrorHandler((error, request, reply) => {
     request.log.warn(error);
-    const statusCode = error.statusCode >= 400 ? error.statusCode : 500;
 
-    reply.code(statusCode).send("500 error");
+    const isApi = request.req.originalUrl.indexOf("/api") === 0;
+    const errorOutput = isApi ? { error: error.message } : error.message;
+
+    if (error instanceof Errors.DomainError) {
+        if (error instanceof Errors.ResourceNotFoundError) {
+            reply.code(404).send(errorOutput);
+        } else if (error instanceof Errors.BadRequestError) {
+            reply.code(400).send(errorOutput);
+        } else if (error instanceof Errors.UnAuthenticatedError) {
+            reply.code(403).send(errorOutput);
+        } else {
+            reply.code(500).send(errorOutput);
+        }
+    } else {
+        reply.code(500).send(errorOutput);
+    }
 });
 
 app.listen(SERVER_PORT, "0.0.0.0", (err, address) => {

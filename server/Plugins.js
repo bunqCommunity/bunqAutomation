@@ -2,17 +2,15 @@ import * as path from "path";
 const fastifyCompress = require("fastify-compress");
 const fastifySwagger = require("fastify-swagger");
 const fastifyHelmet = require("fastify-helmet");
-const fastfiyResponseTime = require("fastify-response-time");
 const fastifyStatic = require("fastify-static");
-
+// const fastfiyResponseTime = require("fastify-response-time");
 import packageJson from "../package.json";
-
-import ExampleHelloNamePlugin from "./Plugins/ExampleHelloNamePlugin";
+import BunqJSClientPlugin from "./Plugins/BunqJSClientPlugin";
 
 export default app => {
+    // app.register(fastfiyResponseTime, { digits: 3 });
     app.register(fastifyCompress);
     app.register(fastifyHelmet);
-    app.register(fastfiyResponseTime, { digits: 3 });
     app.register(fastifyStatic, {
         root: `${__dirname}${path.sep}..${path.sep}public`
     });
@@ -41,5 +39,5 @@ export default app => {
         }
     });
 
-    app.register(ExampleHelloNamePlugin);
+    app.register(BunqJSClientPlugin);
 };

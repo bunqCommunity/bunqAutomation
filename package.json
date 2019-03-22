@@ -11,7 +11,7 @@
         "build:server": "babel server --out-dir build-server",
         "react": "react-scripts start",
         "build:client": "react-scripts build",
-        "certs": "node server/Scripts/generate-certs.js",
+        "postinstall": "node scripts/install.js",
         "prettier": "./node_modules/.bin/prettier --tab-width 4 --print-width 120 --write \"+(tests|src)/**/**.+(js|jsx|scss)\""
     },
     "dependencies": {
@@ -41,14 +41,12 @@
         "react-router": "^4.3.1",
         "react-router-dom": "^4.3.1",
         "react-scripts": "^2.1.8",
-        "react-use": "^5.1.1",
         "storm-react-diagrams": "^5.2.1",
         "uuid": "^3.3.2"
     },
     "devDependencies": {
         "nodemon": "^1.18.10",
-        "prettier": "^1.15.3",
-        "selfsigned": "^1.10.4"
+        "prettier": "^1.15.3"
     },
     "browserslist": [
         ">0.2%",

@@ -1,4 +1,9 @@
 .idea
+temp
+!temp/.gitkeep
+
+# dotenv environment variables file
+.env
 
 # Logs
 logs
@@ -59,8 +64,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
 
 # next.js build output
 .next
