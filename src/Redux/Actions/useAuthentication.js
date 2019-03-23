@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useDispatch, useMappedState } from "redux-react-hook";
 
+import LevelDb from "../../LevelDb";
+import { API_KEY_LOCATION } from "../Reducers/authentication";
 import useServerStatus from "./useServerStatus";
 
 const mapState = state => ({
@@ -8,6 +10,7 @@ const mapState = state => ({
 });
 
 const apiBaseUrl = `${process.env.REACT_APP_SERVER_URL}/api`;
+const levelDb = new LevelDb("authentication");
 
 const useAuthentication = () => {
     const dispatch = useDispatch();
@@ -40,6 +43,16 @@ const useAuthentication = () => {
                 api_key
             }
         });
+    };
+
+    const loadStoredApiKey = () => {
+        levelDb
+            .get(API_KEY_LOCATION)
+            .then(storedApiKey => {
+                setApiKey(storedApiKey);
+                authenticationIsNotLoading();
+            })
+            .catch(err => console.error(err));
     };
 
     const setBunqApiKey = (bunqApiKey, environment) => {
@@ -80,11 +93,35 @@ const useAuthentication = () => {
         dispatch({ type: "AUTHENTICATION_NOT_LOADING" });
     };
 
+    const validateApiKey = () => {
+        axios
+            .post(
+                `${apiBaseUrl}/setup/api-key`,
+                {},
+                {
+                    headers: {
+                        "x-bunq-automation-authorization": apiKey
+                    }
+                }
+            )
+            .then(response => response.data)
+            .then(data => {
+                authenticationIsNotLoading();
+            })
+            .catch(error => {
+                logout();
+                authenticationIsNotLoading();
+                console.error(error);
+            });
+    };
+
     return {
+        loadStoredApiKey,
         loginWithPassword,
         authenticationIsLoading,
         authenticationIsNotLoading,
         setBunqApiKey,
+        validateApiKey,
         logout
     };
 };

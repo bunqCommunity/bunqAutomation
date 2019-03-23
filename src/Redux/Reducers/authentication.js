@@ -1,17 +1,27 @@
+import LevelDb from "../../LevelDb";
+
+const levelDb = new LevelDb("authentication");
+
+export const API_KEY_LOCATION = "API_KEY";
+
 export const defaultState = {
     api_key: "",
-    loading: false
+    loading: true
 };
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case "AUTHENTICATION_LOGIN":
-            return state;
-        case "AUTHENTICATION_SET_API_KEY":
+        case "AUTHENTICATION_SET_API_KEY": {
+            const apiKey = action.payload.api_key;
+            levelDb
+                .set(API_KEY_LOCATION, apiKey)
+                .then(() => {})
+                .catch(err => console.error(err));
             return {
                 ...state,
-                api_key: action.payload.api_key
+                api_key: apiKey
             };
+        }
         case "AUTHENTICATION_LOADING":
             return {
                 ...state,
@@ -23,6 +33,10 @@ export default function reducer(state = defaultState, action) {
                 loading: false
             };
         case "AUTHENTICATION_LOGOUT":
+            levelDb
+                .remove(API_KEY_LOCATION)
+                .then(() => {})
+                .catch(err => console.error(err));
             return {
                 ...defaultState
             };

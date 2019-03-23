@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
+import { Redirect } from "react-router-dom";
 import { useMappedState } from "redux-react-hook";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -12,23 +13,21 @@ import useAuthentication from "../../Redux/Actions/useAuthentication";
 import useInterval from "../../Hooks/useInterval";
 const mapState = state => ({
     api_key: state.authentication.api_key,
-    loading: state.authentication.loading,
-    serverStatus: state.server_status.status
+    loading: state.authentication.loading
 });
 
 const LoginPassword = () => {
-    const { serverStatus } = useMappedState(mapState);
+    const { api_key, loading } = useMappedState(mapState);
     const { checkServerStatus } = useServerStatus();
     const { loginWithPassword } = useAuthentication();
 
     const [password, setPassword] = useState("testpassword1234");
 
-    console.log(serverStatus);
-
-    // check once on-load
+    // continue checking if the server is ready
     useEffect(() => checkServerStatus(), []);
-    // keep checkong on interval
     useInterval(checkServerStatus, 15000);
+
+    if (api_key && !loading) return <Redirect to="/" />;
 
     return (
         <div className="login-password">

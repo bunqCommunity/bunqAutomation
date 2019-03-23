@@ -11,7 +11,7 @@ export default (app, opts, next) => {
     app.register((app, opts, next) => {
         app.addHook("preHandler", app.auth([app.apiKeyAuthentication, app.ipAuthentication]));
 
-        app.register(AuthenticatedRouteTest, { prefix: "/a" });
+        app.register(AuthenticatedRouteTest, { prefix: "/authenticated-test" });
 
         next();
     });

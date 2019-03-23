@@ -1,6 +1,12 @@
 import { BadRequestError } from "../Errors";
 import { STATUS_FIRST_INSTALL, STATUS_PASSWORD_READY, STATUS_UNINITIALIZED } from "../BunqAutomation";
 
+const swaggerSecuritySchema = [
+    {
+        apiKey: []
+    }
+];
+
 export default (app, opts, next) => {
     const bunqAutomation = app.bunqAutomation;
     const authentication = app.authentication;
@@ -9,19 +15,40 @@ export default (app, opts, next) => {
      * Set a new password for fresh installs or attempt to authenticate with existing
      * Will return a valid JWT token which can be used to authenticate for other routes
      */
-    app.post("/password", async (request, reply) => {
-        if (!request.body || !request.body.password) throw new BadRequestError();
+    app.route({
+        method: "POST",
+        url: "/password",
+        handler: async (request, reply) => {
+            if (!request.body || !request.body.password) throw new BadRequestError();
 
-        const apiKey = await authentication.setPassword(request.body.password);
+            const apiKey = await authentication.setPassword(request.body.password);
 
-        // check if password is ready and attempt to load API key if that is the case
-        if (bunqAutomation.status === STATUS_PASSWORD_READY) {
-            await authentication.loadBunqApiKey();
+            // check if password is ready and attempt to load API key if that is the case
+            if (bunqAutomation.status === STATUS_PASSWORD_READY) {
+                await authentication.loadBunqApiKey();
+            }
+
+            reply.send({
+                api_key: apiKey
+            });
+        },
+        schema: {
+            tags: ["setup"],
+            summary: "Set a new password or authenticate with the existing password",
+            response: {
+                200: {
+                    description: "Successful response",
+                    type: "object",
+                    properties: {
+                        api_key: {
+                            description: "An API key which can be used to authenticate with the bunqAutomation API",
+                            type: "string"
+                        }
+                    }
+                }
+            },
+            security: swaggerSecuritySchema
         }
-
-        reply.send({
-            api_key: apiKey
-        });
     });
 
     /**
@@ -42,22 +69,77 @@ export default (app, opts, next) => {
             await authentication.setBunqApiKey(request.body.api_key, request.body.environment);
 
             reply.send("api-key");
+        },
+        schema: {
+            tags: ["setup"],
+            summary: "Set a bunq API key and environment to use with bunqAutomation",
+            response: {
+                200: {
+                    description: "Successful response",
+                    type: "object",
+                    properties: {
+                        status: {
+                            type: "string"
+                        }
+                    }
+                }
+            },
+            security: swaggerSecuritySchema
         }
     });
 
     /**
-     * Reset all setup details like passwords and api key
+     * Can be used to check if an API key is still valid
      */
     app.route({
-        url: "/reset",
+        url: "/validate-api-key",
         method: "POST",
         preHandler: app.auth([app.apiKeyAuthentication]),
         handler: async (request, reply) => {
-            await bunqAutomation.reset();
-
-            reply.send("api-key");
+            reply.send(true);
+        },
+        schema: {
+            tags: ["setup"],
+            summary: "Endpoint to validate API keys",
+            response: {
+                200: {
+                    description: "Successful response",
+                    type: "object",
+                    properties: {
+                        status: {
+                            type: "string"
+                        }
+                    }
+                }
+            },
+            security: swaggerSecuritySchema
         }
     });
+
+    ///**
+    // * Reset all setup details like passwords and api key
+    // */
+    // app.route({
+    //     url: "/reset",
+    //     method: "POST",
+    //     preHandler: app.auth([app.apiKeyAuthentication]),
+    //     handler: async (request, reply) => {
+    //         await bunqAutomation.reset();
+    //
+    //         reply.send("api-key");
+    //     },
+    //     schema: {
+    //         tags: ["setup"],
+    //         summary: "Reset private data such as passwords and API keys",
+    //         response: {
+    //             200: {
+    //                 description: "Successful response",
+    //                 type: "string"
+    //             }
+    //         },
+    //         security: swaggerSecuritySchema
+    //     }
+    // });
 
     next();
 };
