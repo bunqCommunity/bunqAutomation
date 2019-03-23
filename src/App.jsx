@@ -1,41 +1,21 @@
 import React from "react";
+import { StoreContext } from "redux-react-hook";
 import { BrowserRouter } from "react-router-dom";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import Snackbar from "@material-ui/core/Snackbar";
 
 import "./App.scss";
 
-import siteConfig from "./Config/site";
-import MuiTheme from "./Config/MuiTheme";
+import Store from "./Store";
+import Content from "./Content";
 
-import Routes from "./Routes";
-import useSnackbar from "./Hooks/useSnackbar";
-
-const theme = createMuiTheme(MuiTheme);
+const store = Store();
 
 const App = () => {
-    const { message, openSnackbar, closeSnackbar } = useSnackbar();
-    window.openSnackbar = openSnackbar;
-
     return (
-        <div className="app">
-            <BrowserRouter basename={siteConfig.baseName} forceRefresh={false}>
-                <MuiThemeProvider theme={theme}>
-                    <Routes />
-
-                    <Snackbar
-                        autoHideDuration={5000}
-                        anchorOrigin={{
-                            vertical: "top",
-                            horizontal: "right"
-                        }}
-                        open={!!message}
-                        message={message}
-                        onClose={closeSnackbar}
-                    />
-                </MuiThemeProvider>
+        <StoreContext.Provider value={store}>
+            <BrowserRouter forceRefresh={false}>
+                <Content />
             </BrowserRouter>
-        </div>
+        </StoreContext.Provider>
     );
 };
 

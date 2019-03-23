@@ -1,8 +1,15 @@
 export default {
-    palette: {
-        type: "dark"
+    light: {
+        typography: {
+            useNextVariants: true
+        }
     },
-    typography: {
-        useNextVariants: true
+    dark: {
+        palette: {
+            type: "dark"
+        },
+        typography: {
+            useNextVariants: true
+        }
     }
 };

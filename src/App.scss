@@ -6,3 +6,14 @@ body {
     margin: 0px;
     font-family: "Roboto", sans-serif;
 }
+
+.app {
+    min-height: 100vh;
+
+    &.dark {
+        background-color: #4c4c4c;
+    }
+    //&.light {
+    //    background-color: white;
+    //}
+}

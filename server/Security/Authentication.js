@@ -10,7 +10,7 @@ export const API_KEY_LOCATION = "API_KEY";
 export const API_KEY_IV_LOCATION = "API_KEY_V";
 export const ENVIRONMENT_LOCATION = "ENVIRONMENT";
 
-export const API_KEY_HEADER = `x-bunq-automation-key`;
+export const API_KEY_HEADER = `x-bunq-automation-authorization`;
 
 export const DEFAULT_API_KEY_EXPIRY_TIME = 60 * 60;
 

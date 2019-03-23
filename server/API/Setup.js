@@ -1,5 +1,5 @@
 import { BadRequestError } from "../Errors";
-import { STATUS_PASSWORD_READY } from "../BunqAutomation";
+import { STATUS_FIRST_INSTALL, STATUS_PASSWORD_READY, STATUS_UNINITIALIZED } from "../BunqAutomation";
 
 export default (app, opts, next) => {
     const bunqAutomation = app.bunqAutomation;
@@ -32,8 +32,9 @@ export default (app, opts, next) => {
         method: "POST",
         preHandler: app.auth([app.apiKeyAuthentication]),
         handler: async (request, reply) => {
-            if (bunqAutomation.status !== STATUS_PASSWORD_READY) {
-                throw new BadRequestError("No password set, can't receive bunq API key");
+            const invalidStatusList = [STATUS_UNINITIALIZED, STATUS_FIRST_INSTALL];
+            if (invalidStatusList.includes(bunqAutomation.status)) {
+                throw new BadRequestError("bunqAutomation not ready yet, can't receive bunq API key");
             }
 
             if (!request.body || !request.body.api_key || !request.body.environment) throw new BadRequestError();

@@ -8,7 +8,7 @@ import Plugins from "./Plugins";
 import { API_KEY_HEADER } from "./Security/Authentication";
 
 const DEVELOPMENT = process.env.NODE_ENV === "development";
-const PORT = process.env.PORT || process.env.HTTP_PORT || 8080;
+const PORT = process.env.SERVER_PORT || process.env.PORT || 8080;
 const SSL_ENABLED = process.env.SSL_ENABLED === "true";
 
 const fastifyOptions = {

@@ -6,7 +6,7 @@
     "license": "MIT",
     "scripts": {
         "build": "yarn run build:server && yarn run build:client",
-        "dev": "nodemon -L --exec babel-node server/Server.js",
+        "dev": "nodemon --config nodemon.json --exec babel-node server/Server.js",
         "start": "node build-server/Server.js",
         "build:server": "babel server --out-dir build-server",
         "react": "react-scripts start",
@@ -46,6 +46,10 @@
         "react-router": "^4.3.1",
         "react-router-dom": "^4.3.1",
         "react-scripts": "^2.1.8",
+        "redux": "^4.0.1",
+        "redux-logger": "^3.0.6",
+        "redux-react-hook": "^3.2.1",
+        "redux-thunk": "^2.3.0",
         "storm-react-diagrams": "^5.2.1",
         "uuid": "^3.3.2"
     },
