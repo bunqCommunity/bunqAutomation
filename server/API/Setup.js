@@ -1,5 +1,5 @@
-import { UnAuthenticatedError } from "../Errors";
-import {STATUS_PASSWORD_READY} from "../BunqAutomation";
+import { BadRequestError } from "../Errors";
+import { STATUS_PASSWORD_READY } from "../BunqAutomation";
 
 export default (app, opts, next) => {
     const bunqAutomation = app.bunqAutomation;
@@ -10,20 +10,18 @@ export default (app, opts, next) => {
      * Will return a valid JWT token which can be used to authenticate for other routes
      */
     app.post("/password", async (request, reply) => {
-        if (!request.body || !request.body.password) throw new UnAuthenticatedError();
+        if (!request.body || !request.body.password) throw new BadRequestError();
 
-        const password = request.body.password;
-        const apiKey = await authentication.setPassword(password);
-
-        console.log("Received API key", apiKey);
+        const apiKey = await authentication.setPassword(request.body.password);
 
         // check if password is ready and attempt to load API key if that is the case
         if (bunqAutomation.status === STATUS_PASSWORD_READY) {
             await authentication.loadBunqApiKey();
         }
 
-        console.log(bunqAutomation.status);
-        reply.send("password");
+        reply.send({
+            api_key: apiKey
+        });
     });
 
     /**
@@ -34,7 +32,13 @@ export default (app, opts, next) => {
         method: "POST",
         preHandler: app.auth([app.apiKeyAuthentication]),
         handler: async (request, reply) => {
-            // await bunqAutomation.setBunqApiKey("Fake_Api_Key", "SANDBOX");
+            if (bunqAutomation.status !== STATUS_PASSWORD_READY) {
+                throw new BadRequestError("No password set, can't receive bunq API key");
+            }
+
+            if (!request.body || !request.body.api_key || !request.body.environment) throw new BadRequestError();
+
+            await authentication.setBunqApiKey(request.body.api_key, request.body.environment);
 
             reply.send("api-key");
         }

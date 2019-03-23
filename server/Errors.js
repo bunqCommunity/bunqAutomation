@@ -15,9 +15,9 @@ export class ResourceNotFoundError extends DomainError {
 }
 
 export class BadRequestError extends DomainError {
-    constructor(query) {
-        super(`The given request was not formatted correctly.`);
-        this.data = { query };
+    constructor(message) {
+        super(message || "The given request was not valid.");
+        this.data = { query: message };
     }
 }
 

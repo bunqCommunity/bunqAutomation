@@ -1,0 +1,18 @@
+@import "../../styles/main.scss";
+
+.test {
+    display: flex;
+    justify-content: center;
+
+    .content {
+        width: 100%;
+        max-width: 1024px;
+        margin: 8px;
+        padding: 8px;
+
+        .text-field {
+            width: 100%;
+            margin: 8px;
+        }
+    }
+}

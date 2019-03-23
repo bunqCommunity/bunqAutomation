@@ -1,5 +1,6 @@
 const uuid = require("uuid");
 import Encryption from "./Encryption";
+import LevelDb from "../LevelDb";
 import { UnAuthenticatedError } from "../Errors";
 import { STATUS_API_READY, STATUS_PASSWORD_READY, STATUS_UNINITIALIZED } from "../BunqAutomation";
 
@@ -11,15 +12,19 @@ export const ENVIRONMENT_LOCATION = "ENVIRONMENT";
 
 export const API_KEY_HEADER = `x-bunq-automation-key`;
 
+export const DEFAULT_API_KEY_EXPIRY_TIME = 60 * 60;
+
 export class Authentication {
-    constructor(bunqJSClient, levelDb, logger) {
+    constructor(bunqJSClient, logger) {
         this.bunqJSClient = bunqJSClient;
-        this.levelDb = levelDb;
         this.logger = logger;
         this.encryption = new Encryption();
 
+        this.apiKeyStorage = new LevelDb("api-keys");
+
         this.encryptionKey = null;
         this.encryptionIv = null;
+        this._bunqAutomation = null;
     }
 
     async startupCheck() {
@@ -40,17 +45,67 @@ export class Authentication {
         }
     }
 
-    createApiKey() {
+    async createApiKey() {
         const apiKey = uuid.v4();
-        console.log("createApiKey", apiKey);
+        const date = new Date();
+
+        await this.apiKeyStorage.set(apiKey, {
+            created: date,
+            updated: date
+        });
+
         return apiKey;
     }
 
-    validateApiKey(apiKey) {
+    /**
+     * Checks if an API key is valid, if it exists but expires it will be deleted
+     * @param apiKey        - the API key itself
+     * @param refreshApiKey - if true, the updated timestamp will be updated to keep the api key session alive
+     * @returns {Promise<boolean>}
+     */
+    async validateApiKey(apiKey, refreshApiKey = true) {
+        const storedApiKey = await this.apiKeyStorage.get(apiKey);
+        if (!storedApiKey) return false;
+
+        const currentDate = new Date();
+        const expiryDate = new Date(storedApiKey.updated);
+        expiryDate.setSeconds(expiryDate.getSeconds() + DEFAULT_API_KEY_EXPIRY_TIME);
+        const isValid = currentDate < expiryDate;
+
+        this.logger.debug(`Valid: ${isValid}. Expires in ${Math.round((expiryDate - currentDate) / 1000)} seconds`);
+
+        if (isValid) {
+            if (refreshApiKey) {
+                await this.refreshApiKey(apiKey);
+            }
+
+            return true;
+        }
+        // remove the API key since it is no longer valid
+        await this.apiKeyStorage.remove(apiKey);
+
         return false;
     }
 
-    validateIp(ip) {
+    /**
+     * Updates an API key timestamp to keep a client active
+     * @param apiKey
+     * @returns {Promise<*>}
+     */
+    async refreshApiKey(apiKey) {
+        const storedApiKey = await this.apiKeyStorage.get(apiKey);
+        if (!storedApiKey) return false;
+        storedApiKey.updated = new Date();
+
+        return this.apiKeyStorage.set(apiKey, storedApiKey);
+    }
+
+    /**
+     * Checks if a given IP is allowed
+     * @param ip
+     * @returns {Promise<boolean>}
+     */
+    async validateIp(ip) {
         return true;
     }
 
@@ -79,13 +134,17 @@ export class Authentication {
             throw new UnAuthenticatedError();
         }
 
+        // create a new API key
+        const newApiKey = await this.createApiKey();
+
         // store the iv and hash values
         await this.bunqJSClient.storageInterface.set(PASSWORD_IV_LOCATION, this.encryptionIv);
         await this.bunqJSClient.storageInterface.set(PASSWORD_HASH_LOCATION, passwordHash);
 
         // mark as PASSWORD_READY
         this.bunqAutomation.status = STATUS_PASSWORD_READY;
-        return true;
+
+        return newApiKey;
     }
 
     /**
