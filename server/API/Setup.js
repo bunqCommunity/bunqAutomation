@@ -1,16 +1,25 @@
+import { UnAuthenticatedError } from "../Errors";
+import {STATUS_PASSWORD_READY} from "../BunqAutomation";
+
 export default (app, opts, next) => {
     const bunqAutomation = app.bunqAutomation;
+    const authentication = app.authentication;
 
     /**
      * Set a new password for fresh installs or attempt to authenticate with existing
      * Will return a valid JWT token which can be used to authenticate for other routes
      */
-    app.get("/password", async (request, reply) => {
-        await bunqAutomation.setPassword("testpassword1234");
+    app.post("/password", async (request, reply) => {
+        if (!request.body || !request.body.password) throw new UnAuthenticatedError();
+
+        const password = request.body.password;
+        const apiKey = await authentication.setPassword(password);
+
+        console.log("Received API key", apiKey);
 
         // check if password is ready and attempt to load API key if that is the case
-        if (bunqAutomation.status === bunqAutomation.statusList.PASSWORD_READY) {
-            await bunqAutomation.loadApiKey();
+        if (bunqAutomation.status === STATUS_PASSWORD_READY) {
+            await authentication.loadBunqApiKey();
         }
 
         console.log(bunqAutomation.status);
@@ -22,10 +31,10 @@ export default (app, opts, next) => {
      */
     app.route({
         url: "/api-key",
-        method: "GET",
+        method: "POST",
         preHandler: app.auth([app.apiKeyAuthentication]),
         handler: async (request, reply) => {
-            // await bunqAutomation.setApiKey("Fake_Api_Key", "SANDBOX");
+            // await bunqAutomation.setBunqApiKey("Fake_Api_Key", "SANDBOX");
 
             reply.send("api-key");
         }
@@ -36,7 +45,7 @@ export default (app, opts, next) => {
      */
     app.route({
         url: "/reset",
-        method: "GET",
+        method: "POST",
         preHandler: app.auth([app.apiKeyAuthentication]),
         handler: async (request, reply) => {
             await bunqAutomation.reset();

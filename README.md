@@ -23,6 +23,7 @@ Since this project should be useable for less experienced users, we can't guaran
  - More extensive auto savings features such as a percentage of payment with optional maximum/minimum
  - Sharing events by link using a permanent or temporary link
  - Generate SSL certificates automatically using Letsencrypt to support HTTPS traffic
+ - Security features like IP white listing
 
 ## Contact
 [![Telegram chat badge](https://img.shields.io/badge/Telegram-Discuss-blue.svg) ](https://t.me/bunqcommunity) 

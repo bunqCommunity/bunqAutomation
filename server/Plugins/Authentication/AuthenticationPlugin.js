@@ -1,17 +1,8 @@
 const fastifyPlugin = require("fastify-plugin");
-
-class AuthenticationPlugin {
-    constructor(levelDb) {
-        this.levelDb = levelDb;
-    }
-
-    reset() {
-        // reset bunqAutomation api keys and other info
-    }
-}
+import Authentication from "../../Security/Authentication";
 
 const authenticationPlugin = (fastify, options, next) => {
-    const authentication = new AuthenticationPlugin(fastify.levelDb);
+    const authentication = new Authentication(fastify.bunqJSClient, fastify.levelDb, fastify.log);
 
     fastify.decorate("authentication", authentication);
 
