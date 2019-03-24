@@ -49,7 +49,10 @@ const useAuthentication = () => {
         levelDb
             .get(API_KEY_LOCATION)
             .then(storedApiKey => {
-                setApiKey(storedApiKey);
+                if (storedApiKey) {
+                    setApiKey(storedApiKey);
+                    validateApiKey(storedApiKey);
+                }
                 authenticationIsNotLoading();
             })
             .catch(err => console.error(err));
@@ -93,10 +96,10 @@ const useAuthentication = () => {
         dispatch({ type: "AUTHENTICATION_NOT_LOADING" });
     };
 
-    const validateApiKey = () => {
+    const validateApiKey = apiKey => {
         axios
             .post(
-                `${apiBaseUrl}/setup/api-key`,
+                `${apiBaseUrl}/setup/validate-api-key`,
                 {},
                 {
                     headers: {
@@ -105,13 +108,12 @@ const useAuthentication = () => {
                 }
             )
             .then(response => response.data)
-            .then(data => {
+            .then(() => {
                 authenticationIsNotLoading();
             })
-            .catch(error => {
+            .catch(() => {
                 logout();
                 authenticationIsNotLoading();
-                console.error(error);
             });
     };
 
