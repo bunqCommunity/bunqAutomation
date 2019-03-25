@@ -3,11 +3,11 @@ export const VALID_FILTER_TYPES = ["MONETARY_ACCOUNT", "VALUE"];
 export const VALID_OUTPUT_TYPES = ["PAYMENT", "EMAIL", "NOTIFICATION", "CONSOLE_MESSAGE"];
 export const VALID_SCHEDULE_TYPE = ["INSTANT", "DAILY", "WEEKLY", "MONTHLY"];
 
-class Validator {
+class ConfigValidator {
     constructor() {}
 
-    validateActionConfig(config){
-
+    validateActionConfig(config) {
+        return false;
     }
 
     validateStandardProperties(item) {
@@ -39,4 +39,4 @@ class Validator {
     }
 }
 
-export default Validator;
+export default ConfigValidator;

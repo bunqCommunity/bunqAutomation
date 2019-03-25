@@ -7,7 +7,7 @@ class Pipeline {
         this.outputs = {};
         this.schedules = {};
 
-        this.validator = new Validator();
+        this.validator = new Validator(this);
     }
 
     registerAction(action) {

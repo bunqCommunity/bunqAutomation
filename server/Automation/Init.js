@@ -1,8 +1,8 @@
-import TestAction from "./Actions/TestAction";
+import EventLoggerAction from "./Actions/EventLoggerAction";
 
 import TestFilter from "./Filters/TestFilter";
 
-import TestOutput from "./Outputs/TestOutput";
+import ConsoleMessageOutput from "./Outputs/ConsoleMessageOutput";
 
 import TestSchedule from "./Schedules/TestSchedule";
 
@@ -14,11 +14,11 @@ export default BunqAutomation => {
     const pipeLine = BunqAutomation.pipeline;
     console.log(pipeLine);
 
-    pipeLine.registerAction(new TestAction());
+    pipeLine.registerAction(new EventLoggerAction());
 
     pipeLine.registerFilter(new TestFilter());
 
-    pipeLine.registerOutput(new TestOutput());
+    pipeLine.registerOutput(new ConsoleMessageOutput());
 
     pipeLine.registerSchedule(new TestSchedule());
 
