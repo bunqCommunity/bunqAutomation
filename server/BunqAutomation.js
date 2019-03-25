@@ -5,7 +5,7 @@ export const STATUS_UNINITIALIZED = "STATUS_UNINITIALIZED";
 export const STATUS_PASSWORD_READY = "STATUS_PASSWORD_READY";
 export const STATUS_API_READY = "STATUS_API_READY";
 
-export default class BunqAutomation {
+class BunqAutomation {
     constructor(bunqJSClient, authentication, logger) {
         this.bunqJSClient = bunqJSClient;
         this.authentication = authentication;
@@ -29,3 +29,5 @@ export default class BunqAutomation {
         await Promise.all([this.authentication.reset()]);
     }
 }
+
+export default BunqAutomation;

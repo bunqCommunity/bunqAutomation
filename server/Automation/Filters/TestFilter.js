@@ -1,13 +1,14 @@
 class TestFilter {
     constructor() {
         this.id = "test-filter-id";
-
-        // EVENT for generic bunq events
-        // MONETARY_ACCOUNT // for one or more monetary account filters
-        this.type = "EVENT";
+        this.description = "A test filter which does absolutely nothing!";
+        this.type = "MONETARY_ACCOUNT";
     }
 
-    filter(event) {}
+    filter(event) {
+        console.log("Filtering event", event);
+        return true;
+    }
 }
 
 export default TestFilter;

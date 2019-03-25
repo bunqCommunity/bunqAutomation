@@ -10,6 +10,8 @@ Each filter has a type to identify whether it is use-able by an Action. For exam
 
 A filter simply returns true or false for one given item/event. Checking if a monetary account is listed, if specific fields are matching a value or if a minimum amount is reached.
 
+If no filters are set for an action, it will run on every event for the given Action type. If the Action type is EVENT, it will run every time a new event is sent through the pipeline for example.
+
 #### Schedule
 When each action should be checked and triggered. A daily schedule will run every day at 23:59 and any events that happened since the last run will be included.
 

@@ -1,16 +1,15 @@
 class TestAction {
     constructor() {
         this.id = "test-action-id";
+        this.type = "EVENT";
+        this.description = "Logs to the console nothing when triggered!";
 
-        // All the possible filters for this action
-        // A monthly invoice action might only need an optional monetary account filter
         this.filters = [];
-
-        // possible types of output
-        this.outputs = [];
-
-        // options
+        this.outputs = ["CONSOLE_MESSAGE"];
+        this.schedules = ["INSTANT"];
     }
+
+    run() {}
 }
 
 export default TestAction;

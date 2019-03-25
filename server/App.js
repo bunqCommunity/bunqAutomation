@@ -6,6 +6,7 @@ import * as Errors from "./Errors";
 import Routes from "./Routes";
 import Plugins from "./Plugins";
 import { API_KEY_HEADER } from "./Security/Authentication";
+import InitPipeline from "./Automation/Init";
 
 const DEVELOPMENT = process.env.NODE_ENV === "development";
 const PORT = process.env.SERVER_PORT || process.env.PORT || 8080;
@@ -77,5 +78,8 @@ app.listen(PORT, "0.0.0.0", (err, address) => {
 
         // Setup swagger API docs
         app.swagger();
+
+        // register our custom things in bunqAutomation
+        InitPipeline(app.bunqAutomation);
     });
 });
