@@ -1,24 +1,19 @@
 The action is the main component which will contain the configuration. 
 
-All filters, outputs and schedules are simply wrappers for pre-defined configurations.
-
- - Action: a pre-defined action,
-    - Schedule: 
-      The outputs for this action are triggered based on the schedule. The schedule does things like waiting to the end of the day to send a single batch payment instead of instantly sending single payments.
-    - Filter[]: 
-      One or more filters, not all actions require a filter
-        - Output[]: 
-          One or more outputs based on the action
-            - Schedule: each output has a schedule: 
-               
+All filters, outputs and schedules are simply wrappers for pre-defined configurations within an action
 
 #### Action
+An action can be anything but has access to certain pre-defind options contained in the filters, schedules and outputs.
+
 #### Filter
 Each filter has a type to identify whether it is use-able by an Action. For example an `EVENT` filter should not show up as an option for a monthly invoice action.
 
 A filter simply returns true or false for one given item/event. Checking if a monetary account is listed, if specific fields are matching a value or if a minimum amount is reached.
 
 #### Schedule
+When each action should be checked and triggered. A daily schedule will run every day at 23:59 and any events that happened since the last run will be included.
+
+The default is instant, where an incoming event will be handled as soon as it is received in the pipeline.
 
 #### Output
 Outputs are the final result after the events have been filtered out and scheduled.

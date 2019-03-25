@@ -1,6 +1,7 @@
+class TestAction {
+    constructor() {
+        this.id = "test-action-id";
 
-class TestAction{
-    constructor(){
         // All the possible filters for this action
         // A monthly invoice action might only need an optional monetary account filter
         this.filters = [];
@@ -12,10 +13,4 @@ class TestAction{
     }
 }
 
-
-class TestOutput{
-    constructor() {
-        this.type = "PAYMENT";
-    }
-
-}
+export default TestAction;
