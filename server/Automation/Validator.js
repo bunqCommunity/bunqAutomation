@@ -1,41 +1,29 @@
-export const VALID_ACTION_TYPES = ["EVENT", "CUSTOM"];
-export const VALID_FILTER_TYPES = ["MONETARY_ACCOUNT", "VALUE"];
-export const VALID_OUTPUT_TYPES = ["PAYMENT", "EMAIL", "NOTIFICATION", "CONSOLE_MESSAGE"];
-export const VALID_SCHEDULE_TYPE = ["INSTANT", "DAILY", "WEEKLY", "MONTHLY"];
-
 class Validator {
-    constructor() {}
-
-    validateActionConfig(config){
-
+    constructor(pipelineRef) {
+        this.pipelineRef = pipelineRef;
     }
 
-    validateStandardProperties(item) {
-        if (!item.id) return "No 'id' property set";
-        if (!item.description) return "No 'description' property set";
+    validateActionConfig(config) {}
+
+    validateAction(action) {
+        if (!this.pipelineRef.actions[action.id]) return "Invalid type";
 
         return true;
     }
-
-    validateAction(action) {
-        if (!VALID_ACTION_TYPES.includes(action.type)) return "Invalid type";
-
-        return this.validateStandardProperties(action);
-    }
     validateFilter(filter) {
-        if (!VALID_FILTER_TYPES.includes(filter.type)) return "Invalid type";
+        if (!this.pipelineRef.filters[filter.id]) return "Invalid type";
 
-        return this.validateStandardProperties(filter);
+        return true;
     }
     validateOutput(output) {
-        if (!VALID_OUTPUT_TYPES.includes(output.type)) return "Invalid type";
+        if (!this.pipelineRef.outputs[output.id]) return "Invalid type";
 
-        return this.validateStandardProperties(output);
+        return true;
     }
     validateSchedule(schedule) {
-        if (!VALID_SCHEDULE_TYPE.includes(schedule.type)) return "Invalid type";
+        if (!this.pipelineRef.schedules[schedule.id]) return "Invalid type";
 
-        return this.validateStandardProperties(schedule);
+        return true;
     }
 }
 

@@ -4,7 +4,7 @@ import TestFilter from "./Filters/TestFilter";
 
 import ConsoleMessageOutput from "./Outputs/ConsoleMessageOutput";
 
-import TestSchedule from "./Schedules/TestSchedule";
+import InstantSchedule from "./Schedules/InstantSchedule";
 
 /**
  * Registers the actions, filters, outputs and schedules
@@ -20,7 +20,7 @@ export default BunqAutomation => {
 
     pipeLine.registerOutput(new ConsoleMessageOutput());
 
-    pipeLine.registerSchedule(new TestSchedule());
+    pipeLine.registerSchedule(new InstantSchedule());
 
     console.log(pipeLine);
 };

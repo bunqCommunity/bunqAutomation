@@ -1,8 +1,7 @@
 class TestFilter {
     constructor() {
-        this.id = "test-filter-id";
-        this.description = "A test filter which does absolutely nothing!";
-        this.type = "MONETARY_ACCOUNT";
+        this.id = "MONETARY_ACCOUNT";
+        this.description = "Test ";
     }
 
     filter(event) {

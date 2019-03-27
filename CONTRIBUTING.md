@@ -16,6 +16,7 @@ You're going to need [`git`](https://git-scm.com/) to get the project, and [`nod
 
 1. Fork and clone the repo
 2. Run `yarn` in the repo directory to install dependencies
+3. Run `yarn run dev` to start the Server and React scripts using concurrently
 3. Create a branch for your PR
 4. Optionally, if your PR includes code changes make sure to run `yarn run prettier` to ensure the project follows the codestyle as much as possible
 

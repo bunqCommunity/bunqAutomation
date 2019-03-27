@@ -2,10 +2,19 @@ import Validator from "./Validator";
 
 class Pipeline {
     constructor() {
+        // available modules
         this.actions = {};
         this.filters = {};
         this.outputs = {};
         this.schedules = {};
+
+        // active modules configured by the user
+        this.activeActions = [
+            {
+                id: "action-id",
+
+            }
+        ]
 
         this.validator = new Validator(this);
     }
@@ -13,7 +22,7 @@ class Pipeline {
     registerAction(action) {
         if (this.actions[action.id]) throw new Error("An Action with this ID has already been registered");
 
-        const validation = this.validator.validateAction(action);
+        const validation = this.validateRegistration(action);
         if (validation === true) {
             this.actions[action.id] = action;
             return true;
@@ -24,7 +33,7 @@ class Pipeline {
     registerFilter(filter) {
         if (this.actions[filter.id]) throw new Error("A Filter with this ID has already been registered");
 
-        const validation = this.validator.validateFilter(filter);
+        const validation = this.validateRegistration(filter);
         if (validation === true) {
             this.filters[filter.id] = filter;
             return true;
@@ -35,7 +44,7 @@ class Pipeline {
     registerOutput(output) {
         if (this.actions[output.id]) throw new Error("An Output with this ID has already been registered");
 
-        const validation = this.validator.validateOutput(output);
+        const validation = this.validateRegistration(output);
         if (validation === true) {
             this.outputs[output.id] = output;
             return true;
@@ -46,12 +55,19 @@ class Pipeline {
     registerSchedule(schedule) {
         if (this.actions[schedule.id]) throw new Error("A Schedule with this ID has already been registered");
 
-        const validation = this.validator.validateSchedule(schedule);
+        const validation = this.validateRegistration(schedule);
         if (validation === true) {
             this.schedules[schedule.id] = schedule;
             return true;
         }
         throw new Error(`Invalid Schedule given: ${validation}`);
+    }
+
+    validateRegistration(item) {
+        if (!item.id) return "No 'id' property set";
+        if (!item.description) return "No 'description' property set";
+
+        return true;
     }
 }
 

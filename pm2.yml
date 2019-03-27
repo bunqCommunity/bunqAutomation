@@ -1,6 +1,5 @@
 apps:
   - script: build-server/Server.js
     name: bunq-automation
-    instances: 0
+    instances: 1
     max_restarts: 3
-    exec_mode: cluster
