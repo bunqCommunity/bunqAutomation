@@ -1,7 +1,9 @@
-import Validator from "./Validator";
+import ConfigValidator from "./ConfigValidator";
 
 class Pipeline {
     constructor() {
+        this.validator = new ConfigValidator(this);
+
         // available modules
         this.actions = {};
         this.filters = {};
@@ -9,14 +11,7 @@ class Pipeline {
         this.schedules = {};
 
         // active modules configured by the user
-        this.activeActions = [
-            {
-                id: "action-id",
-
-            }
-        ]
-
-        this.validator = new Validator(this);
+        this.activeActions = {};
     }
 
     registerAction(action) {

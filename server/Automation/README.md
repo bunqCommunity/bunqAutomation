@@ -12,14 +12,14 @@ A filter simply returns true or false for one given item/event. Checking if a mo
 
 If no filters are set for an action, it will run on every event for the given Action type. If the Action type is EVENT, it will run every time a new event is sent through the pipeline for example.
 
-#### Schedule
-Each action defines a Schedule for each of the configured Outputs. Anything that isn't `INSTANT` will be stored in it's own store. Every minute all stored outputs which are still pending are checked if they should be completed.
-
-It is the Output's responsibility to store, update and delete any pending updates. 
-
-For example: This also means that a Output output with a DAILY schedule is responsible for collecting multiple pending payments and doing a single BatchPayment
-
 #### Output
 Outputs are the final result after the events have been filtered out and scheduled.
 
 An output can be anything but common outputs will be Payments (single or batched), Requests, Draft payments, Notifications and Emails.
+
+#### Schedule
+Each output has a Schedule. Any Schedule that isn't `INSTANT` will be stored in a store with the Output type. Every minute all stored outputs which are still pending are checked if they should be completed.
+
+It is the Output's responsibility to store, update and delete any pending updates. 
+
+For example: This also means that a Output output with a DAILY schedule is responsible for collecting multiple pending payments and doing a single BatchPayment
