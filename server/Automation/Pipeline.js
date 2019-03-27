@@ -25,6 +25,13 @@ class Pipeline {
         throw new Error(`Invalid Action given: ${validation}`);
     }
 
+    validateRegistration(item) {
+        if (!item.id) return "No 'id' property set";
+        if (!item.description) return "No 'description' property set";
+
+        return true;
+    }
+
     registerFilter(filter) {
         if (this.actions[filter.id]) throw new Error("A Filter with this ID has already been registered");
 
@@ -56,13 +63,6 @@ class Pipeline {
             return true;
         }
         throw new Error(`Invalid Schedule given: ${validation}`);
-    }
-
-    validateRegistration(item) {
-        if (!item.id) return "No 'id' property set";
-        if (!item.description) return "No 'description' property set";
-
-        return true;
     }
 }
 

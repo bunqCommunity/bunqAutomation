@@ -1,11 +1,17 @@
 import uuid from "uuid";
 
 class ActionConfig {
-    constructor(jsonConfig) {
-        this.uuid = jsonConfig.uuid || uuid.v4();
-        this.action = jsonConfig.action || false;
-        this.filters = jsonConfig.filters || [];
-        this.outputs = jsonConfig.outputs || [];
+    constructor(uuid = false, options = {}) {
+        this.uuid = uuid || uuid.v4();
+        const { action = false, filters = [], outputs = [], validationErrors = {}, ...customOptions } = options;
+        this.action = action;
+        this.filters = filters;
+        this.outputs = outputs;
+        this.validationErrors = validationErrors;
+
+        Object.keys(customOptions).forEach(optionKey => {
+            this[optionKey] = customOptions[optionKey];
+        });
     }
 }
 
