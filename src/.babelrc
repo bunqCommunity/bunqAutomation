@@ -1,17 +1,19 @@
 {
     "presets": [
+        "@babel/preset-react",
         [
             "@babel/preset-env",
             {
                 "targets": {
-                    "browserslist": "> 0.25%, not dead"
+                    "browsers": "> 0.25%, not dead"
                 }
             }
         ]
     ],
     "plugins": [
-        "@babel/transform-async-to-generator",
         "@babel/plugin-proposal-class-properties",
-        "@babel/plugin-proposal-object-rest-spread"
+        "@babel/plugin-proposal-object-rest-spread",
+        "@babel/plugin-syntax-dynamic-import",
+        "@babel/transform-async-to-generator"
     ]
 }

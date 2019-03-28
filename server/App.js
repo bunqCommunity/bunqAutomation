@@ -80,6 +80,10 @@ app.listen(PORT, "0.0.0.0", (err, address) => {
         app.swagger();
 
         // register our custom things in bunqAutomation
-        InitPipeline(app.bunqAutomation);
+        InitPipeline(app.bunqAutomation.pipeline)
+            .then(() => {})
+            .catch(error => {
+                console.error(error);
+            });
     });
 });

@@ -1,7 +1,9 @@
+import LevelDb from "../LevelDb";
 import ConfigValidator from "./ConfigValidator";
 
 class Pipeline {
     constructor() {
+        this.store = new LevelDb("Pipeline");
         this.validator = new ConfigValidator(this);
 
         // available modules

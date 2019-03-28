@@ -1,8 +1,13 @@
-const level = require("level");
+const testEnvironment = process.env.NODE_ENV === "test";
 
 class LevelDb {
     constructor(location) {
-        this.levelDb = level(`storage/${location}`);
+        if (testEnvironment) {
+            this.levelDb = jest.mock("level");
+        } else {
+            const level = require("level");
+            this.levelDb = level(`storage/${location}`);
+        }
     }
 
     async get(key) {

@@ -10,10 +10,12 @@
         "build": "yarn run build:server && yarn run build:client",
         "build:server": "./node_modules/.bin/babel server --out-dir build-server",
         "build:client": "react-scripts build",
-        "server": "./node_modules/.bin/nodemon --config nodemon.json --exec babel-node server/Server.js",
+        "server": "./node_modules/.bin/nodemon --config .nodemonrc.json --exec babel-node server/Server.js",
         "react": "react-scripts start",
         "dev": "./node_modules/.bin/concurrently \"yarn:server\" \"yarn:react\" --names Server,React",
         "postinstall": "node scripts/install.js",
+        "test": "./node_modules/.bin/jest --config jest.config.js --no-cache --verbose",
+        "test:dev": "./node_modules/.bin/jest --config jest.config.js --watch",
         "prettier": "./node_modules/.bin/prettier --write \"+(tests|src|server)/**/**.+(ts|js|jsx|scss|css)\""
     },
     "dependencies": {
@@ -31,6 +33,7 @@
         "fastify-response-time": "^1.1.0",
         "fastify-static": "^2.3.4",
         "fastify-swagger": "^2.3.2",
+        "glob": "^7.1.3",
         "json-store": "^1.0.0",
         "level": "^4.0.0",
         "level-js": "^4.0.0",
@@ -38,11 +41,11 @@
         "node-sass": "^4.11.0",
         "pino-pretty": "^2.5.0",
         "pm2": "^3.4.1",
-        "react": "^16.7.0-alpha.2",
-        "react-dom": "^16.7.0-alpha.2",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
         "react-helmet": "^5.2.0",
-        "react-router": "^4.3.1",
-        "react-router-dom": "^4.3.1",
+        "react-router": "^5.0.0",
+        "react-router-dom": "^5.0.0",
         "react-scripts": "^2.1.8",
         "redux": "^4.0.1",
         "redux-logger": "^3.0.6",
@@ -57,16 +60,13 @@
         "@babel/node": "^7.2.2",
         "@babel/plugin-proposal-class-properties": "^7.4.0",
         "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
+        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
         "@babel/plugin-transform-async-to-generator": "^7.4.0",
         "@babel/preset-env": "^7.4.2",
+        "@babel/preset-react": "^7.0.0",
+        "babel-plugin-dynamic-import-node": "^2.2.0",
         "concurrently": "^4.1.0",
         "nodemon": "^1.18.10",
         "prettier": "^1.15.3"
-    },
-    "browserslist": [
-        ">0.2%",
-        "not dead",
-        "not ie <= 11",
-        "not op_mini all"
-    ]
+    }
 }
