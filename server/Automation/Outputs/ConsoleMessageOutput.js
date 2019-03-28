@@ -1,4 +1,3 @@
-
 class ConsoleMessageOutput {
     constructor() {
         this.id = "CONSOLE_MESSAGE";

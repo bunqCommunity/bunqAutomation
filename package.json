@@ -14,7 +14,7 @@
         "react": "react-scripts start",
         "dev": "./node_modules/.bin/concurrently \"yarn:server\" \"yarn:react\" --names Server,React",
         "postinstall": "node scripts/install.js",
-        "prettier": "./node_modules/.bin/prettier --tab-width 4 --print-width 120 --write \"+(tests|src|server)/**/**.+(ts|js|jsx|scss|css)\""
+        "prettier": "./node_modules/.bin/prettier --write \"+(tests|src|server)/**/**.+(ts|js|jsx|scss|css)\""
     },
     "dependencies": {
         "@bunq-community/bunq-js-client": "^0.40.0",
