@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import "./App.scss";
 
 import Store from "./Store";
-import Content from "./Content";
+import RoutesWrapper from "./RoutesWrapper";
 
 const store = Store();
 
@@ -13,7 +13,7 @@ const App = () => {
     return (
         <StoreContext.Provider value={store}>
             <BrowserRouter forceRefresh={false}>
-                <Content />
+                <RoutesWrapper />
             </BrowserRouter>
         </StoreContext.Provider>
     );

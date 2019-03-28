@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useMappedState } from "redux-react-hook";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
 import MuiTheme from "./Config/MuiTheme";
 
@@ -17,7 +18,7 @@ const mapState = state => ({
     darkMode: state.theme.darkMode
 });
 
-const Content = () => {
+const RoutesWrapper = () => {
     const { darkMode } = useMappedState(mapState);
     const { loadStoredApiKey } = useAuthentication();
     const { toggleTheme } = useTheme();
@@ -27,6 +28,8 @@ const Content = () => {
 
     return (
         <MuiThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+            <CssBaseline />
+
             <div className={`app ${darkMode ? "dark" : "light"}`}>
                 <Routes />
 
@@ -36,4 +39,4 @@ const Content = () => {
     );
 };
 
-export default Content;
+export default RoutesWrapper;
