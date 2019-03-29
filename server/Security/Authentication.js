@@ -1,6 +1,6 @@
 const uuid = require("uuid");
 import Encryption from "./Encryption";
-import LevelDb from "../LevelDb";
+import LevelDb from "../Storage/LevelDb";
 import { UnAuthenticatedError } from "../Errors";
 import { STATUS_API_READY, STATUS_PASSWORD_READY, STATUS_UNINITIALIZED } from "../BunqAutomation";
 
@@ -36,10 +36,10 @@ export class Authentication {
 
         // check if
         if (process.env.ENCRYPTION_PASSWORD) {
-            this.logger.debug("Attempting to use encryption password from .env file");
+            this.logger.warn("Attempting to use encryption password from .env file");
             await this.setPassword(process.env.ENCRYPTION_PASSWORD);
 
-            if (this.bunqAutomation.status !== STATUS_PASSWORD_READY) {
+            if (this.bunqAutomation.status === STATUS_PASSWORD_READY) {
                 await this.loadBunqApiKey();
             }
         }
@@ -134,9 +134,6 @@ export class Authentication {
             throw new UnAuthenticatedError();
         }
 
-        // create a new API key
-        const newApiKey = await this.createApiKey();
-
         // store the iv and hash values
         await this.bunqJSClient.storageInterface.set(PASSWORD_IV_LOCATION, this.encryptionIv);
         await this.bunqJSClient.storageInterface.set(PASSWORD_HASH_LOCATION, passwordHash);
@@ -144,7 +141,7 @@ export class Authentication {
         // mark as PASSWORD_READY
         this.bunqAutomation.status = STATUS_PASSWORD_READY;
 
-        return newApiKey;
+        return true;
     }
 
     /**

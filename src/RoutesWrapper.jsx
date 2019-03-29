@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
 import { useMappedState } from "redux-react-hook";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme } from "@material-ui/core/styles";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 import MuiTheme from "./Config/MuiTheme";
 
+import ApiClient from "./ApiClient";
 import Routes from "./Routes";
 import Snackbar from "./Components/Snackbar";
 
-import useTheme from "./Redux/Actions/useTheme";
 import useAuthentication from "./Redux/Actions/useAuthentication";
 
 const lightTheme = createMuiTheme(MuiTheme.light);
@@ -18,11 +19,13 @@ const mapState = state => ({
     darkMode: state.theme.darkMode
 });
 
+const apiClient = new ApiClient();
+
 const RoutesWrapper = () => {
     const { darkMode } = useMappedState(mapState);
     const { loadStoredApiKey } = useAuthentication();
-    const { toggleTheme } = useTheme();
-    window.toggleTheme = toggleTheme;
+
+    window.apiClient = apiClient;
 
     useEffect(() => loadStoredApiKey(), []);
 

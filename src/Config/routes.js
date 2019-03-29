@@ -1,8 +1,22 @@
-const routes = {
-    "/": "Home",
-    "/test": "Test",
-    "/login": "LoginPassword",
-    "/404": "NotFound"
-};
+const routes = [
+    {
+        path: "/",
+        component: "Home",
+        authenticated: true
+    },
+    {
+        path: "/test",
+        component: "Test"
+    },
+    {
+        path: "/login",
+        component: "LoginPassword",
+        unauthenticated: true
+    },
+    {
+        path: "/404",
+        component: "NotFound"
+    }
+];
 
 module.exports = routes;

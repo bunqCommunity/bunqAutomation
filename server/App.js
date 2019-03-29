@@ -15,7 +15,7 @@ const SSL_ENABLED = process.env.SSL_ENABLED === "true";
 const fastifyOptions = {
     logger: {
         redact: [`req.headers["${API_KEY_HEADER}"]`],
-        level: DEVELOPMENT ? "trace" : "error",
+        level: process.env.LOG_LEVEL || "error",
         base: null,
         prettyPrint: DEVELOPMENT
     }

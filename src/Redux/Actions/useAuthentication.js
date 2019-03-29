@@ -1,13 +1,9 @@
 import axios from "axios";
-import { useDispatch, useMappedState } from "redux-react-hook";
+import { useDispatch } from "redux-react-hook";
 
 import LevelDb from "../../LevelDb";
 import { API_KEY_LOCATION } from "../Reducers/authentication";
 import useServerStatus from "./useServerStatus";
-
-const mapState = state => ({
-    apiKey: state.authentication.api_key
-});
 
 const apiBaseUrl = `${process.env.REACT_APP_SERVER_URL}/api`;
 const levelDb = new LevelDb("authentication");
@@ -15,7 +11,6 @@ const levelDb = new LevelDb("authentication");
 const useAuthentication = () => {
     const dispatch = useDispatch();
     const { checkServerStatus } = useServerStatus();
-    const { apiKey } = useMappedState(mapState);
 
     const loginWithPassword = password => {
         authenticationIsLoading();
@@ -37,6 +32,8 @@ const useAuthentication = () => {
     };
 
     const setApiKey = api_key => {
+        window.apiClient.setApiKey(api_key);
+
         dispatch({
             type: "AUTHENTICATION_SET_API_KEY",
             payload: {
@@ -60,21 +57,12 @@ const useAuthentication = () => {
 
     const setBunqApiKey = (bunqApiKey, environment) => {
         authenticationIsLoading();
-        axios
-            .post(
-                `${apiBaseUrl}/setup/api-key`,
-                {
-                    api_key: bunqApiKey,
-                    environment: environment
-                },
-                {
-                    headers: {
-                        "x-bunq-automation-authorization": apiKey
-                    }
-                }
-            )
-            .then(response => response.data)
-            .then(data => {
+        window.apiClient
+            .post(`${apiBaseUrl}/setup/api-key`, {
+                api_key: bunqApiKey,
+                environment: environment
+            })
+            .then(() => {
                 authenticationIsNotLoading();
                 checkServerStatus();
             })
@@ -86,6 +74,8 @@ const useAuthentication = () => {
     };
 
     const logout = () => {
+        window.apiClient.setApiKey(false);
+
         dispatch({ type: "AUTHENTICATION_LOGOUT" });
     };
 

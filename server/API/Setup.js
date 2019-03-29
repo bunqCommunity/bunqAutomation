@@ -21,12 +21,14 @@ export default (app, opts, next) => {
         handler: async (request, reply) => {
             if (!request.body || !request.body.password) throw new BadRequestError();
 
-            const apiKey = await authentication.setPassword(request.body.password);
+            await authentication.setPassword(request.body.password);
 
             // check if password is ready and attempt to load API key if that is the case
             if (bunqAutomation.status === STATUS_PASSWORD_READY) {
                 await authentication.loadBunqApiKey();
             }
+
+            const apiKey = await authentication.createApiKey();
 
             reply.send({
                 api_key: apiKey

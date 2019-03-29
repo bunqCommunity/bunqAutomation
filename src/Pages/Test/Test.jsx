@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useMappedState } from "redux-react-hook";
 import Paper from "@material-ui/core/Paper";
@@ -7,8 +7,6 @@ import TextField from "@material-ui/core/TextField";
 
 import "./Test.scss";
 
-import useInterval from "../../Hooks/useInterval";
-import useServerStatus from "../../Redux/Actions/useServerStatus";
 import useAuthentication from "../../Redux/Actions/useAuthentication";
 const mapState = state => ({
     api_key: state.authentication.api_key,
@@ -17,7 +15,6 @@ const mapState = state => ({
 });
 
 const Test = () => {
-    const { checkServerStatus } = useServerStatus();
     const { api_key, loading, serverStatus } = useMappedState(mapState);
     const { loginWithPassword, setBunqApiKey, setApiKey, logout } = useAuthentication();
 
@@ -27,11 +24,6 @@ const Test = () => {
         "sandbox_42926349b753db70cf3620192b5f618b3e7d86753a33b5e9f9719c1f"
     );
     const [environment, setEnvironment] = useState("SANDBOX");
-
-    // check once on-load
-    useEffect(() => checkServerStatus(), []);
-    // keep checkong on interval
-    useInterval(checkServerStatus, 15000);
 
     return (
         <div className="test">

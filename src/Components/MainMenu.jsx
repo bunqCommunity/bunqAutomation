@@ -11,7 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Drawer from "@material-ui/core/Drawer";
 
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import DraftsIcon from "@material-ui/icons/Drafts";
+import HomeIcon from "@material-ui/icons/Home";
 
 const drawerWidth = 240;
 
@@ -63,9 +63,9 @@ const MainMenu = ({ classes, open, toggleMenu }) => {
             <List>
                 <ListItem button to="/" component={NavLink}>
                     <ListItemIcon>
-                        <DraftsIcon />
+                        <HomeIcon />
                     </ListItemIcon>
-                    <ListItemText primary="primary" />
+                    <ListItemText primary="Dashboard" />
                 </ListItem>
             </List>
         </Drawer>
