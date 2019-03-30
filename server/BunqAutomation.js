@@ -1,7 +1,7 @@
 import Pipeline from "./Automation/Pipeline";
 import FileStore from "./Storage/FileStore";
 
-import { DomainError, NoBunqApiKeyError, NoPasswordSetError } from "./Errors";
+import { NoBunqApiKeyError, NoPasswordSetError } from "./Errors";
 
 export const STATUS_FIRST_INSTALL = "STATUS_FIRST_INSTALL";
 export const STATUS_UNINITIALIZED = "STATUS_UNINITIALIZED";
@@ -56,6 +56,8 @@ class BunqAutomation {
      * @returns {Promise<void>}
      */
     async getUser(forceUpdate = false) {
+        await this.isApiReadyCheck();
+
         const users = await this.bunqJSClient.getUsers(forceUpdate);
         const userType = Object.keys(users)[0];
 

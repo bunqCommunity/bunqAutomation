@@ -15,7 +15,6 @@ import useServerStatus from "./Redux/Actions/useServerStatus";
 import useSocketEvent from "./Hooks/useSocketEvent";
 import useInterval from "./Hooks/useInterval";
 
-
 const mapState = state => ({
     darkMode: state.theme.darkMode
 });
@@ -26,12 +25,15 @@ const RoutesWrapper = () => {
     const { loadStoredApiKey } = useAuthentication();
     const { setServerStatus } = useServerStatus();
 
-    useSocketEvent("disconnect", () => setServerStatus("DISCONNECTED"));
-
     // check server status
-    useSocketEvent("connect", () => socket.emit("status"));
+    useSocketEvent("disconnect", () => setServerStatus("DISCONNECTED"));
+    useEffect(() => {
+        if (socket) socket.emit("status");
+    }, []);
+    useInterval(() => {
+        if (socket) socket.emit("status");
+    }, 5000);
     useSocketEvent("status", status => setServerStatus(status));
-    useInterval(() => socket.emit("status"), 5000);
 
     // initial api key load from storage
     useEffect(() => loadStoredApiKey(), []);

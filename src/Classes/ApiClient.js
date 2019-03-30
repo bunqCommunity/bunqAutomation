@@ -1,4 +1,4 @@
-import axios from "axios/index";
+import axios from "axios";
 
 export const apiBaseUrl = `${process.env.REACT_APP_SERVER_URL}/api`;
 

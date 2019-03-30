@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { useMappedState } from "redux-react-hook";
-import { withStyles } from "@material-ui/core/styles/index";
+import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
@@ -13,7 +13,8 @@ import useAuthentication from "../../Redux/Actions/useAuthentication";
 
 const mapState = state => ({
     api_key: state.authentication.api_key,
-    loading: state.authentication.loading
+    loading: state.authentication.loading,
+    serverStatus: state.server_status.status
 });
 
 const styles = theme => ({
@@ -35,12 +36,13 @@ const styles = theme => ({
 });
 
 const LoginPassword = ({ classes }) => {
-    const { api_key, loading } = useMappedState(mapState);
+    const { api_key, loading, serverStatus } = useMappedState(mapState);
     const { loginWithPassword } = useAuthentication();
 
     const [password, setPassword] = useState("testpassword1234");
 
     if (api_key && !loading) return <Redirect to="/" />;
+    if (serverStatus === "STATUS_FIRST_INSTALL") return <Redirect to="/setup" />;
 
     return (
         <MinimalContent title="bunqAutomation - Login">

@@ -14,6 +14,11 @@ const routes = [
         unauthenticated: true
     },
     {
+        path: "/setup",
+        component: "Setup",
+        unauthenticated: true
+    },
+    {
         path: "/404",
         component: "NotFound"
     }
