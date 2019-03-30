@@ -1,4 +1,4 @@
-import LevelDb from "../../LevelDb";
+import LevelDb from "../../Classes/LevelDb";
 
 const levelDb = new LevelDb("authentication");
 

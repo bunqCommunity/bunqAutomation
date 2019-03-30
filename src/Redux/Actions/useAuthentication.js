@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useDispatch } from "redux-react-hook";
 
-import LevelDb from "../../LevelDb";
+import LevelDb from "../../Classes/LevelDb";
 import { API_KEY_LOCATION } from "../Reducers/authentication";
 import useServerStatus from "./useServerStatus";
 

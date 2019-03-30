@@ -36,12 +36,12 @@ class BunqAutomation {
         await Promise.all([this.authentication.reset()]);
     }
 
-    isApiReadyCheck() {
+    async isApiReadyCheck() {
         if (this.status === STATUS_API_READY) return true;
 
         switch (this.status) {
             case STATUS_FIRST_INSTALL:
-            case STATUS_PASSWORD_READY:
+            case STATUS_UNINITIALIZED:
                 throw new NoPasswordSetError();
             case STATUS_PASSWORD_READY:
                 throw new NoBunqApiKeyError();
@@ -70,7 +70,7 @@ class BunqAutomation {
      * @returns {Promise<any>}
      */
     async getImage(imageUuid) {
-        this.isApiReadyCheck();
+        await this.isApiReadyCheck();
 
         const imageFileName = `${imageUuid}.png`;
 

@@ -8,12 +8,13 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
-import MenuIcon from "@material-ui/icons/Menu";
 
+import MenuIcon from "@material-ui/icons/Menu";
 import WbSunnyIcon from "@material-ui/icons/WbSunny";
 import MoonIcon from "./Icons/Moon";
 
 import MainMenu from "./MainMenu";
+import BunqImage from "./BunqImage";
 
 import useStoredBoolean from "../Hooks/useStoredBoolean";
 import useInterval from "../Hooks/useInterval";
@@ -74,6 +75,9 @@ const styles = theme => ({
     tableContainer: {
         height: 320
     },
+    userImage: {
+        height: 44
+    },
     h5: {
         marginBottom: theme.spacing.unit * 2
     }
@@ -84,6 +88,7 @@ const mapState = state => ({
     userLoading: state.user.loading,
 
     authenticationLoading: state.authentication.loading,
+
     serverStatusChecked: state.server_status.checked,
     serverStatus: state.server_status.status,
 
@@ -107,13 +112,29 @@ const Content = ({ classes, children, title = "bunqAutomation" }) => {
 
     useEffect(
         () => {
-            console.log(state);
-            if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") {
-                logout();
-            }
+            if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") logout();
         },
         [state.serverStatusChecked, state.serverStatus]
     );
+
+    let imageUuid = false;
+    let userComponent = null;
+    if (state.user) {
+        const image = state.user.avatar.image[0];
+        imageUuid = image.attachment_public_uuid;
+    }
+    const userImage = <BunqImage imageUuid={imageUuid} />;
+
+    const hasNotifications = false;
+    if (hasNotifications) {
+        userComponent = (
+            <Badge badgeContent={4} color="secondary">
+                {userImage}
+            </Badge>
+        );
+    } else {
+        userComponent = userImage;
+    }
 
     return (
         <div className={classes.root}>
@@ -143,11 +164,7 @@ const Content = ({ classes, children, title = "bunqAutomation" }) => {
                     <IconButton color="inherit" onClick={toggleTheme}>
                         {state.darkMode ? <MoonIcon /> : <WbSunnyIcon />}
                     </IconButton>
-                    <IconButton color="inherit">
-                        <Badge badgeContent={4} color="secondary">
-                            {state.user ? "l" : "n"}
-                        </Badge>
-                    </IconButton>
+                    {userComponent}
                 </Toolbar>
             </AppBar>
             <MainMenu open={menuOpen} toggleMenu={toggleMenu} />

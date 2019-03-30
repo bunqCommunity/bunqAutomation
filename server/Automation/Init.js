@@ -8,10 +8,12 @@ const normalizePath = modulePath => path.join("..", "..", modulePath);
  * @param BunqAutomation
  */
 export default async pipeline => {
-    const Actions = glob.sync("server/Automation/Actions/*.js");
-    const Filters = glob.sync("server/Automation/Filters/*.js");
-    const Outputs = glob.sync("server/Automation/Outputs/*.js");
-    const Schedules = glob.sync("server/Automation/Schedules/*.js");
+    const globOptions = {
+    };
+    const Actions = glob.sync("./Actions/*.js", globOptions);
+    const Filters = glob.sync("./Filters/*.js", globOptions);
+    const Outputs = glob.sync("./Outputs/*.js", globOptions);
+    const Schedules = glob.sync("./Schedules/*.js", globOptions);
 
     await Promise.all(
         Actions.map(async actionPath => {

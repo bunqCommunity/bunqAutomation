@@ -6,7 +6,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 
 import MuiTheme from "./Config/MuiTheme";
 
-import ApiClient from "./ApiClient";
+import ApiClient from "./Classes/ApiClient";
 import Routes from "./Routes";
 import Snackbar from "./Components/Snackbar";
 

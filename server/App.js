@@ -9,8 +9,10 @@ import { API_KEY_HEADER } from "./Security/Authentication";
 import InitPipeline from "./Automation/Init";
 
 const DEVELOPMENT = process.env.NODE_ENV === "development";
-const PORT = process.env.SERVER_PORT || process.env.PORT || 8080;
 const SSL_ENABLED = process.env.SSL_ENABLED === "true";
+const SSL_PORT = SSL_ENABLED ? process.env.SSL_SERVER_PORT : false;
+// prefered port order SSL > Regular > Fallback
+const PORT = SSL_PORT || process.env.SERVER_PORT || process.env.PORT || 8080;
 
 const fastifyOptions = {
     logger: {
@@ -46,12 +48,14 @@ app.setErrorHandler((error, request, reply) => {
         reply.header("Content-Type", "text/html");
     }
 
-    console.log("errorOutput", errorOutput);
-
     if (error instanceof Errors.DomainError) {
         request.log.warn(error.message);
         if (error instanceof Errors.ResourceNotFoundError) {
-            reply.code(404).send(errorOutput);
+            if (isApi) {
+                reply.code(404).send(errorOutput);
+            } else {
+                reply.code(404).sendFile("index.html");
+            }
         } else if (error instanceof Errors.BadRequestError) {
             reply.code(400).send(errorOutput);
         } else if (error instanceof Errors.UnAuthenticatedError) {
@@ -65,6 +69,16 @@ app.setErrorHandler((error, request, reply) => {
     }
 });
 
+app.setNotFoundHandler((request, reply) => {
+    const isApi = request.req.originalUrl.indexOf("/api") === 0;
+    if (isApi) {
+        reply.code(404).send({ error: "Page not found" });
+    } else {
+        console.log(1);
+        reply.code(404).sendFile("index.html");
+    }
+});
+
 app.listen(PORT, "0.0.0.0", (err, address) => {
     if (err) {
         app.log.error(err);
@@ -73,7 +87,7 @@ app.listen(PORT, "0.0.0.0", (err, address) => {
 
     const httpString = SSL_ENABLED ? "https" : "http";
     const portString = PORT == 80 || PORT === 443 ? "" : `:${PORT}`;
-    app.log.info(
+    app.log.warn(
         `Process ${process.pid} Running at port ${chalk.green(PORT)} - ${chalk.yellow(
             `${httpString}://${process.env.SERVER_HOSTNAME}${portString}`
         )}`
