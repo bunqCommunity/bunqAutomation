@@ -74,7 +74,6 @@ app.setNotFoundHandler((request, reply) => {
     if (isApi) {
         reply.code(404).send({ error: "Page not found" });
     } else {
-        console.log(1);
         reply.code(404).sendFile("index.html");
     }
 });

@@ -10,8 +10,9 @@ import BunqJSClientPlugin from "./Plugins/BunqJSClientPlugin";
 import BunqAutomationPlugin from "./Plugins/BunqAutomationPlugin";
 import AuthenticationPlugin from "./Plugins/Authentication/AuthenticationPlugin";
 import ApiKeyAuthenticationPlugin from "./Plugins/Authentication/ApiKeyAuthenticationPlugin";
-// import IPAuthenticationPlugin from "./Plugins/Authentication/IPAuthenticationPlugin";
 import SchemaRegistrationPlugin from "./Plugins/SchemaRegistrationPlugin";
+import SocketServerPlugin from "./Plugins/SocketServerPlugin";
+// import IPAuthenticationPlugin from "./Plugins/Authentication/IPAuthenticationPlugin";
 
 export default app => {
     app.register(fastifyCompress);
@@ -33,4 +34,5 @@ export default app => {
     // app.register(IPAuthenticationPlugin);
 
     app.register(BunqAutomationPlugin);
+    app.register(SocketServerPlugin);
 };
