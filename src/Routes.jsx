@@ -6,9 +6,15 @@ import NotFound from "./Pages/NotFound/NotFound";
 
 const routes = require("./Config/routes");
 
-// map config to Page components
-const routeMapper = ({ api_key, loading }) => {
-    return routes.map(route => {
+const mapState = state => ({
+    api_key: state.authentication.api_key,
+    loading: state.authentication.loading
+});
+
+const Routes = () => {
+    const { api_key, loading } = useMappedState(mapState);
+
+    const routeComponents = routes.map(route => {
         // wrap component in a lazy load element
         const Component = lazy(() => import(`./Pages/${route.component}/${route.component}.jsx`));
 
@@ -28,17 +34,6 @@ const routeMapper = ({ api_key, loading }) => {
         // return the Route component
         return <Route exact key={route.path} path={route.path} render={renderer} />;
     });
-};
-
-const mapState = state => ({
-    api_key: state.authentication.api_key,
-    loading: state.authentication.loading
-});
-
-const Routes = () => {
-    const { api_key, loading } = useMappedState(mapState);
-
-    const routeComponents = routeMapper({ api_key, loading });
 
     return (
         <Suspense fallback={<div />}>

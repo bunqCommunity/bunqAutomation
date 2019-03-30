@@ -6,18 +6,7 @@ module.exports = {
     runtimeCaching: [
         {
             urlPattern: /\/api.*/,
-            handler: "networkFirst"
-        },
-        {
-            urlPattern: /\/api\/bunq\/image\/.*/,
-            handler: "cacheFirst",
-            options: {
-                cache: {
-                    queryOptions: {
-                        ignoreSearch: true
-                    }
-                }
-            }
+            handler: "networkOnly"
         }
     ]
 };
