@@ -1,18 +1,16 @@
 import Bunq from "./Bunq";
 import Health from "./Health";
 import Setup from "./Setup";
-import AuthenticatedRouteTest from "./AuthenticatedRouteTest";
 
 export default (app, opts, next) => {
-    app.register(Bunq, { prefix: "/bunq" });
     app.register(Health, { prefix: "/health" });
     app.register(Setup, { prefix: "/setup" });
 
     // Authenticated routes
     app.register((app, opts, next) => {
-        app.addHook("preHandler", app.auth([app.apiKeyAuthentication, app.ipAuthentication]));
+        app.addHook("preHandler", app.auth([app.apiKeyAuthentication]));
 
-        app.register(AuthenticatedRouteTest, { prefix: "/authenticated-test" });
+        app.register(Bunq, { prefix: "/bunq" });
 
         next();
     });

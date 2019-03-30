@@ -1,6 +1,8 @@
 import Pipeline from "./Automation/Pipeline";
 import FileStore from "./Storage/FileStore";
 
+import { DomainError, NoBunqApiKeyError, NoPasswordSetError } from "./Errors";
+
 export const STATUS_FIRST_INSTALL = "STATUS_FIRST_INSTALL";
 export const STATUS_UNINITIALIZED = "STATUS_UNINITIALIZED";
 export const STATUS_PASSWORD_READY = "STATUS_PASSWORD_READY";
@@ -34,6 +36,20 @@ class BunqAutomation {
         await Promise.all([this.authentication.reset()]);
     }
 
+    isApiReadyCheck() {
+        if (this.status === STATUS_API_READY) return true;
+
+        switch (this.status) {
+            case STATUS_FIRST_INSTALL:
+            case STATUS_PASSWORD_READY:
+                throw new NoPasswordSetError();
+            case STATUS_PASSWORD_READY:
+                throw new NoBunqApiKeyError();
+        }
+
+        return true;
+    }
+
     /**
      * Retrieves the bunq user info
      * @params {boolean} forceUpdate
@@ -51,16 +67,26 @@ class BunqAutomation {
     /**
      * Fetches a bunq image by uuid and caches it
      * @param imageUuid
-     * @returns {Promise<Promise<any>|any>}
+     * @returns {Promise<any>}
      */
     async getImage(imageUuid) {
-        const storedImage = await this.fileStore.exists(imageUuid);
-        if (storedImage) return storedImage;
+        this.isApiReadyCheck();
 
-        const imageContents = this.bunqJSClient.api.attachmentContent.get(imageUuid, {
+        const imageFileName = `${imageUuid}.png`;
+
+        const storedImage = await this.fileStore.exists(imageFileName);
+        if (storedImage) {
+            return this.fileStore.stream(imageFileName);
+        }
+
+        // get updated image from bunq API
+        const imageContents = await this.bunqJSClient.api.attachmentContent.get(imageUuid, {
             base64: false
         });
-        this.fileStore.write(imageUuid, imageContents)
+
+        // cache image in file store
+        this.fileStore
+            .write(imageFileName, imageContents)
             .then(() => {})
             .catch(error => {
                 this.logger.warn("Failed to write file!");

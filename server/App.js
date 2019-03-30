@@ -39,7 +39,14 @@ Routes(app);
 // Overwrite all error handlers at the top level after ready event
 app.setErrorHandler((error, request, reply) => {
     const isApi = request.req.originalUrl.indexOf("/api") === 0;
-    const errorOutput = isApi ? { error: error.message } : error.message;
+    let errorOutput = isApi ? { error: error.message } : error.message;
+    if (isApi) {
+        reply.header("Content-Type", "application/json");
+    } else {
+        reply.header("Content-Type", "text/html");
+    }
+
+    console.log("errorOutput", errorOutput);
 
     if (error instanceof Errors.DomainError) {
         request.log.warn(error.message);

@@ -5,7 +5,7 @@ const fastifyPlugin = require("fastify-plugin");
  * White list IP addresses
  */
 const ipAuthenticationPlugin = (fastify, options, next) => {
-    fastify.decorate("ipAuthentication", (request, reply, done) => {
+    const ipAuthentication = (request, reply, done) => {
         fastify.authentication
             .validateIp(request.ip)
             .then(result => {
@@ -16,7 +16,9 @@ const ipAuthenticationPlugin = (fastify, options, next) => {
                 }
             })
             .catch(done);
-    });
+    };
+
+    fastify.decorate("ipAuthentication", ipAuthentication);
 
     next();
 };

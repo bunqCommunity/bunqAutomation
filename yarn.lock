@@ -4691,10 +4691,10 @@ fast-safe-stringify@^2.0.6:
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.6.tgz#04b26106cc56681f51a044cfc0d76cf0008ac2c2"
   integrity sha512-q8BZ89jjc+mz08rSxROs8VsrBBcn1SIw1kq9NjolL509tkABRk9io01RAjSaEv1Xb2uFLt8VtRiZbGp5H8iDtg==
 
-fastify-auth@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/fastify-auth/-/fastify-auth-0.4.0.tgz#97750df250fa293d8f8eb6750f2cfe767b19fc2b"
-  integrity sha512-RrD5pYew/O15nlJGE4VkN2kQ+bmHRwLwVvZMQBxFx60Ulu9MImNhr7OXKWRmkA/dSBgk//yyAVcAQyxNcDh67A==
+fastify-auth@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/fastify-auth/-/fastify-auth-0.5.0.tgz#60e4557710c7dea703d08fc514c5aa50b8699926"
+  integrity sha512-E3Kj4Mt8KiRoDvVtDpznwWbjx/M9vDgyWfjo1TVRpLF5n/7fs7rKUd9fLTtpsAPxQy9CkYmfLINp/6o+YiZOgQ==
   dependencies:
     fastify-plugin "^1.5.0"
     reusify "^1.0.4"

@@ -7,6 +7,20 @@ export class DomainError extends Error {
     }
 }
 
+export class NoBunqApiKeyError extends DomainError {
+    constructor(query) {
+        super(`No bunq API key has been set yet.`);
+        this.data = { query };
+    }
+}
+
+export class NoPasswordSetError extends DomainError {
+    constructor(query) {
+        super(`No password has been set yet.`);
+        this.data = { query };
+    }
+}
+
 export class ResourceNotFoundError extends DomainError {
     constructor(resource, query) {
         super(`Resource '${resource}' was not found.`);
@@ -23,7 +37,7 @@ export class BadRequestError extends DomainError {
 
 export class UnAuthenticatedError extends DomainError {
     constructor() {
-        super(`Unauthenticated, permission denied`);
+        super(`Unauthenticated, permission denied.`);
     }
 }
 

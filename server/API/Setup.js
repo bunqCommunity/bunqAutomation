@@ -98,7 +98,7 @@ export default (app, opts, next) => {
         method: "POST",
         preHandler: app.auth([app.apiKeyAuthentication]),
         handler: async (request, reply) => {
-            reply.send(true);
+            reply.send({ status: true });
         },
         schema: {
             tags: ["setup"],
@@ -109,7 +109,7 @@ export default (app, opts, next) => {
                     type: "object",
                     properties: {
                         status: {
-                            type: "string"
+                            type: "boolean"
                         }
                     }
                 }

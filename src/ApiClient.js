@@ -11,7 +11,7 @@ class ApiClient {
         this.apiKey = apiKey;
     }
 
-    async request(url, method, body = {}, headers = {}) {
+    async request(url, method, data = {}, headers = {}) {
         if (this.apiKey) {
             headers["x-bunq-automation-authorization"] = this.apiKey;
         }
@@ -24,8 +24,8 @@ class ApiClient {
             headers: headers
         };
 
-        if (Object.keys(body).length > 0) {
-            requestConfig.body = body;
+        if (Object.keys(data).length > 0) {
+            requestConfig.data = data;
         }
 
         return axios(requestConfig).then(response => response.data);
@@ -35,12 +35,12 @@ class ApiClient {
         return this.request(url, "GET", {}, headers);
     }
 
-    async post(url, body = {}, headers = {}) {
-        return this.request(url, "POST", body, headers);
+    async post(url, data = {}, headers = {}) {
+        return this.request(url, "POST", data, headers);
     }
 
-    async put(url, body = {}, headers = {}) {
-        return this.request(url, "PUT", body, headers);
+    async put(url, data = {}, headers = {}) {
+        return this.request(url, "PUT", data, headers);
     }
 }
 

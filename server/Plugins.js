@@ -10,7 +10,7 @@ import BunqJSClientPlugin from "./Plugins/BunqJSClientPlugin";
 import BunqAutomationPlugin from "./Plugins/BunqAutomationPlugin";
 import AuthenticationPlugin from "./Plugins/Authentication/AuthenticationPlugin";
 import ApiKeyAuthenticationPlugin from "./Plugins/Authentication/ApiKeyAuthenticationPlugin";
-import IPAuthenticationPlugin from "./Plugins/Authentication/IPAuthenticationPlugin";
+// import IPAuthenticationPlugin from "./Plugins/Authentication/IPAuthenticationPlugin";
 import SchemaRegistrationPlugin from "./Plugins/SchemaRegistrationPlugin";
 
 export default app => {
@@ -21,13 +21,16 @@ export default app => {
     app.register(fastifyStatic, {
         root: `${__dirname}${path.sep}..${path.sep}build`
     });
-    app.register(SwaggerDocsPlugin);
 
+    app.register(SwaggerDocsPlugin);
     app.register(SchemaRegistrationPlugin);
+
     app.register(LevelDbPlugin);
     app.register(BunqJSClientPlugin);
+
     app.register(AuthenticationPlugin);
     app.register(ApiKeyAuthenticationPlugin);
-    app.register(IPAuthenticationPlugin);
+    // app.register(IPAuthenticationPlugin);
+
     app.register(BunqAutomationPlugin);
 };
