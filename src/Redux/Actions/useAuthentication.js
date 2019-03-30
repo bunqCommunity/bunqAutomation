@@ -3,14 +3,12 @@ import { useDispatch } from "redux-react-hook";
 
 import LevelDb from "../../Classes/LevelDb";
 import { API_KEY_LOCATION } from "../Reducers/authentication";
-import useServerStatus from "./useServerStatus";
 
 const apiBaseUrl = `${process.env.REACT_APP_SERVER_URL}/api`;
 const levelDb = new LevelDb("authentication");
 
 const useAuthentication = () => {
     const dispatch = useDispatch();
-    const { checkServerStatus } = useServerStatus();
 
     const loginWithPassword = password => {
         authenticationIsLoading();
@@ -22,12 +20,10 @@ const useAuthentication = () => {
             .then(data => {
                 setApiKey(data.api_key);
                 authenticationIsNotLoading();
-                checkServerStatus();
             })
             .catch(error => {
                 console.error(error);
                 authenticationIsNotLoading();
-                checkServerStatus();
             });
     };
 
@@ -64,12 +60,10 @@ const useAuthentication = () => {
             })
             .then(() => {
                 authenticationIsNotLoading();
-                checkServerStatus();
             })
             .catch(error => {
                 console.error(error);
                 authenticationIsNotLoading();
-                checkServerStatus();
             });
     };
 

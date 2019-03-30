@@ -1,69 +1,60 @@
-import React, { useState, useEffect } from "react";
-import { Helmet } from "react-helmet";
+import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { useMappedState } from "redux-react-hook";
+import { withStyles } from "@material-ui/core/styles/index";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import IconButton from "@material-ui/core/IconButton";
 
-import "./LoginPassword.scss";
 import logo from "../../Images/logo-256.png";
-import WbSunnyIcon from "@material-ui/icons/WbSunny";
-import MoonIcon from "../../Components/Icons/Moon";
 
-import useServerStatus from "../../Redux/Actions/useServerStatus";
+import MinimalContent from "../../Components/MinimalContent/MinimalContent";
+
 import useAuthentication from "../../Redux/Actions/useAuthentication";
-import useTheme from "../../Redux/Actions/useTheme";
-
-import useInterval from "../../Hooks/useInterval";
 
 const mapState = state => ({
     api_key: state.authentication.api_key,
-    loading: state.authentication.loading,
-
-    darkMode: state.theme.darkMode
+    loading: state.authentication.loading
 });
 
-const LoginPassword = () => {
-    const { api_key, loading, darkMode } = useMappedState(mapState);
-    const { checkServerStatus } = useServerStatus();
+const styles = theme => ({
+    root: {
+        width: 280,
+        textAlign: "center"
+    },
+    image: {
+        width: "60%"
+    },
+    textField: {
+        width: "100%",
+        marginBottom: 8
+    },
+    button: {
+        width: "100%",
+        marginBottom: 8
+    }
+});
+
+const LoginPassword = ({ classes }) => {
+    const { api_key, loading } = useMappedState(mapState);
     const { loginWithPassword } = useAuthentication();
-    const { toggleTheme } = useTheme();
 
     const [password, setPassword] = useState("testpassword1234");
-
-    // continue checking if the server is ready
-    useEffect(() => checkServerStatus(), []);
-    useInterval(checkServerStatus, 15000);
 
     if (api_key && !loading) return <Redirect to="/" />;
 
     return (
-        <div className="login-password">
-            <Helmet title="bunqAutomation - Login" />
-
-            <IconButton
-                color="inherit"
-                className="theme-btn"
-                onClick={toggleTheme}
-                style={{
-                    color: darkMode ? "white" : "black"
-                }}
-            >
-                {darkMode ? <MoonIcon /> : <WbSunnyIcon />}
-            </IconButton>
-
-            <div className="content">
-                <img className="image" alt="bunqAutomation logo" src={logo} />
+        <MinimalContent title="bunqAutomation - Login">
+            <div className={classes.root}>
+                <img className={classes.image} alt="bunqAutomation logo" src={logo} />
                 <TextField
-                    className="text-field"
+                    className={classes.textField}
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                 />
                 <Button
-                    className="button"
+                    className={classes.button}
                     variant="contained"
                     color="primary"
                     disabled={!password || password.length < 8}
@@ -72,8 +63,8 @@ const LoginPassword = () => {
                     Login
                 </Button>
             </div>
-        </div>
+        </MinimalContent>
     );
 };
 
-export default LoginPassword;
+export default withStyles(styles)(LoginPassword);

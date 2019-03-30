@@ -4,13 +4,12 @@ import { NavLink } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
-import "./NotFound.scss";
-
 import logo from "../../Images/logo-256.png";
+import MinimalContent from "../../Components/MinimalContent/MinimalContent";
 
 const NotFound = () => {
     return (
-        <div className="notfound">
+        <MinimalContent title="bunqAutomation - Login">
             <Helmet title="bunqAutomation - 404" />
 
             <div className="content">
@@ -23,7 +22,7 @@ const NotFound = () => {
                     Go home?
                 </Button>
             </div>
-        </div>
+        </MinimalContent>
     );
 };
 
