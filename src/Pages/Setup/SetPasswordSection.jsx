@@ -18,13 +18,11 @@ const styles = theme => ({
 });
 
 const mapState = state => ({
-    loading: state.authentication.loading,
-
     serverStatus: state.server_status.status
 });
 
 const SetPasswordSection = ({ classes }) => {
-    // const { serverStatus, loading } = useMappedState(mapState);
+    const { serverStatus } = useMappedState(mapState);
     const { loginWithPassword } = useAuthentication();
 
     // set a password
@@ -32,18 +30,6 @@ const SetPasswordSection = ({ classes }) => {
     const [passwordConfirm, setPasswordConfirm] = useState("testpassword1234");
     const [error, setError] = useState("");
     const [errorConfirm, setErrorConfirm] = useState("");
-
-    const setPasswordCb = e => {
-        setPassword(e.target.value);
-    };
-    const setPasswordConfirmCb = e => {
-        setPasswordConfirm(e.target.value);
-    };
-    const login = () => {
-        if (!error) {
-            loginWithPassword(password);
-        }
-    };
 
     useEffect(
         () => {
@@ -66,6 +52,24 @@ const SetPasswordSection = ({ classes }) => {
         [password, passwordConfirm]
     );
 
+    const requiresConfirm = serverStatus === "STATUS_FIRST_INSTALL";
+
+    const setPasswordCb = e => {
+        setPassword(e.target.value);
+        if (!requiresConfirm) {
+            // if we don't require a confirm, we simply set the same value
+            setPasswordConfirm(e.target.value);
+        }
+    };
+    const setPasswordConfirmCb = e => {
+        setPasswordConfirm(e.target.value);
+    };
+    const login = () => {
+        if (!error) {
+            loginWithPassword(password);
+        }
+    };
+
     return (
         <React.Fragment>
             <TextField
@@ -78,18 +82,20 @@ const SetPasswordSection = ({ classes }) => {
                 value={password}
                 onChange={setPasswordCb}
             />
-            <TextField
-                className={classes.textField}
-                type="password"
-                label="Confirm password"
-                disabled={!!error || !password}
-                error={!!errorConfirm}
-                helperText={errorConfirm}
-                value={passwordConfirm}
-                onChange={setPasswordConfirmCb}
-            />
+            {requiresConfirm && (
+                <TextField
+                    className={classes.textField}
+                    type="password"
+                    label="Confirm password"
+                    disabled={!!error || !password}
+                    error={!!errorConfirm}
+                    helperText={errorConfirm}
+                    value={passwordConfirm}
+                    onChange={setPasswordConfirmCb}
+                />
+            )}
             <Button
-                disabled={!!error || !!errorConfirm}
+                disabled={!!error || !!errorConfirm || !password}
                 onClick={login}
                 className={classes.button}
                 variant="contained"

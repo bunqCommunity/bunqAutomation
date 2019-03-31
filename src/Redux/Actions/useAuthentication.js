@@ -20,10 +20,12 @@ const useAuthentication = () => {
             .then(data => {
                 setApiKey(data.api_key);
                 authenticationIsNotLoading();
+                window.socket && window.socket.emit("status");
             })
             .catch(error => {
                 console.error(error);
                 authenticationIsNotLoading();
+                window.socket && window.socket.emit("status");
             });
     };
 
@@ -60,10 +62,12 @@ const useAuthentication = () => {
             })
             .then(() => {
                 authenticationIsNotLoading();
+                window.socket && window.socket.emit("status");
             })
             .catch(error => {
                 console.error(error);
                 authenticationIsNotLoading();
+                window.socket && window.socket.emit("status");
             });
     };
 
@@ -94,10 +98,12 @@ const useAuthentication = () => {
             .then(response => response.data)
             .then(() => {
                 authenticationIsNotLoading();
+                window.socket && window.socket.emit("status");
             })
             .catch(() => {
                 logout();
                 authenticationIsNotLoading();
+                window.socket && window.socket.emit("status");
             });
     };
 

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+// import { Redirect } from "react-router-dom";
 import { useMappedState } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -35,14 +35,33 @@ const styles = theme => ({
     }
 });
 
-const LoginPassword = ({ classes }) => {
+const LoginPassword = ({ classes, history }) => {
     const { api_key, loading, serverStatus } = useMappedState(mapState);
     const { loginWithPassword } = useAuthentication();
 
     const [password, setPassword] = useState("testpassword1234");
 
-    if (api_key && !loading) return <Redirect to="/" />;
-    if (serverStatus === "STATUS_FIRST_INSTALL") return <Redirect to="/setup" />;
+    if (api_key && !loading) {
+        console.log("Has api key, redirect to home?");
+        // return <Redirect to="/" />;
+    }
+
+    useEffect(
+        () => {
+            switch (serverStatus) {
+                case "STATUS_UNINITIALIZED":
+                    break;
+                case "STATUS_API_READY": {
+                    console.log("Login go to home?");
+                    // history.push("/");
+                    break;
+                }
+                default:
+                    break;
+            }
+        },
+        [serverStatus]
+    );
 
     return (
         <MinimalContent title="bunqAutomation - Login">

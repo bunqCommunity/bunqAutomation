@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+// import { Redirect } from "react-router-dom";
 import { useMappedState } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
@@ -13,6 +12,7 @@ import logo from "../../Images/logo-256.png";
 
 import MinimalContent from "../../Components/MinimalContent/MinimalContent";
 import SetPasswordSection from "./SetPasswordSection";
+import SetBunqKeySection from "./SetBunqKeySection";
 
 const styles = theme => ({
     root: {
@@ -49,10 +49,31 @@ const mapState = state => ({
     serverStatus: state.server_status.status
 });
 
-const Setup = ({ classes }) => {
-    const {  serverStatus } = useMappedState(mapState);
-    const [step, setStep] = useState(0);
-    const nextStep = () =>         setStep(step + 1);
+const getStepValue = serverStatus => {
+    switch (serverStatus) {
+        case "STATUS_PASSWORD_READY":
+            return 1;
+        case "STATUS_API_READY":
+            return 2;
+        default:
+        case "STATUS_FIRST_INSTALL":
+        case "STATUS_UNINITIALIZED":
+            return 0;
+    }
+};
+
+const Setup = ({ classes, history }) => {
+    const { serverStatus } = useMappedState(mapState);
+    const [step, setStep] = useState(getStepValue(serverStatus));
+
+    useEffect(
+        () => {
+            const newStepIndex = getStepValue(serverStatus);
+
+            if (step !== newStepIndex) setStep(newStepIndex);
+        },
+        [serverStatus]
+    );
 
     return (
         <MinimalContent title="bunqAutomation - Setup" alignTop={true}>
@@ -65,7 +86,7 @@ const Setup = ({ classes }) => {
                 <Paper className={classes.content}>
                     <Stepper className={classes.stepper} activeStep={step} alternativeLabel>
                         <Step>
-                            <StepLabel>Pick a password</StepLabel>
+                            <StepLabel>Set a password</StepLabel>
                         </Step>
                         <Step>
                             <StepLabel>Login with bunq</StepLabel>
@@ -75,12 +96,12 @@ const Setup = ({ classes }) => {
                         </Step>
                     </Stepper>
 
-                    {serverStatus}
-
-                    {step === 0 && <SetPasswordSection nextStep={nextStep} />}
-                    {step === 1 && <SetPasswordSection nextStep={nextStep} />}
+                    {step === 0 && <SetPasswordSection />}
+                    {step === 1 && <SetBunqKeySection />}
                     {step === 2 && <Typography>No settings for now, you are good to go</Typography>}
                 </Paper>
+
+                <Typography variant="h6">{serverStatus}</Typography>
             </div>
         </MinimalContent>
     );

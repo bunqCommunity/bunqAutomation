@@ -5,18 +5,12 @@ const routes = [
         authenticated: true
     },
     {
-        path: "/test",
-        component: "Test"
-    },
-    {
         path: "/login",
-        component: "LoginPassword",
-        unauthenticated: true
+        component: "LoginPassword"
     },
     {
         path: "/setup",
-        component: "Setup",
-        unauthenticated: true
+        component: "Setup"
     },
     {
         path: "/404",
