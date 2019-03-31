@@ -8,8 +8,7 @@ const normalizePath = modulePath => path.join("..", "..", modulePath);
  * @param BunqAutomation
  */
 export default async pipeline => {
-    const globOptions = {
-    };
+    const globOptions = {};
     const Actions = glob.sync("./Actions/*.js", globOptions);
     const Filters = glob.sync("./Filters/*.js", globOptions);
     const Outputs = glob.sync("./Outputs/*.js", globOptions);

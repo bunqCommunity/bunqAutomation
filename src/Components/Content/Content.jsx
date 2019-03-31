@@ -47,12 +47,9 @@ const Content = ({ classes, children, title = "bunqAutomation" }) => {
         if (!state.user && !state.userLoading && !state.authenticationLoading) getUser(true);
     }, []);
 
-    useEffect(
-        () => {
-            if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") logout();
-        },
-        [state.serverStatusChecked, state.serverStatus]
-    );
+    useEffect(() => {
+        if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") logout();
+    }, [state.serverStatusChecked, state.serverStatus]);
 
     return (
         <div className={classes.root}>

@@ -23,26 +23,20 @@ const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, s
     const [error, setError] = useState("");
     const [errorConfirm, setErrorConfirm] = useState("");
 
-    useEffect(
-        () => {
-            if (password && password.length < 8) {
-                setError("Password length has to be atleast 7 characters");
-            } else {
-                setError("");
-            }
-        },
-        [password, passwordConfirm]
-    );
-    useEffect(
-        () => {
-            if (passwordConfirm && password !== passwordConfirm) {
-                setErrorConfirm("Password do not match");
-            } else {
-                setErrorConfirm("");
-            }
-        },
-        [password, passwordConfirm]
-    );
+    useEffect(() => {
+        if (password && password.length < 8) {
+            setError("Password length has to be atleast 7 characters");
+        } else {
+            setError("");
+        }
+    }, [password, passwordConfirm]);
+    useEffect(() => {
+        if (passwordConfirm && password !== passwordConfirm) {
+            setErrorConfirm("Password do not match");
+        } else {
+            setErrorConfirm("");
+        }
+    }, [password, passwordConfirm]);
 
     const setPasswordCb = e => {
         setPassword(e.target.value);
@@ -68,16 +62,16 @@ const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, s
                 value={password}
                 onChange={setPasswordCb}
             />
-                <TextField
-                    className={classes.textField}
-                    type="password"
-                    label="Confirm password"
-                    disabled={!!error || !password}
-                    error={!!errorConfirm}
-                    helperText={errorConfirm}
-                    value={passwordConfirm}
-                    onChange={setPasswordConfirmCb}
-                />
+            <TextField
+                className={classes.textField}
+                type="password"
+                label="Confirm password"
+                disabled={!!error || !password}
+                error={!!errorConfirm}
+                helperText={errorConfirm}
+                value={passwordConfirm}
+                onChange={setPasswordConfirmCb}
+            />
             <Button
                 disabled={!!error || !!errorConfirm || !password}
                 onClick={login}

@@ -26,7 +26,7 @@ const styles = theme => ({
     }
 });
 
-const NotFound = ({classes}) => {
+const NotFound = ({ classes }) => {
     return (
         <MinimalContent title="bunqAutomation - Login">
             <Helmet title="bunqAutomation - 404" />

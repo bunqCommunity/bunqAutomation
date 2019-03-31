@@ -49,7 +49,7 @@ app.setErrorHandler((error, request, reply) => {
         reply.header("Content-Type", "text/html");
     }
 
-    if(error.response){
+    if (error.response) {
         console.log(error.response);
         console.log(error.response.config);
         console.log(error.response.data);

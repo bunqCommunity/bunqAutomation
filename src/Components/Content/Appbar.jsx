@@ -80,12 +80,9 @@ const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
         if (!state.user && !state.userLoading && !state.authenticationLoading) getUser(true);
     }, []);
 
-    useEffect(
-        () => {
-            if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") logout();
-        },
-        [state.serverStatusChecked, state.serverStatus]
-    );
+    useEffect(() => {
+        if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") logout();
+    }, [state.serverStatusChecked, state.serverStatus]);
 
     let userComponent = <UserBunqImage className={classes.userImage} user={state.user} />;
     const hasNotifications = false;

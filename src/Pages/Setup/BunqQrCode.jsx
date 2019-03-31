@@ -38,5 +38,5 @@ export default ({ setBunqApiKey }) => {
 
     if (!credentials) return null;
 
-    return <img alt="bunq login QR code" src={`data:image/png;base64, ${credentials.qr_base64}`}/>;
+    return <img alt="bunq login QR code" src={`data:image/png;base64, ${credentials.qr_base64}`} />;
 };

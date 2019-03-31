@@ -147,7 +147,7 @@ export class Authentication {
     /**
      * Setup bunqAutomation with a bunq API key,
      * will be called automatically if the encryption ENV is used
-     * 
+     *
      * @param apiKey
      * @param environment
      * @param deviceName

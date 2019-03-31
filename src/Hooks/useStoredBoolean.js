@@ -5,12 +5,9 @@ const useStoredBoolean = (booleanKey, defaultValue = false) => {
 
     const [boolean, setBoolean] = useState(storedValue || defaultValue);
 
-    useEffect(
-        () => {
-            localStorage.setItem(booleanKey, JSON.stringify(boolean));
-        },
-        [boolean]
-    );
+    useEffect(() => {
+        localStorage.setItem(booleanKey, JSON.stringify(boolean));
+    }, [boolean]);
 
     const toggleBoolean = () => {
         setBoolean(!boolean);

@@ -8,5 +8,5 @@ export default ({ user, ...props }) => {
         const image = user.avatar.image[0];
         imageUuid = image.attachment_public_uuid;
     }
-    return  <BunqImage imageUuid={imageUuid} {...props} />;
+    return <BunqImage imageUuid={imageUuid} {...props} />;
 };
