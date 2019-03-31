@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
-// import { useMappedState } from "redux-react-hook";
+import React  from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
-import ServerIcon from "../../Components/Icons/Server";
-
-import useAuthentication from "../../Redux/Actions/useAuthentication";
 import BunqQrCode from "./BunqQrCode";
 
 const styles = theme => ({
@@ -35,22 +31,16 @@ const styles = theme => ({
 //     serverStatus: state.server_status.status
 // });
 
-const SetBunqKeySection = ({ classes }) => {
-    // const { serverStatus, loading } = useMappedState(mapState);
-    const { setBunqApiKey } = useAuthentication();
-
-    // set a password
-    const [bunqApiKey, setBunqApiKeyField] = useState("");
-    const [deviceName, setDeviceName] = useState("bunqAutomation server");
-    const [environment, setEnvironment] = useState(false);
-    const [error, setError] = useState("");
-
-    const login = () => {
-        if (!error) {
-            setBunqApiKey(bunqApiKey, environment);
-        }
-    };
-
+const SetBunqKeySection = ({
+    classes,
+                               nextStep,
+    bunqApiKey,
+    setBunqApiKeyField,
+    deviceName,
+    setDeviceName,
+    environment,
+    setEnvironment
+}) => {
     const setBunqKeyCb = e => setBunqApiKeyField(e.target.value);
     const setDeviceNameCb = e => setDeviceName(e.target.value);
 
@@ -121,13 +111,13 @@ const SetBunqKeySection = ({ classes }) => {
                 </Grid>
                 <Grid item xs={12}>
                     <Button
-                        disabled={!!error}
-                        onClick={login}
+                        disabled={!bunqApiKey}
+                        onClick={nextStep}
                         className={classes.button}
                         variant="contained"
                         color="primary"
                     >
-                        Done!
+                        Next step
                     </Button>
                 </Grid>
             </Grid>
@@ -152,8 +142,8 @@ const SetBunqKeySection = ({ classes }) => {
             </Grid>
             <Grid item xs={12}>
                 <Button
-                    disabled={!!error || !bunqApiKey}
-                    onClick={login}
+                    disabled={!bunqApiKey}
+                    onClick={nextStep}
                     className={classes.button}
                     variant="contained"
                     color="primary"

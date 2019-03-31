@@ -29,6 +29,29 @@ const useAuthentication = () => {
             });
     };
 
+    const loginBunqApiKey = (bunqApiKey, environment, deviceName = false) => {
+        authenticationIsLoading();
+        window.apiClient
+            .post(`${apiBaseUrl}/setup/api-key`, {
+                api_key: bunqApiKey,
+                environment: environment,
+                device_name: deviceName
+            })
+            .then(() => {
+                authenticationIsNotLoading();
+                window.socket && window.socket.emit("status");
+            })
+            .catch(error => {
+                console.error(error);
+                authenticationIsNotLoading();
+                window.socket && window.socket.emit("status");
+            });
+    };
+
+    // const combinedLogin = () => {
+    //
+    // }
+
     const setApiKey = api_key => {
         window.apiClient.setApiKey(api_key);
 
@@ -51,25 +74,6 @@ const useAuthentication = () => {
                 authenticationIsNotLoading();
             })
             .catch(err => console.error(err));
-    };
-
-    const setBunqApiKey = (bunqApiKey, environment, deviceName = false) => {
-        authenticationIsLoading();
-        window.apiClient
-            .post(`${apiBaseUrl}/setup/api-key`, {
-                api_key: bunqApiKey,
-                environment: environment,
-                device_name: deviceName
-            })
-            .then(() => {
-                authenticationIsNotLoading();
-                window.socket && window.socket.emit("status");
-            })
-            .catch(error => {
-                console.error(error);
-                authenticationIsNotLoading();
-                window.socket && window.socket.emit("status");
-            });
     };
 
     const logout = () => {
@@ -110,9 +114,9 @@ const useAuthentication = () => {
     return {
         loadStoredApiKey,
         loginWithPassword,
+        loginBunqApiKey,
         authenticationIsLoading,
         authenticationIsNotLoading,
-        setBunqApiKey,
         validateApiKey,
         logout
     };

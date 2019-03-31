@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { useMappedState } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
@@ -12,8 +12,7 @@ import MinimalContent from "../../Components/MinimalContent/MinimalContent";
 import useAuthentication from "../../Redux/Actions/useAuthentication";
 
 const mapState = state => ({
-    api_key: state.authentication.api_key,
-    loading: state.authentication.loading,
+    serverStatusChecked: state.server_status.checked,
     serverStatus: state.server_status.status
 });
 
@@ -35,35 +34,14 @@ const styles = theme => ({
     }
 });
 
-const LoginPassword = ({ classes, history }) => {
-    const { api_key, loading, serverStatus } = useMappedState(mapState);
+const LoginPassword = ({ classes }) => {
+    const { serverStatus, serverStatusChecked } = useMappedState(mapState);
     const { loginWithPassword } = useAuthentication();
 
     const [password, setPassword] = useState("testpassword1234");
 
-    useEffect(
-        () => {
-            switch (serverStatus) {
-                case "STATUS_UNINITIALIZED":
-                    break;
-                case "STATUS_API_READY": {
-                    console.log("Login go to home?");
-                    // history.push("/");
-                    if(api_key){
-                        // TODO
-                    }
-                    break;
-                }
-                default:
-                    break;
-            }
-        },
-        [serverStatus]
-    );
-
-    if (api_key && !loading) {
-        console.log("Has api key, redirect to home?");
-        return <Redirect to="/" />;
+    if (serverStatusChecked && serverStatus === "STATUS_FIRST_INSTALL") {
+        return <Redirect to="/setup" />;
     }
 
     return (
@@ -81,7 +59,7 @@ const LoginPassword = ({ classes, history }) => {
                     className={classes.button}
                     variant="contained"
                     color="primary"
-                    disabled={!password || password.length < 8}
+                    disabled={!password || password.length < 8 || serverStatus === "DISCONNECTED"}
                     onClick={e => loginWithPassword(password)}
                 >
                     Login

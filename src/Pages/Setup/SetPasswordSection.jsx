@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useMappedState } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
 import useAuthentication from "../../Redux/Actions/useAuthentication";
 
-const styles = theme => ({
+const styles = () => ({
     textField: {
         width: "100%",
         marginBottom: 8
@@ -17,17 +16,10 @@ const styles = theme => ({
     }
 });
 
-const mapState = state => ({
-    serverStatus: state.server_status.status
-});
-
-const SetPasswordSection = ({ classes }) => {
-    const { serverStatus } = useMappedState(mapState);
+const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, setPasswordConfirm }) => {
     const { loginWithPassword } = useAuthentication();
 
     // set a password
-    const [password, setPassword] = useState("testpassword1234");
-    const [passwordConfirm, setPasswordConfirm] = useState("testpassword1234");
     const [error, setError] = useState("");
     const [errorConfirm, setErrorConfirm] = useState("");
 
@@ -52,14 +44,8 @@ const SetPasswordSection = ({ classes }) => {
         [password, passwordConfirm]
     );
 
-    const requiresConfirm = serverStatus === "STATUS_FIRST_INSTALL";
-
     const setPasswordCb = e => {
         setPassword(e.target.value);
-        if (!requiresConfirm) {
-            // if we don't require a confirm, we simply set the same value
-            setPasswordConfirm(e.target.value);
-        }
     };
     const setPasswordConfirmCb = e => {
         setPasswordConfirm(e.target.value);
@@ -82,7 +68,6 @@ const SetPasswordSection = ({ classes }) => {
                 value={password}
                 onChange={setPasswordCb}
             />
-            {requiresConfirm && (
                 <TextField
                     className={classes.textField}
                     type="password"
@@ -93,7 +78,6 @@ const SetPasswordSection = ({ classes }) => {
                     value={passwordConfirm}
                     onChange={setPasswordConfirmCb}
                 />
-            )}
             <Button
                 disabled={!!error || !!errorConfirm || !password}
                 onClick={login}

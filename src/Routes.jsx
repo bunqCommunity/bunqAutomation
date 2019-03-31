@@ -14,9 +14,10 @@ const mapState = state => ({
 });
 
 const RouteComponents = {};
-routes.map(route => {
+routes.forEach(route => {
     const Component = lazy(() => import(`./Pages/${route.component}/${route.component}.jsx`));
     RouteComponents[route.component] = Component;
+    return;
 });
 
 const Routes = () => {

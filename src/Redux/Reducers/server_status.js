@@ -1,5 +1,5 @@
 export const defaultState = {
-    status: false,
+    status: "DISCONNECTED",
     checked: false
 };
 

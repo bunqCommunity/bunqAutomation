@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-// import { Redirect } from "react-router-dom";
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import { useMappedState } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -11,9 +11,13 @@ import StepLabel from "@material-ui/core/StepLabel";
 import logo from "../../Images/logo-256.png";
 
 import MinimalContent from "../../Components/MinimalContent/MinimalContent";
+
 import SetPasswordSection from "./SetPasswordSection";
 import SetBunqKeySection from "./SetBunqKeySection";
 import SetSettingsSection from "./SetSettingsSection";
+import ConfirmDetailsSection from "./ConfirmDetailsSection";
+
+// import useAuthentication from "../../Redux/Actions/useAuthentication";
 
 const styles = theme => ({
     root: {
@@ -48,35 +52,29 @@ const mapState = state => ({
     apiKey: state.authentication.api_key,
     loading: state.authentication.loading,
 
+    serverStatusChecked: state.server_status.checked,
     serverStatus: state.server_status.status
 });
 
-const getStepValue = serverStatus => {
-    switch (serverStatus) {
-        case "STATUS_PASSWORD_READY":
-            return 1;
-        case "STATUS_API_READY":
-            return 2;
-        default:
-        case "STATUS_FIRST_INSTALL":
-        case "STATUS_UNINITIALIZED":
-            return 0;
+const Setup = ({ classes }) => {
+    // const {  } = useAuthentication();
+    const { serverStatus, serverStatusChecked } = useMappedState(mapState);
+    const [step, setStep] = useState(0);
+
+    const [password, setPassword] = useState("testpassword1234");
+    const [passwordConfirm, setPasswordConfirm] = useState("testpassword1234");
+
+    const [bunqApiKey, setBunqApiKeyField] = useState("");
+    const [deviceName, setDeviceName] = useState("bunqAutomation server");
+    const [environment, setEnvironment] = useState(false);
+
+    const nextStep = () => setStep(step + 1);
+
+    if (serverStatusChecked) {
+        if (serverStatus !== "STATUS_FIRST_INSTALL" && serverStatus !== "DISCONNECTED") {
+            return <Redirect to="/login" />;
+        }
     }
-};
-
-const Setup = ({ classes, history }) => {
-    const { serverStatus } = useMappedState(mapState);
-    const [step, setStep] = useState(getStepValue(serverStatus));
-
-    useEffect(
-        () => {
-            const newStepIndex = getStepValue(serverStatus);
-
-            if (step !== newStepIndex) setStep(newStepIndex);
-        },
-        [serverStatus]
-    );
-
     return (
         <MinimalContent title="bunqAutomation - Setup" alignTop={true}>
             <div className={classes.root}>
@@ -98,9 +96,28 @@ const Setup = ({ classes, history }) => {
                         </Step>
                     </Stepper>
 
-                    {step === 0 && <SetPasswordSection />}
-                    {step === 1 && <SetBunqKeySection />}
-                    {step === 2 && <SetSettingsSection />}
+                    {step === 0 && (
+                        <SetPasswordSection
+                            nextStep={nextStep}
+                            password={password}
+                            setPassword={setPassword}
+                            passwordConfirm={passwordConfirm}
+                            setPasswordConfirm={setPasswordConfirm}
+                        />
+                    )}
+                    {step === 1 && (
+                        <SetBunqKeySection
+                            nextStep={nextStep}
+                            bunqApiKey={bunqApiKey}
+                            setBunqApiKeyField={setBunqApiKeyField}
+                            deviceName={deviceName}
+                            setDeviceName={setDeviceName}
+                            environment={environment}
+                            setEnvironment={setEnvironment}
+                        />
+                    )}
+                    {step === 2 && <SetSettingsSection nextStep={nextStep} />}
+                    {step === 3 && <ConfirmDetailsSection />}
                 </Paper>
 
                 <Typography variant="h6" style={{ position: "absolute", bottom: 5 }}>
