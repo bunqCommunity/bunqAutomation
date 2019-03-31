@@ -5,7 +5,7 @@ const levelDb = new LevelDb("authentication");
 export const API_KEY_LOCATION = "API_KEY";
 
 export const defaultState = {
-    api_key: "",
+    api_key: false,
     loading: true
 };
 
@@ -38,7 +38,8 @@ export default function reducer(state = defaultState, action) {
                 .then(() => {})
                 .catch(err => console.error(err));
             return {
-                ...defaultState
+                ...defaultState,
+                loading: false
             };
         default:
             return state;

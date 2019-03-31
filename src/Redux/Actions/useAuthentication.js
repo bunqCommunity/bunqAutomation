@@ -53,12 +53,13 @@ const useAuthentication = () => {
             .catch(err => console.error(err));
     };
 
-    const setBunqApiKey = (bunqApiKey, environment) => {
+    const setBunqApiKey = (bunqApiKey, environment, deviceName = false) => {
         authenticationIsLoading();
         window.apiClient
             .post(`${apiBaseUrl}/setup/api-key`, {
                 api_key: bunqApiKey,
-                environment: environment
+                environment: environment,
+                device_name: deviceName
             })
             .then(() => {
                 authenticationIsNotLoading();
@@ -73,7 +74,6 @@ const useAuthentication = () => {
 
     const logout = () => {
         window.apiClient.setApiKey(false);
-
         dispatch({ type: "AUTHENTICATION_LOGOUT" });
     };
 

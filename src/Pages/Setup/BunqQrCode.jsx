@@ -1,11 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-export default ({bunqApiKey, setBunqApiKey}) => {
+import useInterval from "../../Hooks/useInterval";
+
+export default ({ setBunqApiKey }) => {
+    const [credentials, setCredentials] = useState(false);
 
     const createCredentials = () => {
         window.apiClient
             .post("/bunq/login/credentials")
+            .then(setCredentials)
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    const checkCredentials = () => {
+        window.apiClient
+            .get(`/bunq/login/credentials/${credentials.uuid}`)
             .then(result => {
+                if (result.status === "ACCEPTED") {
+                    setBunqApiKey(result.api_key);
+                    setCredentials(false);
+                }
                 console.log(result);
             })
             .catch(error => {
@@ -13,5 +28,15 @@ export default ({bunqApiKey, setBunqApiKey}) => {
             });
     };
 
-    return null;
-}
+    useEffect(() => createCredentials(), []);
+
+    useInterval(() => {
+        if (credentials) {
+            checkCredentials(credentials.uuid);
+        }
+    }, 3000);
+
+    if (!credentials) return null;
+
+    return <img src={`data:image/png;base64, ${credentials.qr_base64}`}/>;
+};

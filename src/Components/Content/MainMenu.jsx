@@ -12,6 +12,7 @@ import Drawer from "@material-ui/core/Drawer";
 
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import HomeIcon from "@material-ui/icons/Home";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 const drawerWidth = 240;
 
@@ -46,10 +47,18 @@ const styles = theme => ({
         [theme.breakpoints.up("sm")]: {
             width: theme.spacing.unit * 7
         }
+    },
+    list: {
+        display: "flex",
+        flexDirection: "column",
+        height: "100%"
+    },
+    listFiller: {
+        height: "100%"
     }
 });
 
-const MainMenu = ({ classes, open, toggleMenu }) => {
+const MainMenu = ({ classes, open, toggleMenu, logout }) => {
     return (
         <Drawer
             variant="permanent"
@@ -64,12 +73,22 @@ const MainMenu = ({ classes, open, toggleMenu }) => {
                 </IconButton>
             </div>
             <Divider />
-            <List>
+
+            <List className={classes.list}>
                 <ListItem button to="/" component={NavLink}>
                     <ListItemIcon>
                         <HomeIcon />
                     </ListItemIcon>
                     <ListItemText primary="Dashboard" />
+                </ListItem>
+
+                <ListItem className={classes.listFiller} />
+
+                <ListItem button onClick={logout}>
+                    <ListItemIcon>
+                        <ExitToAppIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
                 </ListItem>
             </List>
         </Drawer>

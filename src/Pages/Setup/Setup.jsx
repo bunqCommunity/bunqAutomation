@@ -13,6 +13,7 @@ import logo from "../../Images/logo-256.png";
 import MinimalContent from "../../Components/MinimalContent/MinimalContent";
 import SetPasswordSection from "./SetPasswordSection";
 import SetBunqKeySection from "./SetBunqKeySection";
+import SetSettingsSection from "./SetSettingsSection";
 
 const styles = theme => ({
     root: {
@@ -23,7 +24,8 @@ const styles = theme => ({
         marginBottom: 12
     },
     stepper: {
-        marginBottom: 8
+        marginBottom: 8,
+        padding: "16px 0px"
     },
     content: {
         padding: "8px 16px",
@@ -98,10 +100,12 @@ const Setup = ({ classes, history }) => {
 
                     {step === 0 && <SetPasswordSection />}
                     {step === 1 && <SetBunqKeySection />}
-                    {step === 2 && <Typography>No settings for now, you are good to go</Typography>}
+                    {step === 2 && <SetSettingsSection />}
                 </Paper>
 
-                <Typography variant="h6">{serverStatus}</Typography>
+                <Typography variant="h6" style={{ position: "absolute", bottom: 5 }}>
+                    {serverStatus}
+                </Typography>
             </div>
         </MinimalContent>
     );

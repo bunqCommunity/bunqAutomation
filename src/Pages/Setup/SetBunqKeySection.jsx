@@ -41,19 +41,18 @@ const SetBunqKeySection = ({ classes }) => {
 
     // set a password
     const [bunqApiKey, setBunqApiKeyField] = useState("");
+    const [deviceName, setDeviceName] = useState("bunqAutomation server");
     const [environment, setEnvironment] = useState(false);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        return () => console.log("unmount :/");
-    });
-
     const login = () => {
         if (!error) {
+            setBunqApiKey(bunqApiKey, environment);
         }
     };
 
     const setBunqKeyCb = e => setBunqApiKeyField(e.target.value);
+    const setDeviceNameCb = e => setDeviceName(e.target.value);
 
     const createSandboxUser = () => {
         window.apiClient
@@ -113,6 +112,14 @@ const SetBunqKeySection = ({ classes }) => {
                     </Button>
                 </Grid>
                 <Grid item xs={12}>
+                    <TextField
+                        className={classes.textField}
+                        label="Device name"
+                        value={deviceName}
+                        onChange={setDeviceNameCb}
+                    />
+                </Grid>
+                <Grid item xs={12}>
                     <Button
                         disabled={!!error}
                         onClick={login}
@@ -125,29 +132,36 @@ const SetBunqKeySection = ({ classes }) => {
                 </Grid>
             </Grid>
         );
-    } else {
-        return (
-            <Grid container className={classes.environmentSection}>
-                <Grid item xs={12}>
-                    <TextField
-                        className={classes.textField}
-                        label="Api key"
-                        value={bunqApiKey}
-                        onChange={setBunqKeyCb}
-                    />
-
-                    <TextField className={classes.textField} value={bunqApiKey} />
-                </Grid>
-            </Grid>
-        );
     }
 
     return (
-        <React.Fragment>
-            <div>qr code m8</div>
-
-            <TextField value="hi there" />
-        </React.Fragment>
+        <Grid container className={classes.environmentSection}>
+            <Grid item xs={12}>
+                <BunqQrCode setBunqApiKey={setBunqApiKeyField} />
+            </Grid>
+            <Grid item xs={12}>
+                <TextField className={classes.textField} label="Api key" value={bunqApiKey} onChange={setBunqKeyCb} />
+            </Grid>
+            <Grid item xs={12}>
+                <TextField
+                    className={classes.textField}
+                    label="Device name"
+                    value={deviceName}
+                    onChange={setDeviceNameCb}
+                />
+            </Grid>
+            <Grid item xs={12}>
+                <Button
+                    disabled={!!error || !bunqApiKey}
+                    onClick={login}
+                    className={classes.button}
+                    variant="contained"
+                    color="primary"
+                >
+                    Login with bunq
+                </Button>
+            </Grid>
+        </Grid>
     );
 };
 

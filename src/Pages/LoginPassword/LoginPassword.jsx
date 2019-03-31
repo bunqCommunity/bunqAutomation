@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import { Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { useMappedState } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -41,11 +41,6 @@ const LoginPassword = ({ classes, history }) => {
 
     const [password, setPassword] = useState("testpassword1234");
 
-    if (api_key && !loading) {
-        console.log("Has api key, redirect to home?");
-        // return <Redirect to="/" />;
-    }
-
     useEffect(
         () => {
             switch (serverStatus) {
@@ -54,6 +49,9 @@ const LoginPassword = ({ classes, history }) => {
                 case "STATUS_API_READY": {
                     console.log("Login go to home?");
                     // history.push("/");
+                    if(api_key){
+                        // TODO
+                    }
                     break;
                 }
                 default:
@@ -62,6 +60,11 @@ const LoginPassword = ({ classes, history }) => {
         },
         [serverStatus]
     );
+
+    if (api_key && !loading) {
+        console.log("Has api key, redirect to home?");
+        return <Redirect to="/" />;
+    }
 
     return (
         <MinimalContent title="bunqAutomation - Login">

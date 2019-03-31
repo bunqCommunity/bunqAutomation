@@ -7,7 +7,7 @@ import NotFound from "./Pages/NotFound/NotFound";
 const routes = require("./Config/routes");
 
 const mapState = state => ({
-    apikey: state.authentication.api_key,
+    apiKey: state.authentication.api_key,
     loading: state.authentication.loading,
     serverStatus: state.server_status.status,
     serverStatusChecked: state.server_status.checked
@@ -20,7 +20,7 @@ routes.map(route => {
 });
 
 const Routes = () => {
-    const { apikey, loading, serverStatus, serverStatusChecked } = useMappedState(mapState);
+    const { apiKey, loading, serverStatus, serverStatusChecked } = useMappedState(mapState);
 
     const routeComponents = routes.map(route => {
         // wrap component in a lazy load element
@@ -41,9 +41,9 @@ const Routes = () => {
             }
 
             if (!loading) {
-                if (route.authenticated && !apikey && window.location.pathname !== "/login") {
+                if (route.authenticated && !apiKey && window.location.pathname !== "/login") {
                     return <Redirect key={route.path} to="/login" />;
-                } else if (route.unauthenticated && apikey && window.location.pathname !== "/") {
+                } else if (route.unauthenticated && apiKey && window.location.pathname !== "/") {
                     return <Redirect key={route.path} to="/" />;
                 }
             }
@@ -52,7 +52,7 @@ const Routes = () => {
         };
 
         // return the Route component
-        return <Route exact key={route.path} path={route.path} render={renderer} />;
+        return <Route exact key={route.path} path={route.path} apiKey={apiKey} render={renderer} />;
     });
 
     return (

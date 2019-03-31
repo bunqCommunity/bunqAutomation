@@ -3,9 +3,10 @@ import chalk from "chalk";
 const fastify = require("fastify");
 
 import * as Errors from "./Errors";
+import { API_KEY_HEADER } from "./Security/Authentication";
+
 import Routes from "./Routes";
 import Plugins from "./Plugins";
-import { API_KEY_HEADER } from "./Security/Authentication";
 import InitPipeline from "./Automation/Init";
 
 const DEVELOPMENT = process.env.NODE_ENV === "development";
@@ -46,6 +47,12 @@ app.setErrorHandler((error, request, reply) => {
         reply.header("Content-Type", "application/json");
     } else {
         reply.header("Content-Type", "text/html");
+    }
+
+    if(error.response){
+        console.log(error.response);
+        console.log(error.response.config);
+        console.log(error.response.data);
     }
 
     if (error instanceof Errors.DomainError) {

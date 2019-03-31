@@ -60,7 +60,7 @@ const Content = ({ classes, children, title = "bunqAutomation" }) => {
 
             <Appbar title={title} menuOpen={menuOpen} toggleMenu={toggleMenu} />
 
-            <MainMenu open={menuOpen} toggleMenu={toggleMenu} />
+            <MainMenu logout={logout} open={menuOpen} toggleMenu={toggleMenu} />
 
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />

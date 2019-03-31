@@ -147,12 +147,13 @@ export class Authentication {
     /**
      * Setup bunqAutomation with a bunq API key,
      * will be called automatically if the encryption ENV is used
-     *
+     * 
      * @param apiKey
      * @param environment
+     * @param deviceName
      * @returns {Promise<boolean>}
      */
-    async setBunqApiKey(apiKey, environment = "SANDBOX") {
+    async setBunqApiKey(apiKey, environment = "SANDBOX", deviceName = "bunqAutomation") {
         await this.bunqJSClient.run(apiKey, [], environment, this.encryptionKey);
 
         // disable keep-alive

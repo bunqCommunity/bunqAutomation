@@ -68,7 +68,9 @@ export default (app, opts, next) => {
 
             if (!request.body || !request.body.api_key || !request.body.environment) throw new BadRequestError();
 
-            await authentication.setBunqApiKey(request.body.api_key, request.body.environment);
+            const deviceName = request.body.device_name || "bunqAutomation";
+
+            await authentication.setBunqApiKey(request.body.api_key, request.body.environment, deviceName);
 
             reply.send("api-key");
         },
