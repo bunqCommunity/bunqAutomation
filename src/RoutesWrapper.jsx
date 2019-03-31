@@ -41,11 +41,18 @@ const RoutesWrapper = () => {
     const lightTheme = createMuiTheme(MuiTheme.light);
     const darkTheme = createMuiTheme(MuiTheme.dark);
 
+    const selectedTheme = darkMode ? darkTheme : lightTheme;
+
     return (
-        <MuiThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+        <MuiThemeProvider theme={selectedTheme}>
             <CssBaseline />
 
-            <div className={`app ${darkMode ? "dark" : "light"}`}>
+            <div
+                className={`app ${darkMode ? "dark" : "light"}disabled`}
+                style={{
+                    backgroundColor: selectedTheme.palette.background.default
+                }}
+            >
                 <Routes />
 
                 <Snackbar />

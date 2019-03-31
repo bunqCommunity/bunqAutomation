@@ -32,7 +32,7 @@ const styles = theme => ({
     },
     serverStatus: {
         position: "absolute",
-        top: 12,
+        top: 78,
         left: 12
     },
     minimalContent: {
