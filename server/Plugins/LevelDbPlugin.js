@@ -1,5 +1,5 @@
 const fastifyPlugin = require("fastify-plugin");
-import LevelDb from "../Storage/LevelDb";
+import LevelDb from "../StorageHandlers/LevelDb";
 
 const levelDbPlugin = (fastify, options, next) => {
     fastify.decorate("levelDb", new LevelDb("db"));

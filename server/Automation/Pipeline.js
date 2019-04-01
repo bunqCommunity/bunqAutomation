@@ -1,4 +1,4 @@
-import LevelDb from "../Storage/LevelDb";
+import LevelDb from "../StorageHandlers/LevelDb";
 import ConfigValidator from "./ConfigValidator";
 
 class Pipeline {

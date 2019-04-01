@@ -1,6 +1,6 @@
 module.exports = {
     staticFileGlobs: ["build/*.ico"],
-    swFilePath: "./build/service-worker.js",
+    swFilePath: "build/service-worker.js",
     stripPrefix: "build/",
     minify: true,
     runtimeCaching: [

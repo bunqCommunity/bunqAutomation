@@ -1,5 +1,5 @@
 import Pipeline from "./Automation/Pipeline";
-import FileStore from "./Storage/FileStore";
+import FileStore from "./StorageHandlers/FileStore";
 
 import { NoBunqApiKeyError, NoPasswordSetError } from "./Errors";
 
