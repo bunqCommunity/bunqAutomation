@@ -5,9 +5,8 @@ import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
-import logo from "../../Images/logo-256.png";
-
 import MinimalContent from "../../Components/MinimalContent/MinimalContent";
+import ThemedLogo from "../../Components/ThemedLogo";
 
 import useAuthentication from "../../Redux/Actions/useAuthentication";
 
@@ -35,10 +34,12 @@ const styles = theme => ({
 });
 
 const LoginPassword = ({ classes }) => {
-    const { serverStatus, serverStatusChecked } = useMappedState(mapState);
+    const {darkMode, serverStatus, serverStatusChecked } = useMappedState(mapState);
     const { loginWithPassword } = useAuthentication();
 
     const [password, setPassword] = useState("testpassword1234");
+
+    const themedLogo = ThemedLogo(darkMode);
 
     if (serverStatusChecked && serverStatus === "STATUS_FIRST_INSTALL") {
         return <Redirect to="/setup" />;
@@ -47,7 +48,7 @@ const LoginPassword = ({ classes }) => {
     return (
         <MinimalContent title="bunqAutomation - Login">
             <div className={classes.root}>
-                <img className={classes.image} alt="bunqAutomation logo" src={logo} />
+                <img className={classes.image} alt="bunqAutomation logo" src={themedLogo} />
                 <TextField
                     className={classes.textField}
                     type="password"

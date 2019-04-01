@@ -3,10 +3,6 @@ import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
-import Toolbar from "@material-ui/core/Toolbar";
-import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
-
 import useAuthentication from "../../Redux/Actions/useAuthentication";
 
 const styles = () => ({
@@ -91,25 +87,6 @@ const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, s
             >
                 Set password
             </Button>
-            <Button className={classes.button} variant="contained" color="secondary">
-                Set password
-            </Button>
-            <TextField
-                className={classes.textField}
-                type="password"
-                label="Error test"
-                helperText="Invalid value was given my dude!"
-                error={true}
-            />
-            <br />
-
-            <AppBar>
-                <Toolbar>
-                    <Typography noWrap variant="h6" component="h1">
-                        Test text
-                    </Typography>
-                </Toolbar>
-            </AppBar>
         </React.Fragment>
     );
 };

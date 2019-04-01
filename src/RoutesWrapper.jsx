@@ -45,18 +45,18 @@ const RoutesWrapper = () => {
 
     return (
         <MuiThemeProvider theme={selectedTheme}>
-            <CssBaseline />
+            <CssBaseline>
+                <div
+                    className={`app ${darkMode ? "dark" : "light"}disabled`}
+                    style={{
+                        backgroundColor: selectedTheme.palette.background.default
+                    }}
+                >
+                    <Routes />
 
-            <div
-                className={`app ${darkMode ? "dark" : "light"}disabled`}
-                style={{
-                    backgroundColor: selectedTheme.palette.background.default
-                }}
-            >
-                <Routes />
-
-                <Snackbar />
-            </div>
+                    <Snackbar />
+                </div>
+            </CssBaseline>
         </MuiThemeProvider>
     );
 };

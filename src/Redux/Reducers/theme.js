@@ -1,5 +1,5 @@
 export const defaultState = {
-    darkMode: localStorage.getItem("THEME_DARK_MODE") === "true"
+    darkMode: localStorage.getItem("THEME_DARK_MODE") !== "false"
 };
 
 export default function reducer(state = defaultState, action) {

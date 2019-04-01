@@ -6,16 +6,19 @@ import { useMappedState } from "redux-react-hook";
 import IconButton from "@material-ui/core/IconButton";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import WbSunnyIcon from "@material-ui/icons/WbSunny";
 import MoonIcon from "../Icons/Moon";
 import ServerIcon from "../Icons/Server";
 
 import useTheme from "../../Redux/Actions/useTheme";
+import ReactParticles from "../ReactParticles";
 
 const styles = theme => ({
     root: {
         display: "flex",
+        position: "relative",
         justifyContent: "center",
         alignItems: "center",
         height: "100vh"
@@ -26,19 +29,20 @@ const styles = theme => ({
     },
     themeButton: {
         position: "absolute",
-        top: 12,
-        right: 12,
+        top: 8,
+        right: 8,
         color: theme.palette.type === "dark" ? "white" : "black"
     },
     serverStatus: {
         position: "absolute",
-        top: 78,
-        left: 12
+        top: 16,
+        left: 16
     },
     minimalContent: {
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        zIndex: 1
     }
 });
 
@@ -77,20 +81,37 @@ const MinimalContent = ({ alignTop = false, classes, children, className = "", t
         <div className={classNames(classes.root, className, alignTop && classes.rootTop)}>
             <Helmet title={title} />
 
-            <IconButton className={classes.themeButton} onClick={toggleTheme}>
-                {darkMode ? <MoonIcon /> : <WbSunnyIcon />}
-            </IconButton>
+            {darkMode && (
+                <ReactParticles
+                    style={{
+                        position: "absolute",
+                        zIndex: 0,
+                        height: "100vh",
+                        width: "100vw",
+                        top: 0,
+                        left: 0
+                    }}
+                />
+            )}
 
-            <Chip
-                className={classes.serverStatus}
-                avatar={
-                    <Avatar>
-                        <ServerIcon />
-                    </Avatar>
-                }
-                color={statusColor}
-                label={serverStatusText}
-            />
+            <Tooltip title="Toggle themes" aria-label="Toggle between light and dark theme">
+                <IconButton className={classes.themeButton} onClick={toggleTheme}>
+                    {darkMode ? <MoonIcon /> : <WbSunnyIcon />}
+                </IconButton>
+            </Tooltip>
+
+            <Tooltip title="The server status" aria-label="Displays the current server status">
+                <Chip
+                    className={classes.serverStatus}
+                    avatar={
+                        <Avatar>
+                            <ServerIcon />
+                        </Avatar>
+                    }
+                    color={statusColor}
+                    label={serverStatusText}
+                />
+            </Tooltip>
 
             <div className={classes.minimalContent}>{children}</div>
         </div>
