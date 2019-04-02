@@ -34,7 +34,7 @@ const styles = theme => ({
 });
 
 const LoginPassword = ({ classes }) => {
-    const {darkMode, serverStatus, serverStatusChecked } = useMappedState(mapState);
+    const { darkMode, serverStatus, serverStatusChecked } = useMappedState(mapState);
     const { loginWithPassword } = useAuthentication();
 
     const [password, setPassword] = useState("testpassword1234");

@@ -45,6 +45,10 @@ export class Authentication {
         }
     }
 
+    /**
+     * Creates a new bunqAutomation API key
+     * @returns {Promise<*>}
+     */
     async createApiKey() {
         const apiKey = uuid.v4();
         const date = new Date();
@@ -98,15 +102,6 @@ export class Authentication {
         storedApiKey.updated = new Date();
 
         return this.apiKeyStorage.set(apiKey, storedApiKey);
-    }
-
-    /**
-     * Checks if a given IP is allowed
-     * @param ip
-     * @returns {Promise<boolean>}
-     */
-    async validateIp(ip) {
-        return true;
     }
 
     /**
