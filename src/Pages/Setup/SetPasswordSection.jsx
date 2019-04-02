@@ -23,20 +23,26 @@ const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, s
     const [error, setError] = useState("");
     const [errorConfirm, setErrorConfirm] = useState("");
 
-    useEffect(() => {
-        if (password && password.length < 8) {
-            setError("Password length has to be atleast 7 characters");
-        } else {
-            setError("");
-        }
-    }, [password, passwordConfirm]);
-    useEffect(() => {
-        if (passwordConfirm && password !== passwordConfirm) {
-            setErrorConfirm("Password do not match");
-        } else {
-            setErrorConfirm("");
-        }
-    }, [password, passwordConfirm]);
+    useEffect(
+        () => {
+            if (password && password.length < 8) {
+                setError("Password length has to be atleast 7 characters");
+            } else {
+                setError("");
+            }
+        },
+        [password, passwordConfirm]
+    );
+    useEffect(
+        () => {
+            if (passwordConfirm && password !== passwordConfirm) {
+                setErrorConfirm("Password do not match");
+            } else {
+                setErrorConfirm("");
+            }
+        },
+        [password, passwordConfirm]
+    );
 
     const setPasswordCb = e => {
         setPassword(e.target.value);

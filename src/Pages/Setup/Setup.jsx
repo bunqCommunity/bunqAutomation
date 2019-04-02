@@ -8,9 +8,8 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 
-import logo from "../../Images/logo-256.png";
-
 import MinimalContent from "../../Components/MinimalContent/MinimalContent";
+import ThemedLogo from "../../Components/ThemedLogo";
 
 import SetPasswordSection from "./SetPasswordSection";
 import SetBunqKeySection from "./SetBunqKeySection";
@@ -49,6 +48,8 @@ const styles = theme => ({
 });
 
 const mapState = state => ({
+    darkMode: state.theme.darkMode,
+
     apiKey: state.authentication.api_key,
     loading: state.authentication.loading,
 
@@ -58,7 +59,7 @@ const mapState = state => ({
 
 const Setup = ({ classes }) => {
     // const {  } = useAuthentication();
-    const { serverStatus, serverStatusChecked } = useMappedState(mapState);
+    const { darkMode, serverStatus, serverStatusChecked } = useMappedState(mapState);
     const [step, setStep] = useState(0);
 
     const [password, setPassword] = useState("testpassword1234");
@@ -69,6 +70,7 @@ const Setup = ({ classes }) => {
     const [environment, setEnvironment] = useState(false);
 
     const nextStep = () => setStep(step + 1);
+    const themedLogo = ThemedLogo(darkMode);
 
     if (serverStatusChecked) {
         if (serverStatus !== "STATUS_FIRST_INSTALL" && serverStatus !== "DISCONNECTED") {
@@ -78,7 +80,7 @@ const Setup = ({ classes }) => {
     return (
         <MinimalContent title="bunqAutomation - Setup" alignTop={true}>
             <div className={classes.root}>
-                <img className={classes.image} alt="bunqAutomation logo" src={logo} />
+                <img className={classes.image} alt="bunqAutomation logo" src={themedLogo} />
                 <Typography className={classes.title} variant="h5">
                     bunqAutomation
                 </Typography>
@@ -119,10 +121,6 @@ const Setup = ({ classes }) => {
                     {step === 2 && <SetSettingsSection nextStep={nextStep} />}
                     {step === 3 && <ConfirmDetailsSection />}
                 </Paper>
-
-                <Typography variant="h6" style={{ position: "absolute", bottom: 5 }}>
-                    {serverStatus}
-                </Typography>
             </div>
         </MinimalContent>
     );

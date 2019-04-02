@@ -1,12 +1,12 @@
 import React from "react";
-import { Helmet } from "react-helmet";
 import { NavLink } from "react-router-dom";
+import { useMappedState } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
-import logo from "../../Images/logo-256.png";
 import MinimalContent from "../../Components/MinimalContent/MinimalContent";
+import ThemedLogo from "../../Components/ThemedLogo";
 
 const styles = theme => ({
     root: {
@@ -26,13 +26,18 @@ const styles = theme => ({
     }
 });
 
-const NotFound = ({ classes }) => {
-    return (
-        <MinimalContent title="bunqAutomation - Login">
-            <Helmet title="bunqAutomation - 404" />
+const mapState = state => ({
+    darkMode: state.theme.darkMode
+});
 
+const NotFound = ({ classes }) => {
+    const { darkMode } = useMappedState(mapState);
+    const themedLogo = ThemedLogo(darkMode);
+
+    return (
+        <MinimalContent title="bunqAutomation - 404">
             <div className={classes.root}>
-                <img className={classes.image} alt="bunqAutomation logo" src={logo} />
+                <img className={classes.image} alt="bunqAutomation logo" src={themedLogo} />
 
                 <Typography variant="h5">Page not found</Typography>
 

@@ -29,7 +29,7 @@ const Routes = () => {
 
         // wrap the lazy loading component in a renderer to redirect for authenticated/unauthenticated routes
         const renderer = props => {
-            if (serverStatusChecked) {
+            if (serverStatusChecked && !route.ignoreRedirects) {
                 switch (serverStatus) {
                     case "STATUS_FIRST_INSTALL":
                     case "STATUS_PASSWORD_READY":
@@ -41,7 +41,7 @@ const Routes = () => {
                 }
             }
 
-            if (!loading) {
+            if (!loading && !route.ignoreRedirects) {
                 if (route.authenticated && !apiKey && window.location.pathname !== "/login") {
                     return <Redirect key={route.path} to="/login" />;
                 } else if (route.unauthenticated && apiKey && window.location.pathname !== "/") {
