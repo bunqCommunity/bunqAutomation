@@ -20,7 +20,7 @@ export class Authentication {
         this.logger = logger;
         this.encryption = new Encryption();
 
-        this.apiKeyStorage = new LevelDb("api-keys");
+        this.apiKeyStorage = new LevelDb("bunq-automation-api-keys");
 
         this.encryptionKey = null;
         this.encryptionIv = null;

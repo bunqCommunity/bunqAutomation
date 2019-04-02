@@ -3,7 +3,7 @@ import ConfigValidator from "./ConfigValidator";
 
 class Pipeline {
     constructor() {
-        this.store = new LevelDb("Pipeline");
+        this.store = new LevelDb("bunq-automation-pipeline");
         this.validator = new ConfigValidator(this);
 
         // available modules

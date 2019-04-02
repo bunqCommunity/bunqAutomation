@@ -5,8 +5,8 @@ const fastify = require("fastify");
 import * as Errors from "./Errors";
 import { API_KEY_HEADER } from "./Security/Authentication";
 
-import Routes from "./Routes";
-import Plugins from "./Plugins";
+import FastifyRoutes from "./FastifyRoutes";
+import FastifyPlugins from "./FastifyPlugins";
 import InitPipeline from "./Automation/Init";
 
 const DEVELOPMENT = process.env.NODE_ENV === "development";
@@ -34,10 +34,10 @@ if (SSL_ENABLED) {
 const app = fastify(fastifyOptions);
 
 // register the fastify plugins
-Plugins(app);
+FastifyPlugins(app);
 
 // register the routes
-Routes(app);
+FastifyRoutes(app);
 
 // Overwrite all error handlers at the top level after ready event
 app.setErrorHandler((error, request, reply) => {

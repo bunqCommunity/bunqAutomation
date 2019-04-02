@@ -1,5 +1,6 @@
 import Pipeline from "./Automation/Pipeline";
 import FileStore from "./StorageHandlers/FileStore";
+import LevelDb from "./StorageHandlers/LevelDb";
 
 import { NoBunqApiKeyError, NoPasswordSetError } from "./Errors";
 
@@ -16,6 +17,7 @@ class BunqAutomation {
         this.authentication.bunqAutomation = this;
         this.pipeline = new Pipeline();
         this.fileStore = new FileStore();
+        this.settingsStore = new LevelDb("bunq-automation-settings");
 
         // by default set as first install status
         this.status = STATUS_FIRST_INSTALL;

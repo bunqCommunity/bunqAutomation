@@ -13,7 +13,6 @@
         "postbuild:client": "./node_modules/.bin/sw-precache --config src/ServiceWorker/sw-precache-config.js",
         "server": "./node_modules/.bin/nodemon --config .nodemonrc.json --exec babel-node server/Server.js",
         "react": "react-scripts start",
-        "dev": "./node_modules/.bin/concurrently \"yarn:server\" \"yarn:react\" --names Server,React",
         "postinstall": "node scripts/install.js",
         "test": "./node_modules/.bin/jest --config jest.config.js --no-cache --verbose",
         "test:dev": "./node_modules/.bin/jest --config jest.config.js --watch",
@@ -71,7 +70,6 @@
         "@babel/preset-env": "^7.4.2",
         "@babel/preset-react": "^7.0.0",
         "babel-plugin-dynamic-import-node": "^2.2.0",
-        "concurrently": "^4.1.0",
         "nodemon": "^1.18.10",
         "prettier": "^1.15.3",
         "sw-precache": "^5.2.1"
