@@ -24,7 +24,8 @@ Since this project should be useable for less experienced users, we can't guaran
  - Sharing events by link using a permanent or temporary link
  - Generate SSL certificates automatically using Letsencrypt to support HTTPS traffic
  - Security features like IP white listing
- - 2 factor authentication for logins and optionally to confirm "dangerous" changes
+ - 2 factor authentication for logins and optionally to confirm "dangerous" change
+ - Share events or certain config files by url with optional expiry date.
 
 ## Docker usage
 
