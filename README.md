@@ -19,11 +19,12 @@ Since this project should be useable for less experienced users, we can't guaran
 
 ## Planned features
  - Filter by account, amount, sender/receiver and any other event properties
-  - Scheduled events like sending a request and emailing the monthly invoice
+ - Scheduled events like sending a request and emailing the monthly invoice
  - More extensive auto savings features such as a percentage of payment with optional maximum/minimum
  - Sharing events by link using a permanent or temporary link
  - Generate SSL certificates automatically using Letsencrypt to support HTTPS traffic
  - Security features like IP white listing
+ - 2 factor authentication for logins and optionally to confirm "dangerous" changes
 
 ## Docker usage
 
