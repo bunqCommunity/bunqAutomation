@@ -14,13 +14,18 @@ class BunqAutomation {
         this.bunqJSClient = bunqJSClient;
         this.authentication = authentication;
         this.logger = logger;
-        this.authentication.bunqAutomation = this;
         this.pipeline = new Pipeline();
         this.fileStore = new FileStore();
         this.settingsStore = new LevelDb("bunq-automation-settings");
 
+        // set a reference in the authentication handler
+        this.authentication.bunqAutomation = this;
+
+        // socket server is optional
+        this.socketServer = false;
+
         // by default set as first install status
-        this.status = STATUS_FIRST_INSTALL;
+        this._status = STATUS_FIRST_INSTALL;
 
         // bunq user info
         this.user = false;
@@ -28,6 +33,20 @@ class BunqAutomation {
 
     async startupCheck() {
         await this.authentication.startupCheck();
+    }
+
+    set status(status) {
+        this._status = status;
+
+        console.log("Change status", !!this.socketServer);
+
+        if (this.socketServer) {
+            // emit the new status to all clients
+            this.socketServer.emit("status", this.status);
+        }
+    }
+    get status() {
+        return this._status;
     }
 
     /**
@@ -77,7 +96,6 @@ class BunqAutomation {
         await this.isApiReadyCheck();
 
         const imageFileName = `${imageUuid}.png`;
-
         const storedImage = await this.fileStore.exists(imageFileName);
         if (storedImage) {
             return this.fileStore.stream(imageFileName);

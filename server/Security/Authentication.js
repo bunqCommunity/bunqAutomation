@@ -6,30 +6,36 @@ import { STATUS_API_READY, STATUS_PASSWORD_READY, STATUS_UNINITIALIZED } from ".
 
 export const PASSWORD_IV_LOCATION = "PASSWORD_IV";
 export const PASSWORD_HASH_LOCATION = "PASSWORD_HASH";
-export const API_KEY_LOCATION = "API_KEY";
-export const API_KEY_IV_LOCATION = "API_KEY_V";
+
+// list of other API keys
+export const BUNQ_API_KEYS_LOCATION = "BUNQ_API_KEYS_LOCATION";
+// info for the current API key
+export const BUNQ_API_KEY_LOCATION = "BUNQ_API_KEY";
+export const BUNQ_API_KEY_IV_LOCATION = "BUNQ_API_KEY_V";
 export const ENVIRONMENT_LOCATION = "ENVIRONMENT";
 
-export const API_KEY_HEADER = `x-bunq-automation-authorization`;
-
+export const BUNQ_API_KEY_HEADER = `x-bunq-automation-authorization`;
 export const DEFAULT_API_KEY_EXPIRY_TIME = 60 * 60;
 
 export class Authentication {
-    constructor(bunqJSClient, logger) {
-        this.bunqJSClient = bunqJSClient;
+    constructor(logger) {
         this.logger = logger;
         this.encryption = new Encryption();
 
         this.apiKeyStorage = new LevelDb("bunq-automation-api-keys");
+        this.bunqApiKeyStorage = new LevelDb("bunq-automation-bunq-api-keys");
+        this.authenticationStorage = new LevelDb("bunq-automation-authentication");
 
         this.encryptionKey = null;
         this.encryptionIv = null;
+
+        // references the bunqAutomation object to get it's status
         this._bunqAutomation = null;
     }
 
     async startupCheck() {
         // check if a password has been previously set
-        const storedPasswordIv = await this.bunqJSClient.storageInterface.get(PASSWORD_IV_LOCATION);
+        const storedPasswordIv = await this.authenticationStorage.get(PASSWORD_IV_LOCATION);
         if (storedPasswordIv) {
             this.bunqAutomation.status = STATUS_UNINITIALIZED;
         }
@@ -113,8 +119,8 @@ export class Authentication {
      */
     async setPassword(password) {
         // check if an existing IV value exists
-        const storedPasswordIv = await this.bunqJSClient.storageInterface.get(PASSWORD_IV_LOCATION);
-        const storedPasswordHash = await this.bunqJSClient.storageInterface.get(PASSWORD_HASH_LOCATION);
+        const storedPasswordIv = await this.authenticationStorage.get(PASSWORD_IV_LOCATION);
+        const storedPasswordHash = await this.authenticationStorage.get(PASSWORD_HASH_LOCATION);
 
         // derive a key from the given password
         const derivedInfo = this.encryption.derivePassword(password, storedPasswordIv || false);
@@ -130,8 +136,8 @@ export class Authentication {
         }
 
         // store the iv and hash values
-        await this.bunqJSClient.storageInterface.set(PASSWORD_IV_LOCATION, this.encryptionIv);
-        await this.bunqJSClient.storageInterface.set(PASSWORD_HASH_LOCATION, passwordHash);
+        await this.authenticationStorage.set(PASSWORD_IV_LOCATION, this.encryptionIv);
+        await this.authenticationStorage.set(PASSWORD_HASH_LOCATION, passwordHash);
 
         // mark as PASSWORD_READY
         this.bunqAutomation.status = STATUS_PASSWORD_READY;
@@ -149,15 +155,15 @@ export class Authentication {
      * @returns {Promise<boolean>}
      */
     async setBunqApiKey(apiKey, environment = "SANDBOX", deviceName = "bunqAutomation") {
-        await this.bunqJSClient.run(apiKey, [], environment, this.encryptionKey);
+        await this.bunqAutomation.bunqJSClient.run(apiKey, [], environment, this.encryptionKey);
 
         // disable keep-alive
-        this.bunqJSClient.setKeepAlive(false);
+        this.bunqAutomation.bunqJSClient.setKeepAlive(false);
 
         // attempt to register the API key
-        await this.bunqJSClient.install();
-        await this.bunqJSClient.registerDevice(process.env.DEVICE_NAME || "bunqAutomation");
-        await this.bunqJSClient.registerSession();
+        await this.bunqAutomation.bunqJSClient.install();
+        await this.bunqAutomation.bunqJSClient.registerDevice(deviceName || "bunqAutomation");
+        await this.bunqAutomation.bunqJSClient.registerSession();
 
         // encrypt the API key
         const { iv, encryptedString: encryptedApiKey } = await this.encryption.encrypt(
@@ -167,9 +173,9 @@ export class Authentication {
         );
 
         // store the API key and environment
-        await this.bunqJSClient.storageInterface.set(API_KEY_LOCATION, encryptedApiKey);
-        await this.bunqJSClient.storageInterface.set(API_KEY_IV_LOCATION, iv);
-        await this.bunqJSClient.storageInterface.set(ENVIRONMENT_LOCATION, environment);
+        await this.bunqApiKeyStorage.set(BUNQ_API_KEY_LOCATION, encryptedApiKey);
+        await this.bunqApiKeyStorage.set(BUNQ_API_KEY_IV_LOCATION, iv);
+        await this.bunqApiKeyStorage.set(ENVIRONMENT_LOCATION, environment);
 
         // set api status to ready
         this.bunqAutomation.status = STATUS_API_READY;
@@ -181,9 +187,9 @@ export class Authentication {
      * @returns {Promise<void>}
      */
     async loadBunqApiKey() {
-        const storedEncryptedApiKey = await this.bunqJSClient.storageInterface.get(API_KEY_LOCATION);
-        const storedApiKeyIv = await this.bunqJSClient.storageInterface.get(API_KEY_IV_LOCATION);
-        const storedEnvironment = await this.bunqJSClient.storageInterface.get(ENVIRONMENT_LOCATION);
+        const storedEncryptedApiKey = await this.bunqApiKeyStorage.get(BUNQ_API_KEY_LOCATION);
+        const storedApiKeyIv = await this.bunqApiKeyStorage.get(BUNQ_API_KEY_IV_LOCATION);
+        const storedEnvironment = await this.bunqApiKeyStorage.get(ENVIRONMENT_LOCATION);
         if (!storedEncryptedApiKey || !storedEnvironment || !this.encryptionKey) return;
 
         // attempt to decrypt the stored apiKey
@@ -196,23 +202,28 @@ export class Authentication {
         return;
     }
 
+    async switchBunqApiKey(){
+
+    }
+
     /**
      * Removes all stored private data and attempts to go back to a "fresh" state as much as possible
      * @returns {Promise<void>}
      */
     async reset() {
         await Promise.all([
-            this.bunqJSClient.storageInterface.remove(API_KEY_LOCATION),
-            this.bunqJSClient.storageInterface.remove(API_KEY_IV_LOCATION),
-            this.bunqJSClient.storageInterface.remove(PASSWORD_IV_LOCATION),
-            this.bunqJSClient.storageInterface.remove(ENVIRONMENT_LOCATION)
+            this.authenticationStorage.remove(PASSWORD_IV_LOCATION),
+            this.authenticationStorage.remove(PASSWORD_HASH_LOCATION),
+            this.bunqApiKeyStorage.remove(BUNQ_API_KEY_LOCATION),
+            this.bunqApiKeyStorage.remove(BUNQ_API_KEY_IV_LOCATION),
+            this.bunqApiKeyStorage.remove(ENVIRONMENT_LOCATION)
         ]);
     }
 
     set bunqAutomation(reference) {
         this._bunqAutomation = reference;
     }
-    bunqAutomation() {
+    get bunqAutomation() {
         return this._bunqAutomation;
     }
 }

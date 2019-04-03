@@ -3,8 +3,21 @@ const forge = require("node-forge");
 const forgeCipher = forge.cipher;
 const forgeUtil = forge.util;
 
+const validateIterationCount = rounds => {
+    let usedIterations = 500000;
+
+    if (typeof rounds === "number" && rounds >= 100000) {
+        usedIterations = rounds;
+    }
+
+    return usedIterations;
+};
+
+// Amount of pbkdf2 iterations to be used
+const PBKDF2_ROUNDS = validateIterationCount(process.env.PBKDF2_ROUNDS);
+
 export default class Encryption {
-    encrypt = async (data, key, iv) => {
+    async encrypt(data, key, iv) {
         const string = JSON.stringify(data);
 
         // create a random initialization vector
@@ -28,9 +41,9 @@ export default class Encryption {
             key: key,
             encryptedString: cipher.output.toHex()
         };
-    };
+    }
 
-    decrypt = async (data, key, iv) => {
+    async decrypt(data, key, iv) {
         // get byte data from hex encoded strings
         const encrypedBytes = forgeUtil.hexToBytes(data);
 
@@ -59,14 +72,15 @@ export default class Encryption {
         const string = nodeBuffer.toString("utf8");
 
         return JSON.parse(string);
-    };
+    }
 
     /**
      * @param password
      * @param iv
      * @param keySize
+     * @param rounds
      */
-    derivePassword = (password, iv = false, keySize = 32) => {
+    derivePassword(password, iv = false, keySize = 32, rounds = false) {
         // generate a random iv
         let passwordIv;
         if (iv) {
@@ -77,11 +91,10 @@ export default class Encryption {
             passwordIv = forge.random.getBytesSync(keySize);
         }
 
-        // amount of pbkdf2 iterations,
-        const iterations = 300000;
+        let usedIterations = validateIterationCount(rounds);
 
         // derive a 16 bit key from the password and iv
-        const derivedBytes = forge.pkcs5.pbkdf2(password, passwordIv, iterations, keySize);
+        const derivedBytes = forge.pkcs5.pbkdf2(password, passwordIv, usedIterations, keySize);
 
         // turn derivedBytes into a readable string
         const encryptionKey = forge.util.bytesToHex(derivedBytes);
@@ -93,17 +106,17 @@ export default class Encryption {
             key: encryptionKey,
             iv: encryptionIv
         };
-    };
+    }
 
     /**
      * Basic function just to generate a random AES key
      * @param keySize
      */
-    generateRandomKey = keySize => {
+    generateRandomKey(keySize) {
         // random bytes
         const key = forge.random.getBytesSync(keySize);
 
         // straight to hex and return it
         return forge.util.bytesToHex(key);
-    };
+    }
 }

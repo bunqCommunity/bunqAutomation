@@ -2,8 +2,8 @@ import SocketServer from "../SocketServer";
 const fastifyPlugin = require("fastify-plugin");
 
 const socketServerPlugin = (fastify, options, next) => {
-    const socketServer = new SocketServer(fastify.server, fastify.bunqAutomation);
-    socketServer.connect();
+    const socketServer = new SocketServer(fastify.server);
+    socketServer.setup(fastify.bunqAutomation);
 
     fastify.decorate("socketServer", socketServer);
 

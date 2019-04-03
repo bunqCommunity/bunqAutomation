@@ -3,14 +3,19 @@ const path = require("path");
 
 const baseProjectPath = `${__dirname}${path.sep}..${path.sep}`;
 
-console.log("Running post install script");
-
 try {
-    const exists = fs.existsSync(`${baseProjectPath}.env`);
+    const envFilePath = `${baseProjectPath}.env`;
+    const envExists = fs.existsSync(envFilePath);
+    if (!envExists) {
+        fs.copyFileSync(`${baseProjectPath}.env.example`, envFilePath);
+        console.log(` -> Copied .env.example to ${envFilePath}`);
+    }
 
-    if (!exists) {
-        fs.copyFileSync(`${baseProjectPath}.env.example`, `${baseProjectPath}.env`);
-        console.log(" -> Copied .env.example to .env");
+    const fileStorePath = `${baseProjectPath}storage${path.sep}filestore`;
+    const fileStorageDirExists = fs.existsSync(fileStorePath);
+    if (!fileStorageDirExists) {
+        fs.mkdirSync(fileStorePath);
+        console.log(` -> Created ${fileStorePath}`);
     }
 } catch (error) {
     console.error(error);

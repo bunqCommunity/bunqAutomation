@@ -5,7 +5,6 @@ const fastifyAuth = require("fastify-auth");
 const fastifyStatic = require("fastify-static");
 const fastifyCors = require("fastify-cors");
 import SwaggerDocsPlugin from "./Plugins/SwaggerDocsPlugin";
-import BunqJSClientPlugin from "./Plugins/BunqJSClientPlugin";
 import BunqAutomationPlugin from "./Plugins/BunqAutomationPlugin";
 import AuthenticationPlugin from "./Plugins/Authentication/AuthenticationPlugin";
 import ApiKeyAuthenticationPlugin from "./Plugins/Authentication/ApiKeyAuthenticationPlugin";
@@ -23,8 +22,6 @@ export default app => {
 
     app.register(SwaggerDocsPlugin);
     app.register(SchemaRegistrationPlugin);
-
-    app.register(BunqJSClientPlugin);
 
     app.register(AuthenticationPlugin);
     app.register(ApiKeyAuthenticationPlugin);

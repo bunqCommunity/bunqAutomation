@@ -13,7 +13,6 @@ import useAuthentication from "./Redux/Actions/useAuthentication";
 import useServerStatus from "./Redux/Actions/useServerStatus";
 
 import useSocketEvent from "./Hooks/useSocketEvent";
-import useInterval from "./Hooks/useInterval";
 
 const mapState = state => ({
     darkMode: state.theme.darkMode
@@ -30,9 +29,6 @@ const RoutesWrapper = () => {
     useEffect(() => {
         if (socket) socket.emit("status");
     }, []);
-    useInterval(() => {
-        if (socket) socket.emit("status");
-    }, 5000);
     useSocketEvent("status", status => setServerStatus(status));
 
     // initial api key load from storage

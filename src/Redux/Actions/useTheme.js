@@ -6,9 +6,13 @@ const useTheme = () => {
     const toggleTheme = () => {
         dispatch({ type: "THEME_TOGGLE" });
     };
+    const toggleParticles = () => {
+        dispatch({ type: "PARTICLES_TOGGLE" });
+    };
 
     return {
-        toggleTheme
+        toggleTheme,
+        toggleParticles
     };
 };
 
