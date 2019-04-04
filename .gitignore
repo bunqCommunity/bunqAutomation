@@ -36,11 +36,12 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (https://nodejs.org/api/addons.html)
+# Compiled binary addons and temp files
 build/
 !build/.gitkeep
 build-server/
 !build-server/.gitkeep
+temp
 
 # Dependency directories
 node_modules/

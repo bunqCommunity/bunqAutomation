@@ -6,7 +6,7 @@ const forgeUtil = forge.util;
 const validateIterationCount = rounds => {
     let usedIterations = 500000;
 
-    if (typeof rounds === "number" && rounds >= 100000) {
+    if (typeof rounds === "number" && rounds >= 0) {
         usedIterations = rounds;
     }
 
@@ -91,7 +91,7 @@ export default class Encryption {
             passwordIv = forge.random.getBytesSync(keySize);
         }
 
-        let usedIterations = validateIterationCount(rounds);
+        const usedIterations = validateIterationCount(rounds);
 
         // derive a 16 bit key from the password and iv
         const derivedBytes = forge.pkcs5.pbkdf2(password, passwordIv, usedIterations, keySize);

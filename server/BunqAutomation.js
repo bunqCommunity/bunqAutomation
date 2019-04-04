@@ -3,6 +3,8 @@ import FileStore from "./StorageHandlers/FileStore";
 import LevelDb from "./StorageHandlers/LevelDb";
 
 import { NoBunqApiKeyError, NoPasswordSetError } from "./Errors";
+import {PASSWORD_IV_LOCATION} from "./Security/Authentication";
+import BunqClientWrapper from "./BunqClientWrapper";
 
 export const STATUS_FIRST_INSTALL = "STATUS_FIRST_INSTALL";
 export const STATUS_UNINITIALIZED = "STATUS_UNINITIALIZED";
@@ -10,10 +12,10 @@ export const STATUS_PASSWORD_READY = "STATUS_PASSWORD_READY";
 export const STATUS_API_READY = "STATUS_API_READY";
 
 class BunqAutomation {
-    constructor(bunqJSClient, authentication, logger) {
-        this.bunqJSClient = bunqJSClient;
+    constructor(authentication, logger) {
         this.authentication = authentication;
         this.logger = logger;
+        this.bunqClientWrapper = new BunqClientWrapper(this.authentication, this.logger);
         this.pipeline = new Pipeline();
         this.fileStore = new FileStore();
         this.settingsStore = new LevelDb("bunq-automation-settings");
@@ -33,15 +35,19 @@ class BunqAutomation {
 
     async startupCheck() {
         await this.authentication.startupCheck();
+
+        // if authentication resulted in a loaded password, attempt to load the apikeys
+        if (this.status === STATUS_PASSWORD_READY) {
+            await this.bunqClientWrapper.loadBunqApiKey();
+        }
     }
+
 
     set status(status) {
         this._status = status;
 
-        console.log("Change status", !!this.socketServer);
-
         if (this.socketServer) {
-            // emit the new status to all clients
+            // emit the new status to all socket clients
             this.socketServer.emit("status", this.status);
         }
     }
