@@ -919,10 +919,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@bunq-community/bunq-js-client@^0.40.0":
-  version "0.40.0"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.40.0.tgz#52a76926afeaee9ceb087cf42966432275e7189f"
-  integrity sha512-96TacgvJ3uUJCPmC52sxC07q/Xe3WY+Ypmc87pqKNmjHRPN808GAuawwtgOIXx4U9rORjCD9C1oI1HKDOxNXoA==
+"@bunq-community/bunq-js-client@^0.40.2":
+  version "0.40.2"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.40.2.tgz#bff6baac68ffe21a25389a301560897859180125"
+  integrity sha512-3nU7d6NpYBsuEdBAbR2ZfWqOz97Gj/WZ3UOpNNyBhgN1AkBRQ5/1wgC2RBMHX41gG37rZ/OMnX0PTvFrDrIR1Q==
   dependencies:
     awaiting "^3.0.0"
     axios "^0.16.2"
@@ -4760,6 +4760,14 @@ fast-json-stringify@^1.11.2:
     ajv "^6.8.1"
     deepmerge "^3.0.0"
 
+fast-json-stringify@^1.9.2:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/fast-json-stringify/-/fast-json-stringify-1.14.0.tgz#245b01dbd2087c96b5f315ea5ba835398e54dd6f"
+  integrity sha512-3VSblXsVxIE46E/YzRYHapyIeM3/igeA/kyzdL5xfAIYNnCLd8Oy+scrURnqZIRXMmtx0hfyp+okN5+r4W+GMQ==
+  dependencies:
+    ajv "^6.8.1"
+    deepmerge "^3.0.0"
+
 fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
@@ -4837,6 +4845,16 @@ fastify-plugin@^1.0.0, fastify-plugin@^1.2.1, fastify-plugin@^1.3.0, fastify-plu
   integrity sha512-bXKSTR4Q1lxERf1p/10Aakga570XtcxCCvPR1gby5js1XOtg7E8UV+aHHEPbGowQGV/KVb7ARBROhPk2I4DfBw==
   dependencies:
     semver "^5.5.0"
+
+fastify-rate-limit@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-2.1.0.tgz#b3289e3ec33fef7ea85cb12b04b777add1955666"
+  integrity sha512-Im3f1Ghiqpsn588328UIeyXRr1wHA3kVYHBwotgl1JLfZ49OepU7YUa1/aHckhUnZ1elTpLgEQPAeH7JI8MGTQ==
+  dependencies:
+    fast-json-stringify "^1.9.2"
+    fastify-plugin "^1.3.0"
+    ms "^2.1.1"
+    tiny-lru "^6.0.1"
 
 fastify-response-time@^1.1.0:
   version "1.1.0"

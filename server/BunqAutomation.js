@@ -4,6 +4,7 @@ import LevelDb from "./StorageHandlers/LevelDb";
 
 import { NoBunqApiKeyError, NoPasswordSetError } from "./Errors";
 import BunqClientWrapper from "./BunqClientWrapper";
+import Authentication from "./Security/Authentication";
 
 export const STATUS_FIRST_INSTALL = "STATUS_FIRST_INSTALL";
 export const STATUS_UNINITIALIZED = "STATUS_UNINITIALIZED";
@@ -11,13 +12,14 @@ export const STATUS_PASSWORD_READY = "STATUS_PASSWORD_READY";
 export const STATUS_API_READY = "STATUS_API_READY";
 
 class BunqAutomation {
-    constructor(authentication, logger) {
-        this.authentication = authentication;
+    constructor(logger) {
         this.logger = logger;
-        this.pipeline = new Pipeline(this.logger);
         this.fileStore = new FileStore();
-        this.bunqClientWrapper = new BunqClientWrapper(this.logger);
         this.settingsStore = new LevelDb("bunq-automation-settings");
+
+        this.pipeline = new Pipeline(this.logger);
+        this.authentication = new Authentication(this.logger);
+        this.bunqClientWrapper = new BunqClientWrapper(this.logger);
 
         // set a reference in the authentication handler
         this.authentication.bunqAutomation = this;
@@ -33,7 +35,26 @@ class BunqAutomation {
     }
 
     async startupCheck() {
+        // check authentication inital startup status
         await this.authentication.startupCheck();
+
+        if (this.authentication.hasStoredPassword) {
+            // if a previous password has been saved, set uninitialzed status (versus first install)
+            this.status = STATUS_UNINITIALIZED;
+        }
+
+        // check for hardcoded encryption password env value
+        if (process.env.ENCRYPTION_PASSWORD) {
+            this.logger.warn("Attempting to use encryption password from .env file");
+            await this.setPassword(process.env.ENCRYPTION_PASSWORD);
+        }
+        if (this.authentication.encryptionKey) {
+            // if a key has been loaded, set password ready state
+            this.status = STATUS_PASSWORD_READY;
+        }
+
+        // check bunqClient inital startup status
+        await this.bunqClientWrapper.startupCheck();
 
         // if authentication resulted in a loaded password, attempt to load the apikeys
         if (this.status === STATUS_PASSWORD_READY) {
@@ -44,22 +65,14 @@ class BunqAutomation {
     // wrappers around the status property to update connected clients
     set status(status) {
         this._status = status;
-
         if (this.socketServer) {
             // emit the new status to all socket clients
             this.socketServer.emit("status", this.status);
         }
     }
     get status() {
+        console.log("bunqAutomation.status = ", this._status);
         return this._status;
-    }
-
-    /**
-     * Removes all stored private data and attempts to go back to a "fresh" state as much as possible
-     * @returns {Promise<void>}
-     */
-    async reset() {
-        await Promise.all([this.authentication.reset()]);
     }
 
     /**
@@ -78,6 +91,13 @@ class BunqAutomation {
         }
 
         return true;
+    }
+
+    async setPassword() {
+        const result = await this.authentication.setPassword(password);
+        if (result) {
+            this.status = STATUS_PASSWORD_READY;
+        }
     }
 
     /**
@@ -126,6 +146,10 @@ class BunqAutomation {
             });
 
         return imageContents;
+    }
+
+    async reset() {
+        await Promise.all([]);
     }
 }
 

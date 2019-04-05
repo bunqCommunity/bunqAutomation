@@ -19,7 +19,7 @@
         "prettier": "./node_modules/.bin/prettier --write \"+(tests|src|server)/**/**.+(ts|js|jsx|scss|css)\""
     },
     "dependencies": {
-        "@bunq-community/bunq-js-client": "^0.40.0",
+        "@bunq-community/bunq-js-client": "^0.40.2",
         "@material-ui/core": "^3.9.2",
         "@material-ui/icons": "^3.0.2",
         "axios": "^0.18.0",
@@ -31,6 +31,7 @@
         "fastify-compress": "^0.8.1",
         "fastify-cors": "^2.1.2",
         "fastify-helmet": "^3.0.0",
+        "fastify-rate-limit": "^2.1.0",
         "fastify-response-time": "^1.1.0",
         "fastify-static": "^2.3.4",
         "fastify-swagger": "^2.3.2",

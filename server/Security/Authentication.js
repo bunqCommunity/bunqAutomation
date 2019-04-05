@@ -21,22 +21,15 @@ export class Authentication {
         this.encryptionKey = null;
         this.encryptionIv = null;
 
-        // references the bunqAutomation object to get it's status
-        this._bunqAutomation = null;
+        this.hasStoredPassword = false;
     }
 
     async startupCheck() {
         // check if a password has been previously set
         const storedPasswordIv = await this.authenticationStorage.get(PASSWORD_IV_LOCATION);
-        if (storedPasswordIv) {
-            this.bunqAutomation.status = STATUS_UNINITIALIZED;
-        }
+        const storedPasswordHash = await this.authenticationStorage.get(PASSWORD_HASH_LOCATION);
 
-        // check if
-        if (process.env.ENCRYPTION_PASSWORD) {
-            this.logger.warn("Attempting to use encryption password from .env file");
-            await this.setPassword(process.env.ENCRYPTION_PASSWORD);
-        }
+        this.hasStoredPassword = !!storedPasswordIv && !!storedPasswordHash;
     }
 
     /**
@@ -127,9 +120,6 @@ export class Authentication {
         await this.authenticationStorage.set(PASSWORD_IV_LOCATION, this.encryptionIv);
         await this.authenticationStorage.set(PASSWORD_HASH_LOCATION, passwordHash);
 
-        // mark as PASSWORD_READY
-        this.bunqAutomation.status = STATUS_PASSWORD_READY;
-
         return true;
     }
 
@@ -140,15 +130,8 @@ export class Authentication {
     async reset() {
         await Promise.all([
             this.authenticationStorage.remove(PASSWORD_IV_LOCATION),
-            this.authenticationStorage.remove(PASSWORD_HASH_LOCATION),
+            this.authenticationStorage.remove(PASSWORD_HASH_LOCATION)
         ]);
-    }
-
-    set bunqAutomation(reference) {
-        this._bunqAutomation = reference;
-    }
-    get bunqAutomation() {
-        return this._bunqAutomation;
     }
 }
 

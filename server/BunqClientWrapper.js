@@ -29,6 +29,20 @@ class BunqClientWrapper {
         this.selectedBunqApiKeyIdentifier = false;
     }
 
+    async startupCheck() {
+        const loadedBunqApiKeys = await this.bunqApiKeyStorage.get(BUNQ_API_KEYS_LOCATION);
+    }
+
+    /**
+     * Set a different bunq API key as the default and store the selection
+     * @param identifier
+     * @returns {Promise<void>}
+     */
+    async switchBunqApiKey(identifier) {
+        this.selectedBunqApiKeyIdentifier = identifier;
+        await this.bunqApiKeyStorage.set(BUNQ_API_KEY_SELECTED, identifier);
+    }
+
     /**
      * Setup bunqAutomation with a new bunq API key,
      * will be called automatically if the encryption ENV is used
@@ -90,10 +104,13 @@ class BunqClientWrapper {
      * @param environment
      * @param deviceName
      * @param existingClient
-     * @returns {Promise<boolean|BunqJSClient>}
+     * @returns {Promise<BunqJSClient>}
      */
     async setupBunqJSClient(encryptionKey, bunqApiKey, environment, deviceName, existingClient = false) {
-        const bunqJSClient = existingClient ? existingClient : new BunqJSClient(this.bunqJSClientStorage, this.logger);
+        const bunqJSClient =
+            existingClient instanceof BunqJSClient
+                ? existingClient
+                : new BunqJSClient(this.bunqJSClientStorage, this.logger);
 
         // overwrite the request factory with our custom version
         bunqJSClient.ApiAdapter.RequestLimitFactory = this.requestLimitFactory;
@@ -112,21 +129,46 @@ class BunqClientWrapper {
     }
 
     /**
-     * Set a different bunq API key as the default and store the selection
-     * @param identifier
-     * @returns {Promise<void>}
-     */
-    async switchBunqApiKey(identifier) {
-        this.selectedBunqApiKeyIdentifier = identifier;
-        await this.bunqApiKeyStorage.set(BUNQ_API_KEY_SELECTED, identifier);
-    }
-
-    /**
      * Should only be run once on startup!
      * @returns {Promise<void>}
      */
     async loadStoredBunqApiKeys(encryptionKey) {
         const loadedBunqApiKeys = await this.bunqApiKeyStorage.get(BUNQ_API_KEYS_LOCATION);
+
+        const setupErrors = [];
+
+        await Promise.all(
+            Object.keys(loadedBunqApiKeys).map(async identifier => {
+                const bunqApiKeyInfo = {
+                    ...loadedBunqApiKeys[identifier],
+                    bunqJSClient: false,
+                    errorState: false
+                };
+
+                // setup and refresh the bunqJSclient if required
+                await new Promise(resolve => {
+                    this.setupBunqJSClient(
+                        encryptionKey,
+                        bunqApiKeyInfo.bunqApiKey,
+                        bunqApiKeyInfo.environment,
+                        bunqApiKeyInfo.deviceName,
+                        bunqApiKeyInfo.bunqJSClient
+                    )
+                        .then(bunqJSClient => {
+                            bunqApiKeyInfo.bunqJSClient = bunqJSClient;
+                            resolve();
+                        })
+                        .catch(error => {
+                            bunqApiKeyInfo.errorState = error;
+
+                            setupErrors.push(errors);
+
+                            // resolve so all clients are tried in paralel
+                            resolve();
+                        });
+                });
+            })
+        );
     }
 
     /**

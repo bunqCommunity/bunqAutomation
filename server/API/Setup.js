@@ -1,3 +1,4 @@
+import RateLimitPlugin from "../Plugins/Authentication/RateLimitPlugin"
 import { BadRequestError } from "../Errors";
 import { STATUS_FIRST_INSTALL, STATUS_PASSWORD_READY, STATUS_UNINITIALIZED } from "../BunqAutomation";
 
@@ -11,6 +12,9 @@ export default (app, opts, next) => {
     const bunqAutomation = app.bunqAutomation;
     const authentication = bunqAutomation.authentication;
 
+    // rate limit the setup endpoints
+    RateLimitPlugin(app, 5);
+
     /**
      * Set a new password for fresh installs or attempt to authenticate with existing
      * Will return a valid JWT token which can be used to authenticate for other routes
@@ -21,20 +25,20 @@ export default (app, opts, next) => {
         handler: async (request, reply) => {
             throw new BadRequestError("Not implemented");
 
-            // if (!request.body || !request.body.password) throw new BadRequestError();
-            //
-            // await authentication.setPassword(request.body.password);
-            //
-            // // check if password is ready and attempt to load API key if that is the case
-            // if (bunqAutomation.status === STATUS_PASSWORD_READY) {
-            //     await authentication.loadBunqApiKey();
-            // }
-            //
-            // const apiKey = await authentication.createApiKey();
-            //
-            // reply.send({
-            //     api_key: apiKey
-            // });
+            if (!request.body || !request.body.password) throw new BadRequestError();
+
+            await bunqAutomation.setPassword(request.body.password);
+
+            // check if password is ready and attempt to load API key if that is the case
+            if (bunqAutomation.status === STATUS_PASSWORD_READY) {
+                await authentication.loadBunqApiKey();
+            }
+
+            const apiKey = await authentication.createApiKey();
+
+            reply.send({
+                api_key: apiKey
+            });
         },
         schema: {
             tags: ["setup"],
