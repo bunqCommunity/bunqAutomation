@@ -3,7 +3,6 @@ import FileStore from "./StorageHandlers/FileStore";
 import LevelDb from "./StorageHandlers/LevelDb";
 
 import { NoBunqApiKeyError, NoPasswordSetError } from "./Errors";
-import {PASSWORD_IV_LOCATION} from "./Security/Authentication";
 import BunqClientWrapper from "./BunqClientWrapper";
 
 export const STATUS_FIRST_INSTALL = "STATUS_FIRST_INSTALL";
@@ -15,9 +14,9 @@ class BunqAutomation {
     constructor(authentication, logger) {
         this.authentication = authentication;
         this.logger = logger;
-        this.bunqClientWrapper = new BunqClientWrapper(this.authentication, this.logger);
-        this.pipeline = new Pipeline();
+        this.pipeline = new Pipeline(this.logger);
         this.fileStore = new FileStore();
+        this.bunqClientWrapper = new BunqClientWrapper(this.logger);
         this.settingsStore = new LevelDb("bunq-automation-settings");
 
         // set a reference in the authentication handler
@@ -38,11 +37,11 @@ class BunqAutomation {
 
         // if authentication resulted in a loaded password, attempt to load the apikeys
         if (this.status === STATUS_PASSWORD_READY) {
-            await this.bunqClientWrapper.loadBunqApiKey();
+            await this.bunqClientWrapper.loadStoredBunqApiKeys();
         }
     }
 
-
+    // wrappers around the status property to update connected clients
     set status(status) {
         this._status = status;
 
@@ -63,6 +62,10 @@ class BunqAutomation {
         await Promise.all([this.authentication.reset()]);
     }
 
+    /**
+     * Standard check around API calls
+     * @returns {Promise<boolean>}
+     */
     async isApiReadyCheck() {
         if (this.status === STATUS_API_READY) return true;
 
@@ -85,7 +88,8 @@ class BunqAutomation {
     async getUser(forceUpdate = false) {
         await this.isApiReadyCheck();
 
-        const users = await this.bunqJSClient.getUsers(forceUpdate);
+        // TODO get user info
+        // const users = await this.bunqJSClient.getUsers(forceUpdate);
         const userType = Object.keys(users)[0];
 
         this.user = users[userType];
@@ -107,7 +111,7 @@ class BunqAutomation {
             return this.fileStore.stream(imageFileName);
         }
 
-        // get updated image from bunq API
+        // TODO get updated image from bunq API
         const imageContents = await this.bunqJSClient.api.attachmentContent.get(imageUuid, {
             base64: false
         });

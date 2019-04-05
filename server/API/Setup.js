@@ -9,7 +9,7 @@ const swaggerSecuritySchema = [
 
 export default (app, opts, next) => {
     const bunqAutomation = app.bunqAutomation;
-    const authentication = app.authentication;
+    const authentication = bunqAutomation.authentication;
 
     /**
      * Set a new password for fresh installs or attempt to authenticate with existing
@@ -19,20 +19,22 @@ export default (app, opts, next) => {
         method: "POST",
         url: "/password",
         handler: async (request, reply) => {
-            if (!request.body || !request.body.password) throw new BadRequestError();
+            throw new BadRequestError("Not implemented");
 
-            await authentication.setPassword(request.body.password);
-
-            // check if password is ready and attempt to load API key if that is the case
-            if (bunqAutomation.status === STATUS_PASSWORD_READY) {
-                await authentication.loadBunqApiKey();
-            }
-
-            const apiKey = await authentication.createApiKey();
-
-            reply.send({
-                api_key: apiKey
-            });
+            // if (!request.body || !request.body.password) throw new BadRequestError();
+            //
+            // await authentication.setPassword(request.body.password);
+            //
+            // // check if password is ready and attempt to load API key if that is the case
+            // if (bunqAutomation.status === STATUS_PASSWORD_READY) {
+            //     await authentication.loadBunqApiKey();
+            // }
+            //
+            // const apiKey = await authentication.createApiKey();
+            //
+            // reply.send({
+            //     api_key: apiKey
+            // });
         },
         schema: {
             tags: ["setup"],
@@ -61,18 +63,20 @@ export default (app, opts, next) => {
         method: "POST",
         preHandler: app.auth([app.apiKeyAuthentication]),
         handler: async (request, reply) => {
-            const invalidStatusList = [STATUS_UNINITIALIZED, STATUS_FIRST_INSTALL];
-            if (invalidStatusList.includes(bunqAutomation.status)) {
-                throw new BadRequestError("bunqAutomation not ready yet, can't receive bunq API key");
-            }
+            throw new BadRequestError("Not implemented");
 
-            if (!request.body || !request.body.api_key || !request.body.environment) throw new BadRequestError();
-
-            const deviceName = request.body.device_name || "bunqAutomation";
-
-            await authentication.setBunqApiKey(request.body.api_key, request.body.environment, deviceName);
-
-            reply.send("api-key");
+            // const invalidStatusList = [STATUS_UNINITIALIZED, STATUS_FIRST_INSTALL];
+            // if (invalidStatusList.includes(bunqAutomation.status)) {
+            //     throw new BadRequestError("bunqAutomation not ready yet, can't receive bunq API key");
+            // }
+            //
+            // if (!request.body || !request.body.api_key || !request.body.environment) throw new BadRequestError();
+            //
+            // const deviceName = request.body.device_name || "bunqAutomation";
+            //
+            // await authentication.setBunqApiKey(request.body.api_key, request.body.environment, deviceName);
+            //
+            // reply.send("api-key");
         },
         schema: {
             tags: ["setup"],

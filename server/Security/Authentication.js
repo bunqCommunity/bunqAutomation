@@ -141,9 +141,6 @@ export class Authentication {
         await Promise.all([
             this.authenticationStorage.remove(PASSWORD_IV_LOCATION),
             this.authenticationStorage.remove(PASSWORD_HASH_LOCATION),
-            this.bunqApiKeyStorage.remove(BUNQ_API_KEY_LOCATION),
-            this.bunqApiKeyStorage.remove(BUNQ_API_KEY_IV_LOCATION),
-            this.bunqApiKeyStorage.remove(ENVIRONMENT_LOCATION)
         ]);
     }
 

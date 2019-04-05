@@ -1,4 +1,5 @@
 import BunqJSClient from "@bunq-community/bunq-js-client";
+import BunqJSClientLimiter from "@bunq-community/bunq-js-client/dist/RequestLimitFactory";
 
 import LevelDb from "./StorageHandlers/LevelDb";
 import Encryption from "./Security/Encryption";
@@ -12,13 +13,15 @@ export const BUNQ_API_KEYS_LOCATION = "BUNQ_API_KEYS_LOCATION";
 export const BUNQ_API_KEY_SELECTED = "BUNQ_API_KEY_SELECTED";
 
 class BunqClientWrapper {
-    constructor(authentication, logger) {
-        this.authentication = authentication;
+    constructor(logger) {
         this.logger = logger;
         this.encryption = new Encryption();
 
         this.bunqJSClientStorage = new LevelDb("bunq-js-client");
         this.bunqApiKeyStorage = new LevelDb("bunq-automation-bunq-api-keys");
+
+        // create a custom bunqJSClient limiter so it can be shared
+        this.requestLimitFactory = new BunqJSClientLimiter();
 
         // a list of bunq API keys with the unique key as their
         this.bunqApiKeyList = {};
@@ -27,7 +30,7 @@ class BunqClientWrapper {
     }
 
     /**
-     * Setup bunqAutomation with a bunq API key,
+     * Setup bunqAutomation with a new bunq API key,
      * will be called automatically if the encryption ENV is used
      *
      * @param bunqApiKey
@@ -35,7 +38,7 @@ class BunqClientWrapper {
      * @param deviceName
      * @returns {Promise<boolean>}
      */
-    async setBunqApiKey(encryptionKey, bunqApiKey, environment = "SANDBOX", deviceName = "bunqAutomation") {
+    async addBunqApiKey(encryptionKey, bunqApiKey, environment = "SANDBOX", deviceName = "bunqAutomation") {
         const bunqApiKeyIdentifier = this.calculateBunqApiKeyIdentifier(bunqApiKey);
 
         let bunqApiKeyInfo = {};
@@ -43,21 +46,21 @@ class BunqClientWrapper {
             bunqApiKeyInfo = this.bunqApiKeyList[bunqApiKeyIdentifier];
         } else {
             bunqApiKeyInfo = {
-                bunqJSClient: new BunqJSClient(this.bunqJSClientStorage, this.logger),
+                bunqJSClient: false,
+                errorState: false,
                 environment,
                 deviceName
             };
         }
 
-        await bunqApiKeyInfo.bunqJSClient.run(bunqApiKey, [], environment, encryptionKey);
-
-        // disable keep-alive
-        bunqApiKeyInfo.bunqJSClient.setKeepAlive(false);
-
-        // attempt to register the API key
-        await bunqApiKeyInfo.bunqJSClient.install();
-        await bunqApiKeyInfo.bunqJSClient.registerDevice(deviceName || "bunqAutomation");
-        await bunqApiKeyInfo.bunqJSClient.registerSession();
+        // setup and refresh the bunqJSclient if required
+        bunqApiKeyInfo.bunqJSClient = await this.setupBunqJSClient(
+            encryptionKey,
+            bunqApiKey,
+            environment,
+            deviceName,
+            bunqApiKeyInfo.bunqJSClient
+        );
 
         // encrypt the API key
         const { iv: encryptionIv, encryptedString: encryptedApiKey } = await this.encryption.encrypt(
@@ -72,7 +75,8 @@ class BunqClientWrapper {
         // overwrite the existing details if any
         this.bunqApiKeyList[bunqApiKeyIdentifier] = bunqApiKeyInfo;
 
-        // TODO store the API key and environment
+        // store the updated list
+        await this.storeBunqApiKeys();
 
         // TODO set api status to ready
         // this.bunqAutomation.status = STATUS_API_READY;
@@ -80,30 +84,48 @@ class BunqClientWrapper {
     }
 
     /**
-     * Checks for existing data using the currently stored encryption key
+     * Creates a new client or refreshes existing client and returns it
+     * @param encryptionKey
+     * @param bunqApiKey
+     * @param environment
+     * @param deviceName
+     * @param existingClient
+     * @returns {Promise<boolean|BunqJSClient>}
+     */
+    async setupBunqJSClient(encryptionKey, bunqApiKey, environment, deviceName, existingClient = false) {
+        const bunqJSClient = existingClient ? existingClient : new BunqJSClient(this.bunqJSClientStorage, this.logger);
+
+        // overwrite the request factory with our custom version
+        bunqJSClient.ApiAdapter.RequestLimitFactory = this.requestLimitFactory;
+
+        await bunqJSClient.run(bunqApiKey, [], environment, encryptionKey);
+
+        // disable keep-alive
+        bunqJSClient.setKeepAlive(false);
+
+        // setup API calls
+        await bunqJSClient.install();
+        await bunqJSClient.registerDevice(deviceName);
+        await bunqJSClient.registerSession();
+
+        return bunqJSClient;
+    }
+
+    /**
+     * Set a different bunq API key as the default and store the selection
+     * @param identifier
      * @returns {Promise<void>}
      */
-    async loadBunqApiKey(bunqApiKeyIdentifier) {
-        // const storedEncryptedApiKey = await this.bunqApiKeyStorage.get(BUNQ_API_KEY_LOCATION);
-        // const storedApiKeyIv = await this.bunqApiKeyStorage.get(BUNQ_API_KEY_IV_LOCATION);
-        // const storedEnvironment = await this.bunqApiKeyStorage.get(ENVIRONMENT_LOCATION);
-        // if (!storedEncryptedApiKey || !storedEnvironment || !this.encryptionKey) return;
-        //
-        // // attempt to decrypt the stored apiKey
-        // const apiKey = await this.encryption.decrypt(storedEncryptedApiKey, this.encryptionKey, storedApiKeyIv);
-        //
-        // if (apiKey) {
-        //     await this.setBunqApiKey(apiKey, storedEnvironment);
-        // }
-
-        return;
+    async switchBunqApiKey(identifier) {
+        this.selectedBunqApiKeyIdentifier = identifier;
+        await this.bunqApiKeyStorage.set(BUNQ_API_KEY_SELECTED, identifier);
     }
 
     /**
      * Should only be run once on startup!
      * @returns {Promise<void>}
      */
-    async loadStoredBunqApiKeys() {
+    async loadStoredBunqApiKeys(encryptionKey) {
         const loadedBunqApiKeys = await this.bunqApiKeyStorage.get(BUNQ_API_KEYS_LOCATION);
     }
 
@@ -130,16 +152,24 @@ class BunqClientWrapper {
         await this.bunqApiKeyStorage.set(BUNQ_API_KEYS_LOCATION, mappedBunqApiKeys);
     }
 
-    async switchBunqApiKey(identifier) {}
-
+    /**
+     * Creates a unique but anonymous key for a bunq API key
+     * @param bunqApiKey
+     */
     calculateBunqApiKeyIdentifier(bunqApiKey) {
         const splitKey = bunqApiKey.substring(0, 32);
         const derivedInfo = this.encryption.derivePassword(splitKey, "bcb77ac4736bc503d8dbdee79a5c3a04", 16, 50000);
         return derivedInfo.key;
     }
 
+    /**
+     * @returns {Promise<void>}
+     */
     async reset() {
-        await Promise.all([]);
+        await Promise.all([
+            this.bunqApiKeyStorage.remove(BUNQ_API_KEYS_LOCATION),
+            this.bunqApiKeyStorage.remove(BUNQ_API_KEY_SELECTED)
+        ]);
     }
 }
 

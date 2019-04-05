@@ -2,7 +2,8 @@ import LevelDb from "../StorageHandlers/LevelDb";
 import ConfigValidator from "./ConfigValidator";
 
 class Pipeline {
-    constructor() {
+    constructor(logger) {
+        this.logger = logger;
         this.store = new LevelDb("bunq-automation-pipeline");
         this.validator = new ConfigValidator(this);
 
