@@ -136,7 +136,6 @@ class BunqClientWrapper {
         const loadedBunqApiKeys = await this.bunqApiKeyStorage.get(BUNQ_API_KEYS_LOCATION);
 
         const setupErrors = [];
-
         await Promise.all(
             Object.keys(loadedBunqApiKeys).map(async identifier => {
                 const bunqApiKeyInfo = {
@@ -160,7 +159,6 @@ class BunqClientWrapper {
                         })
                         .catch(error => {
                             bunqApiKeyInfo.errorState = error;
-
                             setupErrors.push(errors);
 
                             // resolve so all clients are tried in paralel

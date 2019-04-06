@@ -148,8 +148,16 @@ class BunqAutomation {
         return imageContents;
     }
 
+    // TODO export and import all stored data to/from json
+    async export() {}
+    async import() {}
+
     async reset() {
-        await Promise.all([]);
+        await Promise.all([
+            this.pipeline.reset(),
+            this.bunqClientWrapper.reset(),
+            this.authentication.reset(),
+        ]);
     }
 }
 
