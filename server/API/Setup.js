@@ -160,10 +160,9 @@ export default (app, opts, next) => {
         method: "GET",
         preHandler: app.auth([app.apiKeyAuthentication]),
         handler: async (request, reply) => {
-            const stored = await app.bunqAutomation.bunqClientWrapper.bunqApiKeyStorage.streamSync();
-
             reply.send({
-                stored: stored,
+                stored: await app.bunqAutomation.bunqClientWrapper.bunqApiKeyStorage.get("BUNQ_API_KEYS_LOCATION"),
+                selected: await app.bunqAutomation.bunqClientWrapper.bunqApiKeyStorage.get("BUNQ_API_KEY_SELECTED"),
                 loaded: app.bunqAutomation.bunqClientWrapper.getBunqApiKeyList()
             });
         }

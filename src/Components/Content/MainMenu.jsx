@@ -13,6 +13,8 @@ import Drawer from "@material-ui/core/Drawer";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import HomeIcon from "@material-ui/icons/Home";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import PaletteIcon from "@material-ui/icons/Palette";
+import KeyIcon from "@material-ui/icons/VpnKey";
 
 const drawerWidth = 240;
 
@@ -58,6 +60,19 @@ const styles = theme => ({
     }
 });
 
+const StandardMenuItem = ({ to, primary, secondary = "", Icon = null }) => {
+    return (
+        <ListItem button to={to} component={NavLink}>
+            {Icon && (
+                <ListItemIcon>
+                    <Icon />
+                </ListItemIcon>
+            )}
+            <ListItemText primary={primary} secondary={secondary} />
+        </ListItem>
+    );
+};
+
 const MainMenu = ({ classes, open, toggleMenu, logout }) => {
     return (
         <Drawer
@@ -75,15 +90,12 @@ const MainMenu = ({ classes, open, toggleMenu, logout }) => {
             <Divider />
 
             <List className={classes.list}>
-                <ListItem button to="/" component={NavLink}>
-                    <ListItemIcon>
-                        <HomeIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Dashboard" />
-                </ListItem>
+                <StandardMenuItem to="/" primary="Dashboard" Icon={HomeIcon} />
+                <StandardMenuItem to="/bunq-api-keys" primary="API keys" Icon={KeyIcon} />
 
                 <ListItem className={classes.listFiller} />
 
+                <StandardMenuItem to="/content-tes" primary="Design preview" Icon={PaletteIcon} />
                 <ListItem button onClick={logout}>
                     <ListItemIcon>
                         <ExitToAppIcon />

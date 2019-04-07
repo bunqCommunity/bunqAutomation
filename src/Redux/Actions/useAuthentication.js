@@ -1,11 +1,7 @@
 import axios from "axios";
 import { useDispatch } from "redux-react-hook";
 
-import LevelDb from "../../Classes/LevelDb";
-import { API_KEY_LOCATION } from "../Reducers/authentication";
-
 const apiBaseUrl = `${process.env.REACT_APP_SERVER_URL}/api`;
-const levelDb = new LevelDb("authentication");
 
 const useAuthentication = () => {
     const dispatch = useDispatch();
@@ -60,19 +56,6 @@ const useAuthentication = () => {
         });
     };
 
-    const loadStoredApiKey = () => {
-        levelDb
-            .get(API_KEY_LOCATION)
-            .then(storedApiKey => {
-                if (storedApiKey) {
-                    setApiKey(storedApiKey);
-                    validateApiKey(storedApiKey);
-                }
-                authenticationIsNotLoading();
-            })
-            .catch(err => console.error(err));
-    };
-
     const logout = () => {
         window.apiClient.setApiKey(false);
         dispatch({ type: "AUTHENTICATION_LOGOUT" });
@@ -109,7 +92,6 @@ const useAuthentication = () => {
     };
 
     return {
-        loadStoredApiKey,
         loginWithPassword,
         loginBunqApiKey,
         authenticationIsLoading,

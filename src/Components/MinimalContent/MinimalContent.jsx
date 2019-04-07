@@ -21,6 +21,7 @@ import useTheme from "../../Redux/Actions/useTheme";
 import useUser from "../../Redux/Actions/useUser";
 
 import { getUserImageUuid } from "../../Functions/ApiDataUtils";
+import ErrorBoundary from "../ErrorBoundary";
 
 const styles = theme => ({
     root: {
@@ -115,53 +116,57 @@ const MinimalContent = ({ alignTop = false, classes, children, className = "", t
     }
 
     return (
-        <div className={classNames(classes.root, className, alignTop && classes.rootTop)}>
-            <Helmet title={title} />
+        <ErrorBoundary>
+            <div className={classNames(classes.root, className, alignTop && classes.rootTop)}>
+                <Helmet title={title} />
 
-            {darkMode && (
-                <ReactParticles
-                    style={{
-                        position: "absolute",
-                        zIndex: 0,
-                        height: "100vh",
-                        width: "100vw",
-                        top: 0,
-                        left: 0
-                    }}
-                />
-            )}
-
-            <div className={classNames(classes.topContent, classes.topLeftContent)}>
-                <Tooltip title={hoverText} aria-label="Displays the current server status">
-                    <Chip
-                        className={classes.serverStatus}
-                        avatar={
-                            <Avatar>
-                                <ServerIcon />
-                            </Avatar>
-                        }
-                        color={statusColor}
-                        label={serverStatusText}
+                {darkMode && (
+                    <ReactParticles
+                        style={{
+                            position: "absolute",
+                            zIndex: 0,
+                            height: "100vh",
+                            width: "100vw",
+                            top: 0,
+                            left: 0
+                        }}
                     />
-                </Tooltip>
+                )}
+
+                <div className={classNames(classes.topContent, classes.topLeftContent)}>
+                    <Tooltip title={hoverText} aria-label="Displays the current server status">
+                        <Chip
+                            className={classes.serverStatus}
+                            avatar={
+                                <Avatar>
+                                    <ServerIcon />
+                                </Avatar>
+                            }
+                            color={statusColor}
+                            label={serverStatusText}
+                        />
+                    </Tooltip>
+                </div>
+
+                <div className={classNames(classes.topContent, classes.topRightContent)}>
+                    <Tooltip title="Toggle themes" aria-label="Toggle between light and dark theme">
+                        <IconButton className={classes.topContentButton} onClick={toggleTheme}>
+                            {darkMode ? <MoonIcon /> : <WbSunnyIcon />}
+                        </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title={user ? "Go home" : "Log in"} aria-label="Go home or log in">
+                        <IconButton className={classes.topContentButton} component={NavLink} to={user ? "/" : "/login"}>
+                            {userButtonContent}
+                        </IconButton>
+                    </Tooltip>
+                </div>
+
+                <div className={classes.minimalContent}>
+                    <ErrorBoundary>{children}</ErrorBoundary>
+                </div>
             </div>
-
-            <div className={classNames(classes.topContent, classes.topRightContent)}>
-                <Tooltip title="Toggle themes" aria-label="Toggle between light and dark theme">
-                    <IconButton className={classes.topContentButton} onClick={toggleTheme}>
-                        {darkMode ? <MoonIcon /> : <WbSunnyIcon />}
-                    </IconButton>
-                </Tooltip>
-
-                <Tooltip title={user ? "Go home" : "Log in"} aria-label="Go home or log in">
-                    <IconButton className={classes.topContentButton} component={NavLink} to={user ? "/" : "/login"}>
-                        {userButtonContent}
-                    </IconButton>
-                </Tooltip>
-            </div>
-
-            <div className={classes.minimalContent}>{children}</div>
-        </div>
+        </ErrorBoundary>
     );
 };
 

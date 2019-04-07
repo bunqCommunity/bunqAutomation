@@ -10,6 +10,7 @@ import useStoredBoolean from "../../Hooks/useStoredBoolean";
 
 import useUser from "../../Redux/Actions/useUser";
 import useAuthentication from "../../Redux/Actions/useAuthentication";
+import ErrorBoundary from "../ErrorBoundary";
 
 const styles = theme => ({
     root: {
@@ -52,19 +53,21 @@ const Content = ({ classes, children, title = "bunqAutomation" }) => {
     }, [state.serverStatusChecked, state.serverStatus]);
 
     return (
-        <div className={classes.root}>
-            <Helmet title={title} />
+        <ErrorBoundary>
+            <div className={classes.root}>
+                <Helmet title={title} />
 
-            <Appbar title={title} menuOpen={menuOpen} toggleMenu={toggleMenu} />
+                <Appbar title={title} menuOpen={menuOpen} toggleMenu={toggleMenu} />
 
-            <MainMenu logout={logout} open={menuOpen} toggleMenu={toggleMenu} />
+                <MainMenu logout={logout} open={menuOpen} toggleMenu={toggleMenu} />
 
-            <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
+                <main className={classes.content}>
+                    <div className={classes.appBarSpacer} />
 
-                {children}
-            </main>
-        </div>
+                    <ErrorBoundary>{children}</ErrorBoundary>
+                </main>
+            </div>
+        </ErrorBoundary>
     );
 };
 

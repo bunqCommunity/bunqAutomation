@@ -31,12 +31,14 @@ const styles = theme => ({
 const mapState = state => ({
     darkMode: state.theme.darkMode,
 
+    apiKey: state.authentication.api_key,
+
     serverStatusChecked: state.server_status.checked,
     serverStatus: state.server_status.status
 });
 
 const LoginPassword = ({ classes }) => {
-    const { darkMode, serverStatus, serverStatusChecked } = useMappedState(mapState);
+    const { darkMode, serverStatus, serverStatusChecked, apiKey } = useMappedState(mapState);
     const { loginWithPassword } = useAuthentication();
 
     const [password, setPassword] = useState("testpassword1234");
@@ -45,6 +47,12 @@ const LoginPassword = ({ classes }) => {
 
     if (serverStatusChecked && serverStatus === "STATUS_FIRST_INSTALL") {
         return <Redirect to="/setup" />;
+    }
+
+    console.log(serverStatusChecked, apiKey, serverStatus);
+    if (serverStatusChecked && apiKey && serverStatus === "STATUS_API_READY") {
+        console.log(true);
+        return <Redirect to="/" />;
     }
 
     return (

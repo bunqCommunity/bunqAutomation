@@ -1,39 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { withStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
 
 import SandboxIcon from "@material-ui/icons/BugReport";
 
-const styles = theme => ({
-    subHeader: {
-        textAlign: "left"
-    }
-});
+import Content from "../../Components/Content/Content";
 
-const BunqApiKeysOverview = ({ classes }) => {
-    const [storedApiKeys, setStoredApiKeys] = useState(false);
+const BunqApiKeys = () => {
+    const [bunqApiKeys, setBunqApiKeys] = useState({});
 
     const checkStoredApiKeys = () => {
         window.apiClient
             .get(`/setup/api-keys`)
             .then(result => {
-                setStoredApiKeys(result.loaded);
+                setBunqApiKeys(result.loaded);
             })
             .catch(error => {
-                console.log(error);
+                console.error(error);
             });
     };
     useEffect(() => checkStoredApiKeys(), []);
 
-    if (!storedApiKeys) return null;
-
-    const bunqApiKeys = Object.keys(storedApiKeys).map(identifier => {
-        const storedKey = storedApiKeys[identifier];
+    const bunqApiKeyListItems = Object.keys(bunqApiKeys).map(identifier => {
+        const storedKey = bunqApiKeys[identifier];
 
         return (
             <ListItem key={identifier}>
@@ -49,11 +43,15 @@ const BunqApiKeysOverview = ({ classes }) => {
     });
 
     return (
-        <List>
-            <ListSubheader className={classes.subHeader}>Available API keys</ListSubheader>
-            {bunqApiKeys}
-        </List>
+        <Content title="bunqAutomation - bunq API key overview">
+            <Paper style={{ padding: 12 }}>
+                <Typography variant="h5">bunq API keys</Typography>
+                <List>
+                    {bunqApiKeyListItems}
+                </List>
+            </Paper>
+        </Content>
     );
 };
 
-export default withStyles(styles)(BunqApiKeysOverview);
+export default BunqApiKeys;

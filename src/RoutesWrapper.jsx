@@ -9,9 +9,7 @@ import MuiTheme from "./Config/MuiTheme";
 import Snackbar from "./Components/Snackbar";
 import Routes from "./Routes";
 
-import useAuthentication from "./Redux/Actions/useAuthentication";
 import useServerStatus from "./Redux/Actions/useServerStatus";
-
 import useSocketEvent from "./Hooks/useSocketEvent";
 
 const mapState = state => ({
@@ -21,7 +19,6 @@ const mapState = state => ({
 const RoutesWrapper = () => {
     const socket = window.socket;
     const { darkMode } = useMappedState(mapState);
-    const { loadStoredApiKey } = useAuthentication();
     const { setServerStatus } = useServerStatus();
 
     // check server status
@@ -30,9 +27,6 @@ const RoutesWrapper = () => {
         if (socket) socket.emit("status");
     }, []);
     useSocketEvent("status", status => setServerStatus(status));
-
-    // initial api key load from storage
-    useEffect(() => loadStoredApiKey(), []);
 
     const lightTheme = createMuiTheme(MuiTheme.light);
     const darkTheme = createMuiTheme(MuiTheme.dark);

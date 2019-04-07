@@ -1,8 +1,13 @@
 const routes = [
-    // authenticates pages
+    // authenticated pages
     {
         path: "/",
         component: "Home",
+        authenticated: true
+    },
+    {
+        path: "/bunq-api-keys",
+        component: "BunqApiKeys",
         authenticated: true
     },
 
