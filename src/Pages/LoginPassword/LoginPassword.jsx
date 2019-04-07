@@ -10,11 +10,6 @@ import ThemedLogo from "../../Components/ThemedLogo";
 
 import useAuthentication from "../../Redux/Actions/useAuthentication";
 
-const mapState = state => ({
-    serverStatusChecked: state.server_status.checked,
-    serverStatus: state.server_status.status
-});
-
 const styles = theme => ({
     root: {
         width: 280,
@@ -31,6 +26,13 @@ const styles = theme => ({
         width: "100%",
         marginBottom: 8
     }
+});
+
+const mapState = state => ({
+    darkMode: state.theme.darkMode,
+
+    serverStatusChecked: state.server_status.checked,
+    serverStatus: state.server_status.status
 });
 
 const LoginPassword = ({ classes }) => {

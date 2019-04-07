@@ -55,11 +55,6 @@ class BunqAutomation {
 
         // check bunqClient inital startup status
         await this.bunqClientWrapper.startupCheck(this.authentication.encryptionKey);
-
-        // if authentication resulted in a loaded password, attempt to load the apikeys
-        if (this.status === STATUS_PASSWORD_READY) {
-            await this.bunqClientWrapper.loadStoredBunqApiKeys();
-        }
     }
 
     /**
@@ -100,7 +95,7 @@ class BunqAutomation {
         if (result) this.status = STATUS_API_READY;
     }
 
-    async loadStoredBunqApiKeys(password) {
+    async loadStoredBunqApiKeys() {
         const result = await this.bunqClientWrapper.loadStoredBunqApiKeys(this.authentication.encryptionKey);
         if (result) this.status = STATUS_API_READY;
     }

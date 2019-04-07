@@ -1,5 +1,4 @@
 import BunqJSClient from "@bunq-community/bunq-js-client";
-import BunqJSClientLimiter from "@bunq-community/bunq-js-client/dist/RequestLimitFactory";
 
 import LevelDb from "./StorageHandlers/LevelDb";
 import Encryption from "./Security/Encryption";
@@ -18,11 +17,9 @@ class BunqClientWrapper {
         this.bunqJSClientStorage = new LevelDb("bunq-js-client");
         this.bunqApiKeyStorage = new LevelDb("bunq-automation-bunq-api-keys");
 
-        // create a custom bunqJSClient limiter so it can be shared
-        this.requestLimitFactory = new BunqJSClientLimiter();
-
         // create an empty client to do api calls to non-authenticated endpoints E.G. create sandbox user
         this.genericBunqJSClient = new BunqJSClient(this.bunqJSClientStorage);
+        this.requestLimitFactory = this.genericBunqJSClient.ApiAdapter.RequestLimitFactory;
 
         // a list of bunq API keys with the unique key as their
         this.bunqApiKeyList = {};
@@ -111,6 +108,11 @@ class BunqClientWrapper {
         // overwrite the existing details if any
         this.bunqApiKeyList[bunqApiKeyIdentifier] = bunqApiKeyInfo;
 
+        // select the key if no other key is stored
+        if (!this.selectedBunqApiKeyIdentifier) {
+            await this.switchBunqApiKey(bunqApiKeyIdentifier);
+        }
+
         // store the updated list
         await this.storeBunqApiKeys();
 
@@ -149,45 +151,58 @@ class BunqClientWrapper {
     }
 
     /**
-     * Should only be run once on startup!
      * @returns {Promise<boolean>}
      */
     async loadStoredBunqApiKeys(encryptionKey) {
         const loadedBunqApiKeys = await this.bunqApiKeyStorage.get(BUNQ_API_KEYS_LOCATION);
-        return false;
 
-        // const setupErrors = [];
-        // await Promise.all(
-        //     Object.keys(loadedBunqApiKeys).map(async identifier => {
-        //         const bunqApiKeyInfo = {
-        //             ...loadedBunqApiKeys[identifier],
-        //             bunqJSClient: false,
-        //             errorState: false
-        //         };
-        //
-        //         // setup and refresh the bunqJSclient if required
-        //         await new Promise(resolve => {
-        //             this.setupBunqJSClient(
-        //                 encryptionKey,
-        //                 bunqApiKeyInfo.bunqApiKey,
-        //                 bunqApiKeyInfo.environment,
-        //                 bunqApiKeyInfo.deviceName,
-        //                 bunqApiKeyInfo.bunqJSClient
-        //             )
-        //                 .then(bunqJSClient => {
-        //                     bunqApiKeyInfo.bunqJSClient = bunqJSClient;
-        //                     resolve();
-        //                 })
-        //                 .catch(error => {
-        //                     bunqApiKeyInfo.errorState = error;
-        //                     setupErrors.push(errors);
-        //
-        //                     // resolve so all clients are tried in paralel
-        //                     resolve();
-        //                 });
-        //         });
-        //     })
-        // );
+        const setupErrors = [];
+        const setupResults = await Promise.all(
+            Object.keys(loadedBunqApiKeys).map(async identifier => {
+                const bunqApiKeyInfo = {
+                    ...loadedBunqApiKeys[identifier],
+                    bunqJSClient: this.bunqApiKeyList[identifier]
+                        ? this.bunqApiKeyList[identifier].bunqJSClient
+                        : false,
+                    errorState: false
+                };
+
+                const decryptedApikey = await this.encryption.decrypt(
+                    bunqApiKeyInfo.encryptedApiKey,
+                    encryptionKey,
+                    bunqApiKeyInfo.encryptionIv
+                );
+
+                // setup and refresh the bunqJSclient if required
+                await new Promise(resolve => {
+                    this.setupBunqJSClient(
+                        encryptionKey,
+                        decryptedApikey,
+                        bunqApiKeyInfo.environment,
+                        bunqApiKeyInfo.deviceName,
+                        bunqApiKeyInfo.bunqJSClient
+                    )
+                        .then(bunqJSClient => {
+                            bunqApiKeyInfo.bunqJSClient = bunqJSClient;
+
+                            this.bunqApiKeyList[identifier] = bunqApiKeyInfo;
+                            resolve();
+                        })
+                        .catch(error => {
+                            bunqApiKeyInfo.errorState = error;
+                            setupErrors.push(errors);
+
+                            this.bunqApiKeyList[identifier] = bunqApiKeyInfo;
+                            resolve();
+                        });
+                });
+            })
+        );
+
+        return {
+            errors: setupErrors,
+            results: setupResults
+        };
     }
 
     /**
@@ -210,11 +225,7 @@ class BunqClientWrapper {
             mappedBunqApiKeys[bunqApiKeyIdentifier] = mappedBunqApiKey;
         });
 
-        console.log("Stored list", mappedBunqApiKeys);
         await this.bunqApiKeyStorage.set(BUNQ_API_KEYS_LOCATION, mappedBunqApiKeys, false);
-
-        const storedStream = await this.bunqApiKeyStorage.streamSync();
-        console.log(storedStream);
     }
 
     /**
@@ -225,6 +236,26 @@ class BunqClientWrapper {
         const splitKey = bunqApiKey.substring(0, 32);
         const derivedInfo = this.encryption.derivePassword(splitKey, "bcb77ac4736bc503d8dbdee79a5c3a04", 16, 50000);
         return derivedInfo.key;
+    }
+
+    /**
+     * Gets a "safe" list to be returned by the API
+     */
+    getBunqApiKeyList() {
+        const bunqApiKeyList = {};
+        Object.keys(this.bunqApiKeyList).forEach(bunqApiKeyIdentifier => {
+            const bunqApiKeyInfo = this.bunqApiKeyList[bunqApiKeyIdentifier];
+
+            const mappedBunqApiKey = {
+                environment: bunqApiKeyInfo.environment,
+                deviceName: bunqApiKeyInfo.deviceName,
+                encryptionIv: bunqApiKeyInfo.encryptionIv,
+                encryptedApiKey: bunqApiKeyInfo.encryptedApiKey
+            };
+
+            bunqApiKeyList[bunqApiKeyIdentifier] = mappedBunqApiKey;
+        });
+        return bunqApiKeyList;
     }
 
     /**
