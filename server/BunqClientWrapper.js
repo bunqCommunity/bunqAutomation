@@ -249,6 +249,7 @@ class BunqClientWrapper {
             const mappedBunqApiKey = {
                 environment: bunqApiKeyInfo.environment,
                 deviceName: bunqApiKeyInfo.deviceName,
+                errorState: bunqApiKeyInfo.errorState,
                 encryptionIv: bunqApiKeyInfo.encryptionIv,
                 encryptedApiKey: bunqApiKeyInfo.encryptedApiKey
             };
