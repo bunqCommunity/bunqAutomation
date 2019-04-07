@@ -116,8 +116,7 @@ class BunqAutomation {
     async getUser(forceUpdate = false) {
         await this.isApiReadyCheck();
 
-        // TODO get user info
-        // const users = await this.bunqJSClient.getUsers(forceUpdate);
+        const users = await this.bunqJSClient.getUsers(forceUpdate);
         const userType = Object.keys(users)[0];
 
         this.user = users[userType];
@@ -139,7 +138,6 @@ class BunqAutomation {
             return this.fileStore.stream(imageFileName);
         }
 
-        // TODO get updated image from bunq API
         const imageContents = await this.bunqJSClient.api.attachmentContent.get(imageUuid, {
             base64: false
         });

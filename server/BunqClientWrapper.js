@@ -155,6 +155,7 @@ class BunqClientWrapper {
      */
     async loadStoredBunqApiKeys(encryptionKey) {
         const loadedBunqApiKeys = await this.bunqApiKeyStorage.get(BUNQ_API_KEYS_LOCATION);
+        if(!loadedBunqApiKeys) return false;
 
         const setupErrors = [];
         const setupResults = await Promise.all(

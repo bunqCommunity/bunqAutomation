@@ -21,7 +21,6 @@ export default ({ setBunqApiKey }) => {
                     setBunqApiKey(result.api_key);
                     setCredentials(false);
                 }
-                console.log(result);
             })
             .catch(error => {
                 console.log(error);

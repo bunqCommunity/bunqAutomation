@@ -63,8 +63,6 @@ const SetBunqKeySection = ({
     };
     const login = () => {
         loginBunqApiKey(bunqApiKey, environment, deviceName, result => {
-            console.error(result);
-
             if (result === true) {
                 nextStep();
             } else {

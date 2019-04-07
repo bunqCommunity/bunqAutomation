@@ -34,28 +34,28 @@ const styles = theme => ({
         paddingTop: 16,
         alignItems: "start"
     },
-    userButton: {
-        position: "absolute",
-        top: 8,
-        right: 8,
-        color: theme.palette.type === "dark" ? "white" : "black"
-    },
-    themeButton: {
-        position: "absolute",
-        top: 8,
-        right: 64,
-        color: theme.palette.type === "dark" ? "white" : "black"
-    },
-    serverStatus: {
-        position: "absolute",
-        top: 16,
-        left: 16
-    },
     minimalContent: {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         zIndex: 1
+    },
+    serverStatus: {},
+    topContent: {
+        top: 16,
+        position: "absolute",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    topRightContent: {
+        right: 16
+    },
+    topLeftContent: {
+        left: 16
+    },
+    topContentButton: {
+        color: theme.palette.type === "dark" ? "white" : "black"
     }
 });
 
@@ -63,6 +63,7 @@ const mapState = state => ({
     darkMode: state.theme.darkMode,
 
     user: state.user.user,
+    userLoading: state.user.loading,
 
     apiKey: state.authentication.api_key,
 
@@ -70,15 +71,15 @@ const mapState = state => ({
 });
 
 const MinimalContent = ({ alignTop = false, classes, children, className = "", title = "bunqAutomation" }) => {
-    const { darkMode, serverStatus, user, apiKey } = useMappedState(mapState);
+    const { darkMode, serverStatus, user, userLoading, apiKey } = useMappedState(mapState);
     const { toggleTheme } = useTheme();
     const { getUser } = useUser();
 
     useEffect(() => {
-        // only load user if we're authenticated
-        if (apiKey) getUser();
-    }, []);
-    useEffect(() => console.log("User or apikey changed", user, apiKey), [user, apiKey]);
+        if (!userLoading && !user && apiKey && serverStatus === "STATUS_API_READY") {
+            getUser();
+        }
+    }, [user, apiKey, serverStatus]);
 
     let serverStatusText = "";
     let hoverText = "";
@@ -130,30 +131,34 @@ const MinimalContent = ({ alignTop = false, classes, children, className = "", t
                 />
             )}
 
-            <Tooltip title="Toggle themes" aria-label="Toggle between light and dark theme">
-                <IconButton className={classes.themeButton} onClick={toggleTheme}>
-                    {darkMode ? <MoonIcon /> : <WbSunnyIcon />}
-                </IconButton>
-            </Tooltip>
+            <div className={classNames(classes.topContent, classes.topLeftContent)}>
+                <Tooltip title={hoverText} aria-label="Displays the current server status">
+                    <Chip
+                        className={classes.serverStatus}
+                        avatar={
+                            <Avatar>
+                                <ServerIcon />
+                            </Avatar>
+                        }
+                        color={statusColor}
+                        label={serverStatusText}
+                    />
+                </Tooltip>
+            </div>
 
-            <Tooltip title={user ? "Go home" : "Log in"} aria-label="Go home or log in">
-                <IconButton className={classes.userButton} component={NavLink} to="/login">
-                    {userButtonContent}
-                </IconButton>
-            </Tooltip>
+            <div className={classNames(classes.topContent, classes.topRightContent)}>
+                <Tooltip title="Toggle themes" aria-label="Toggle between light and dark theme">
+                    <IconButton className={classes.topContentButton} onClick={toggleTheme}>
+                        {darkMode ? <MoonIcon /> : <WbSunnyIcon />}
+                    </IconButton>
+                </Tooltip>
 
-            <Tooltip title={hoverText} aria-label="Displays the current server status">
-                <Chip
-                    className={classes.serverStatus}
-                    avatar={
-                        <Avatar>
-                            <ServerIcon />
-                        </Avatar>
-                    }
-                    color={statusColor}
-                    label={serverStatusText}
-                />
-            </Tooltip>
+                <Tooltip title={user ? "Go home" : "Log in"} aria-label="Go home or log in">
+                    <IconButton className={classes.topContentButton} component={NavLink} to={user ? "/" : "/login"}>
+                        {userButtonContent}
+                    </IconButton>
+                </Tooltip>
+            </div>
 
             <div className={classes.minimalContent}>{children}</div>
         </div>

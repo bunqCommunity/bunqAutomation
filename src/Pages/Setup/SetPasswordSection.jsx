@@ -16,7 +16,16 @@ const styles = () => ({
     }
 });
 
-const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, setPasswordConfirm, serverStatus }) => {
+const SetPasswordSection = ({
+    classes,
+    apiKey,
+    nextStep,
+    password,
+    setPassword,
+    passwordConfirm,
+    setPasswordConfirm,
+    serverStatus
+}) => {
     const { loginWithPassword } = useAuthentication();
 
     const [error, setError] = useState("");
@@ -24,6 +33,13 @@ const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, s
 
     const requiresConfirm = serverStatus === "STATUS_FIRST_INSTALL";
     const invalidForm = !!error || !!errorConfirm || !password || (requiresConfirm && !passwordConfirm);
+
+    useEffect(() => {
+        // skip step if we have an api key and the server doesn't require a password
+        if (serverStatus === "STATUS_API_READY" && apiKey) {
+            nextStep();
+        }
+    }, [serverStatus, apiKey]);
 
     useEffect(() => {
         if (password && password.length < 8) {

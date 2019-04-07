@@ -1,7 +1,10 @@
 export const getUserImageUuid = user => {
-    return getAliasImageUuid(user.alias);
+    return getAvatarImageUuid(user.avatar);
 };
 
-export const getAliasImageUuid = alias => {
-    return false;
+export const getAvatarImageUuid = avatar => {
+    if (!avatar.image) return false;
+    if (!avatar.image[0]) return false;
+
+    return avatar.image[0].attachment_public_uuid;
 };

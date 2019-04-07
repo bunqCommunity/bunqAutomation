@@ -15,6 +15,7 @@ import SetPasswordSection from "./SetPasswordSection";
 import SetBunqKeySection from "./SetBunqKeySection";
 import SetSettingsSection from "./SetSettingsSection";
 import ConfirmDetailsSection from "./ConfirmDetailsSection";
+import BunqApiKeysOverview from "./BunqApiKeysOverview";
 
 const styles = theme => ({
     root: {
@@ -48,6 +49,7 @@ const styles = theme => ({
 const mapState = state => ({
     darkMode: state.theme.darkMode,
 
+    apiKey: state.authentication.api_key,
     authenticationLoading: state.authentication.loading,
 
     serverStatus: state.server_status.status,
@@ -55,7 +57,7 @@ const mapState = state => ({
 });
 
 const Setup = ({ classes }) => {
-    const { darkMode, serverStatus, serverStatusChecked, authenticationLoading } = useMappedState(mapState);
+    const { darkMode, serverStatus, serverStatusChecked, apiKey, authenticationLoading } = useMappedState(mapState);
     const [step, setStep] = useState(0);
 
     const [password, setPassword] = useState("testpassword1234");
@@ -110,6 +112,7 @@ const Setup = ({ classes }) => {
                         <SetPasswordSection
                             nextStep={nextStep}
                             serverStatus={serverStatus}
+                            apiKey={apiKey}
                             password={password}
                             setPassword={setPassword}
                             passwordConfirm={passwordConfirm}
@@ -132,6 +135,12 @@ const Setup = ({ classes }) => {
                     {step === 2 && <SetSettingsSection serverStatus={serverStatus} nextStep={nextStep} />}
                     {step === 3 && <ConfirmDetailsSection serverStatus={serverStatus} />}
                 </Paper>
+
+                {step === 1 && (
+                    <Paper className={classes.content}>
+                        <BunqApiKeysOverview />
+                    </Paper>
+                )}
             </div>
         </MinimalContent>
     );
