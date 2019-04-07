@@ -1,10 +1,13 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
+import classNames from "classnames";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
 import BunqQrCode from "./BunqQrCode";
+import useAuthentication from "../../Redux/Actions/useAuthentication";
+import useSnackbar from "../../Redux/Actions/useSnackbar";
 
 const styles = theme => ({
     textField: {
@@ -22,6 +25,9 @@ const styles = theme => ({
     environmentButtons: {
         width: 130,
         height: 130
+    },
+    createSandboxButton: {
+        marginTop: 10
     }
 });
 
@@ -34,6 +40,7 @@ const styles = theme => ({
 const SetBunqKeySection = ({
     classes,
     nextStep,
+    authenticationLoading,
     bunqApiKey,
     setBunqApiKeyField,
     deviceName,
@@ -41,9 +48,11 @@ const SetBunqKeySection = ({
     environment,
     setEnvironment
 }) => {
+    const { loginBunqApiKey } = useAuthentication();
+    const { openSnackbar } = useSnackbar();
+
     const setBunqKeyCb = e => setBunqApiKeyField(e.target.value);
     const setDeviceNameCb = e => setDeviceName(e.target.value);
-
     const createSandboxUser = () => {
         window.apiClient
             .post("/bunq/login/sandbox-user")
@@ -51,6 +60,17 @@ const SetBunqKeySection = ({
             .catch(error => {
                 console.log(error);
             });
+    };
+    const login = () => {
+        loginBunqApiKey(bunqApiKey, environment, deviceName, result => {
+            console.error(result);
+
+            if (result === true) {
+                nextStep();
+            } else {
+                openSnackbar("Failed to authenticate! The API key or IP address might be invalid");
+            }
+        });
     };
 
     if (environment === false) {
@@ -94,9 +114,9 @@ const SetBunqKeySection = ({
                 <Grid item xs={12} sm={6} md={4}>
                     <Button
                         onClick={createSandboxUser}
-                        className={classes.button}
+                        className={classNames(classes.button, classes.createSandboxButton)}
                         variant="contained"
-                        color="secondary"
+                        color="primary"
                     >
                         Create user
                     </Button>
@@ -111,13 +131,13 @@ const SetBunqKeySection = ({
                 </Grid>
                 <Grid item xs={12}>
                     <Button
-                        disabled={!bunqApiKey}
-                        onClick={nextStep}
+                        disabled={!bunqApiKey || !deviceName || authenticationLoading}
+                        onClick={login}
                         className={classes.button}
                         variant="contained"
                         color="primary"
                     >
-                        Next step
+                        Login with bunq
                     </Button>
                 </Grid>
             </Grid>
@@ -142,7 +162,7 @@ const SetBunqKeySection = ({
             </Grid>
             <Grid item xs={12}>
                 <Button
-                    disabled={!bunqApiKey}
+                    disabled={!bunqApiKey || !deviceName}
                     onClick={nextStep}
                     className={classes.button}
                     variant="contained"

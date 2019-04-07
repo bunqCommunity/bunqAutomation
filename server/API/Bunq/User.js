@@ -3,7 +3,7 @@ export default (app, opts, next) => {
         "/",
         {
             schema: {
-                tags: [],
+                tags: ["bunq"],
                 summary: "get the bunq user connected to the API key",
                 response: {
                     200: {

@@ -4,8 +4,6 @@ import BunqJSClientLimiter from "@bunq-community/bunq-js-client/dist/RequestLimi
 import LevelDb from "./StorageHandlers/LevelDb";
 import Encryption from "./Security/Encryption";
 
-// import { STATUS_API_READY } from "./BunqAutomation";
-
 // location where the full api key list is stored
 export const BUNQ_API_KEYS_LOCATION = "BUNQ_API_KEYS_LOCATION";
 
@@ -23,14 +21,24 @@ class BunqClientWrapper {
         // create a custom bunqJSClient limiter so it can be shared
         this.requestLimitFactory = new BunqJSClientLimiter();
 
+        // create an empty client to do api calls to non-authenticated endpoints E.G. create sandbox user
+        this.genericBunqJSClient = new BunqJSClient(this.bunqJSClientStorage);
+
         // a list of bunq API keys with the unique key as their
         this.bunqApiKeyList = {};
         // which key is currently used by default
         this.selectedBunqApiKeyIdentifier = false;
     }
 
-    async startupCheck() {
-        const loadedBunqApiKeys = await this.bunqApiKeyStorage.get(BUNQ_API_KEYS_LOCATION);
+    async startupCheck(encryptionKey = false) {
+        const selectedBunqApiKey = await this.bunqApiKeyStorage.get(BUNQ_API_KEY_SELECTED);
+        if (selectedBunqApiKey) {
+            this.selectedBunqApiKeyIdentifier = selectedBunqApiKey;
+        }
+
+        if (encryptionKey) {
+            await this.loadStoredBunqApiKeys(encryptionKey);
+        }
     }
 
     /**
@@ -41,6 +49,20 @@ class BunqClientWrapper {
     async switchBunqApiKey(identifier) {
         this.selectedBunqApiKeyIdentifier = identifier;
         await this.bunqApiKeyStorage.set(BUNQ_API_KEY_SELECTED, identifier);
+    }
+
+    /**
+     * Returns false or the currently selected api client
+     * @returns {boolean|boolean|BunqJSClient|*}
+     */
+    get bunqJSClient() {
+        if (this.bunqApiKeyList[this.selectedBunqApiKeyIdentifier]) {
+            const selectedBunqApiKey = this.bunqApiKeyList[this.selectedBunqApiKeyIdentifier];
+            if (selectedBunqApiKey.bunqJSClient) {
+                return selectedBunqApiKey.bunqJSClient;
+            }
+        }
+        return false;
     }
 
     /**
@@ -92,8 +114,6 @@ class BunqClientWrapper {
         // store the updated list
         await this.storeBunqApiKeys();
 
-        // TODO set api status to ready
-        // this.bunqAutomation.status = STATUS_API_READY;
         return true;
     }
 
@@ -130,43 +150,44 @@ class BunqClientWrapper {
 
     /**
      * Should only be run once on startup!
-     * @returns {Promise<void>}
+     * @returns {Promise<boolean>}
      */
     async loadStoredBunqApiKeys(encryptionKey) {
         const loadedBunqApiKeys = await this.bunqApiKeyStorage.get(BUNQ_API_KEYS_LOCATION);
+        return false;
 
-        const setupErrors = [];
-        await Promise.all(
-            Object.keys(loadedBunqApiKeys).map(async identifier => {
-                const bunqApiKeyInfo = {
-                    ...loadedBunqApiKeys[identifier],
-                    bunqJSClient: false,
-                    errorState: false
-                };
-
-                // setup and refresh the bunqJSclient if required
-                await new Promise(resolve => {
-                    this.setupBunqJSClient(
-                        encryptionKey,
-                        bunqApiKeyInfo.bunqApiKey,
-                        bunqApiKeyInfo.environment,
-                        bunqApiKeyInfo.deviceName,
-                        bunqApiKeyInfo.bunqJSClient
-                    )
-                        .then(bunqJSClient => {
-                            bunqApiKeyInfo.bunqJSClient = bunqJSClient;
-                            resolve();
-                        })
-                        .catch(error => {
-                            bunqApiKeyInfo.errorState = error;
-                            setupErrors.push(errors);
-
-                            // resolve so all clients are tried in paralel
-                            resolve();
-                        });
-                });
-            })
-        );
+        // const setupErrors = [];
+        // await Promise.all(
+        //     Object.keys(loadedBunqApiKeys).map(async identifier => {
+        //         const bunqApiKeyInfo = {
+        //             ...loadedBunqApiKeys[identifier],
+        //             bunqJSClient: false,
+        //             errorState: false
+        //         };
+        //
+        //         // setup and refresh the bunqJSclient if required
+        //         await new Promise(resolve => {
+        //             this.setupBunqJSClient(
+        //                 encryptionKey,
+        //                 bunqApiKeyInfo.bunqApiKey,
+        //                 bunqApiKeyInfo.environment,
+        //                 bunqApiKeyInfo.deviceName,
+        //                 bunqApiKeyInfo.bunqJSClient
+        //             )
+        //                 .then(bunqJSClient => {
+        //                     bunqApiKeyInfo.bunqJSClient = bunqJSClient;
+        //                     resolve();
+        //                 })
+        //                 .catch(error => {
+        //                     bunqApiKeyInfo.errorState = error;
+        //                     setupErrors.push(errors);
+        //
+        //                     // resolve so all clients are tried in paralel
+        //                     resolve();
+        //                 });
+        //         });
+        //     })
+        // );
     }
 
     /**
@@ -189,7 +210,11 @@ class BunqClientWrapper {
             mappedBunqApiKeys[bunqApiKeyIdentifier] = mappedBunqApiKey;
         });
 
-        await this.bunqApiKeyStorage.set(BUNQ_API_KEYS_LOCATION, mappedBunqApiKeys);
+        console.log("Stored list", mappedBunqApiKeys);
+        await this.bunqApiKeyStorage.set(BUNQ_API_KEYS_LOCATION, mappedBunqApiKeys, false);
+
+        const storedStream = await this.bunqApiKeyStorage.streamSync();
+        console.log(storedStream);
     }
 
     /**

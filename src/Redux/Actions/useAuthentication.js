@@ -10,7 +10,7 @@ const levelDb = new LevelDb("authentication");
 const useAuthentication = () => {
     const dispatch = useDispatch();
 
-    const loginWithPassword = password => {
+    const loginWithPassword = (password, callback = false) => {
         authenticationIsLoading();
         axios
             .post(`${apiBaseUrl}/setup/password`, {
@@ -29,7 +29,7 @@ const useAuthentication = () => {
             });
     };
 
-    const loginBunqApiKey = (bunqApiKey, environment, deviceName = false) => {
+    const loginBunqApiKey = (bunqApiKey, environment, deviceName = false, callback = false) => {
         authenticationIsLoading();
         window.apiClient
             .post(`${apiBaseUrl}/setup/api-key`, {
@@ -40,17 +40,14 @@ const useAuthentication = () => {
             .then(() => {
                 authenticationIsNotLoading();
                 window.socket && window.socket.emit("status");
+                if (callback) callback(true);
             })
             .catch(error => {
-                console.error(error);
                 authenticationIsNotLoading();
                 window.socket && window.socket.emit("status");
+                if (callback) callback(error);
             });
     };
-
-    // const combinedLogin = () => {
-    //
-    // }
 
     const setApiKey = api_key => {
         window.apiClient.setApiKey(api_key);

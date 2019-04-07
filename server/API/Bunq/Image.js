@@ -5,7 +5,7 @@ export default (app, opts, next) => {
         "/:imageId",
         {
             schema: {
-                tags: [],
+                tags: ["bunq"],
                 summary: "get the a bunq image by its public uuid",
                 response: {
                     200: {

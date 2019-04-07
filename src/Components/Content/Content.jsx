@@ -44,7 +44,7 @@ const Content = ({ classes, children, title = "bunqAutomation" }) => {
     const { getUser } = useUser();
 
     useEffect(() => {
-        if (!state.user && !state.userLoading && !state.authenticationLoading) getUser(true);
+        if (!state.user && !state.userLoading && !state.authenticationLoading) getUser();
     }, []);
 
     useEffect(() => {

@@ -1,6 +1,6 @@
 const fastifyPlugin = require("fastify-plugin");
 import { UnAuthenticatedError } from "../../Errors";
-import { API_KEY_HEADER } from "../../Security/Authentication";
+import { BUNQ_API_KEY_HEADER } from "../../Security/Authentication";
 
 /**
  * The standard generic API key authentication through a header
@@ -11,9 +11,9 @@ const apiKeyAuthenticationPlugin = (fastify, options, next) => {
         const query = request.query;
 
         // get either value but prefer header
-        const apiKey = headers[API_KEY_HEADER] || query.api_key;
+        const apiKey = headers[BUNQ_API_KEY_HEADER] || query.api_key;
 
-        const result = await fastify.authentication.validateApiKey(apiKey);
+        const result = await fastify.bunqAutomation.authentication.validateApiKey(apiKey);
 
         if (!result) {
             throw new UnAuthenticatedError();

@@ -54,7 +54,7 @@ class BunqAutomation {
         }
 
         // check bunqClient inital startup status
-        await this.bunqClientWrapper.startupCheck();
+        await this.bunqClientWrapper.startupCheck(this.authentication.encryptionKey);
 
         // if authentication resulted in a loaded password, attempt to load the apikeys
         if (this.status === STATUS_PASSWORD_READY) {
@@ -62,25 +62,17 @@ class BunqAutomation {
         }
     }
 
-    // wrappers around the status property to update connected clients
-    set status(status) {
-        this._status = status;
-        if (this.socketServer) {
-            // emit the new status to all socket clients
-            this.socketServer.emit("status", this.status);
-        }
-    }
-    get status() {
-        console.log("bunqAutomation.status = ", this._status);
-        return this._status;
-    }
-
     /**
      * Standard check around API calls
      * @returns {Promise<boolean>}
      */
     async isApiReadyCheck() {
-        if (this.status === STATUS_API_READY) return true;
+        if (this.status === STATUS_API_READY) {
+            if (!this.bunqJSClient) {
+                throw new NoBunqApiKeyError();
+            }
+            return true;
+        }
 
         switch (this.status) {
             case STATUS_FIRST_INSTALL:
@@ -93,11 +85,32 @@ class BunqAutomation {
         return true;
     }
 
-    async setPassword() {
+    async setPassword(password) {
         const result = await this.authentication.setPassword(password);
-        if (result) {
-            this.status = STATUS_PASSWORD_READY;
-        }
+        if (result) this.status = STATUS_PASSWORD_READY;
+    }
+
+    async addBunqApiKey(bunqApiKey, environment, deviceName) {
+        const result = await this.bunqClientWrapper.addBunqApiKey(
+            this.authentication.encryptionKey,
+            bunqApiKey,
+            environment,
+            deviceName
+        );
+        if (result) this.status = STATUS_API_READY;
+    }
+
+    async loadStoredBunqApiKeys(password) {
+        const result = await this.bunqClientWrapper.loadStoredBunqApiKeys(this.authentication.encryptionKey);
+        if (result) this.status = STATUS_API_READY;
+    }
+
+    // wraps around the bunqclientwrapper to get the active client
+    get bunqJSClient() {
+        return this.bunqClientWrapper.bunqJSClient;
+    }
+    get genericBunqJSClient() {
+        return this.bunqClientWrapper.genericBunqJSClient;
     }
 
     /**
@@ -148,16 +161,25 @@ class BunqAutomation {
         return imageContents;
     }
 
+    // wrappers around the status property to update connected clients
+    set status(status) {
+        this._status = status;
+        if (this.socketServer) {
+            // emit the new status to all socket clients
+            this.socketServer.emit("status", this.status);
+        }
+    }
+    get status() {
+        console.log("bunqAutomation.status = ", this._status);
+        return this._status;
+    }
+
     // TODO export and import all stored data to/from json
     async export() {}
     async import() {}
 
     async reset() {
-        await Promise.all([
-            this.pipeline.reset(),
-            this.bunqClientWrapper.reset(),
-            this.authentication.reset(),
-        ]);
+        await Promise.all([this.pipeline.reset(), this.bunqClientWrapper.reset(), this.authentication.reset()]);
     }
 }
 

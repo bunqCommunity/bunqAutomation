@@ -15,5 +15,11 @@ export default (app, opts, next) => {
         next();
     });
 
+    app.get("/test", async (request, reply) => {
+        const result = await app.bunqAutomation.bunqClientWrapper.bunqApiKeyStorage.streamSync();
+
+        reply.send(result);
+    });
+
     next();
 };

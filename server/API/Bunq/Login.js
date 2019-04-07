@@ -1,6 +1,6 @@
 export default (app, opts, next) => {
     app.post("/credentials", async (request, reply) => {
-        const bunqJSClient = app.bunqAutomation.bunqJSClient;
+        const bunqJSClient = app.bunqAutomation.genericBunqJSClient;
 
         const { qr_base64, uuid, status } = await bunqJSClient.createCredentials();
 
@@ -13,7 +13,7 @@ export default (app, opts, next) => {
 
     app.get("/credentials/:uuid", async (request, reply) => {
         const uuid = request.params.uuid;
-        const bunqJSClient = app.bunqAutomation.bunqJSClient;
+        const bunqJSClient = app.bunqAutomation.genericBunqJSClient;
 
         const credentialStatus = await bunqJSClient.checkCredentialStatus(uuid);
 
@@ -21,7 +21,7 @@ export default (app, opts, next) => {
     });
 
     app.post("/sandbox-user", async (request, reply) => {
-        const bunqJSClient = app.bunqAutomation.bunqJSClient;
+        const bunqJSClient = app.bunqAutomation.genericBunqJSClient;
 
         const sandboxDetails = await bunqJSClient.api.sandboxUser.post();
 

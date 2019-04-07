@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { useMappedState } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
+import StepButton from "@material-ui/core/StepButton";
 import StepLabel from "@material-ui/core/StepLabel";
 
 import MinimalContent from "../../Components/MinimalContent/MinimalContent";
@@ -15,8 +15,6 @@ import SetPasswordSection from "./SetPasswordSection";
 import SetBunqKeySection from "./SetBunqKeySection";
 import SetSettingsSection from "./SetSettingsSection";
 import ConfirmDetailsSection from "./ConfirmDetailsSection";
-
-// import useAuthentication from "../../Redux/Actions/useAuthentication";
 
 const styles = theme => ({
     root: {
@@ -50,16 +48,14 @@ const styles = theme => ({
 const mapState = state => ({
     darkMode: state.theme.darkMode,
 
-    apiKey: state.authentication.api_key,
-    loading: state.authentication.loading,
+    authenticationLoading: state.authentication.loading,
 
-    serverStatusChecked: state.server_status.checked,
-    serverStatus: state.server_status.status
+    serverStatus: state.server_status.status,
+    serverStatusChecked: state.server_status.checked
 });
 
 const Setup = ({ classes }) => {
-    // const {  } = useAuthentication();
-    const { darkMode, serverStatus, serverStatusChecked } = useMappedState(mapState);
+    const { darkMode, serverStatus, serverStatusChecked, authenticationLoading } = useMappedState(mapState);
     const [step, setStep] = useState(0);
 
     const [password, setPassword] = useState("testpassword1234");
@@ -70,13 +66,23 @@ const Setup = ({ classes }) => {
     const [environment, setEnvironment] = useState(false);
 
     const nextStep = () => setStep(step + 1);
+    const resetStep2 = () => {
+        setBunqApiKeyField("");
+        setEnvironment(false);
+    };
     const themedLogo = ThemedLogo(darkMode);
 
-    if (serverStatusChecked) {
-        if (serverStatus !== "STATUS_FIRST_INSTALL" && serverStatus !== "DISCONNECTED") {
-            return <Redirect to="/login" />;
+    useEffect(() => {
+        if (serverStatusChecked && serverStatus === "STATUS_PASSWORD_READY") {
+            if (step < 1) setStep(1);
+        } else if (
+            serverStatusChecked &&
+            (serverStatus === "STATUS_UNINITIALIZED" || serverStatus === "STATUS_FIRST_INSTALL")
+        ) {
+            if (step > 0) setStep(0);
         }
-    }
+    }, [serverStatus, serverStatusChecked]);
+
     return (
         <MinimalContent title="bunqAutomation - Setup" alignTop={true}>
             <div className={classes.root}>
@@ -91,7 +97,9 @@ const Setup = ({ classes }) => {
                             <StepLabel>Set a password</StepLabel>
                         </Step>
                         <Step>
-                            <StepLabel>Login with bunq</StepLabel>
+                            <StepButton onClick={resetStep2}>
+                                <StepLabel>Login with bunq</StepLabel>
+                            </StepButton>
                         </Step>
                         <Step>
                             <StepLabel>Change settings</StepLabel>
@@ -101,6 +109,7 @@ const Setup = ({ classes }) => {
                     {step === 0 && (
                         <SetPasswordSection
                             nextStep={nextStep}
+                            serverStatus={serverStatus}
                             password={password}
                             setPassword={setPassword}
                             passwordConfirm={passwordConfirm}
@@ -110,6 +119,8 @@ const Setup = ({ classes }) => {
                     {step === 1 && (
                         <SetBunqKeySection
                             nextStep={nextStep}
+                            serverStatus={serverStatus}
+                            authenticationLoading={authenticationLoading}
                             bunqApiKey={bunqApiKey}
                             setBunqApiKeyField={setBunqApiKeyField}
                             deviceName={deviceName}
@@ -118,8 +129,8 @@ const Setup = ({ classes }) => {
                             setEnvironment={setEnvironment}
                         />
                     )}
-                    {step === 2 && <SetSettingsSection nextStep={nextStep} />}
-                    {step === 3 && <ConfirmDetailsSection />}
+                    {step === 2 && <SetSettingsSection serverStatus={serverStatus} nextStep={nextStep} />}
+                    {step === 3 && <ConfirmDetailsSection serverStatus={serverStatus} />}
                 </Paper>
             </div>
         </MinimalContent>

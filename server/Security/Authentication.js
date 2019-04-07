@@ -56,7 +56,9 @@ export class Authentication {
      */
     async validateApiKey(apiKey, refreshApiKey = true) {
         const storedApiKey = await this.apiKeyStorage.get(apiKey);
-        if (!storedApiKey) return false;
+        if (!storedApiKey) {
+            return false;
+        }
 
         const currentDate = new Date();
         const expiryDate = new Date(storedApiKey.updated);

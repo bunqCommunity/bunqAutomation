@@ -16,12 +16,14 @@ const styles = () => ({
     }
 });
 
-const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, setPasswordConfirm }) => {
+const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, setPasswordConfirm, serverStatus }) => {
     const { loginWithPassword } = useAuthentication();
 
-    // set a password
     const [error, setError] = useState("");
     const [errorConfirm, setErrorConfirm] = useState("");
+
+    const requiresConfirm = serverStatus === "STATUS_FIRST_INSTALL";
+    const invalidForm = !!error || !!errorConfirm || !password || (requiresConfirm && !passwordConfirm);
 
     useEffect(() => {
         if (password && password.length < 8) {
@@ -31,7 +33,7 @@ const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, s
         }
     }, [password, passwordConfirm]);
     useEffect(() => {
-        if (passwordConfirm && password !== passwordConfirm) {
+        if (requiresConfirm && passwordConfirm && password !== passwordConfirm) {
             setErrorConfirm("Password do not match");
         } else {
             setErrorConfirm("");
@@ -45,9 +47,7 @@ const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, s
         setPasswordConfirm(e.target.value);
     };
     const login = () => {
-        if (!error) {
-            loginWithPassword(password);
-        }
+        if (!invalidForm) loginWithPassword(password);
     };
 
     return (
@@ -62,24 +62,26 @@ const SetPasswordSection = ({ classes, password, setPassword, passwordConfirm, s
                 value={password}
                 onChange={setPasswordCb}
             />
-            <TextField
-                className={classes.textField}
-                type="password"
-                label="Confirm password"
-                disabled={!!error || !password}
-                error={!!errorConfirm}
-                helperText={errorConfirm}
-                value={passwordConfirm}
-                onChange={setPasswordConfirmCb}
-            />
+            {requiresConfirm && (
+                <TextField
+                    className={classes.textField}
+                    type="password"
+                    label="Confirm password"
+                    disabled={!!error || !password}
+                    error={!!errorConfirm}
+                    helperText={errorConfirm}
+                    value={passwordConfirm}
+                    onChange={setPasswordConfirmCb}
+                />
+            )}
             <Button
-                disabled={!!error || !!errorConfirm || !password}
+                disabled={invalidForm}
                 onClick={login}
                 className={classes.button}
                 variant="contained"
                 color="primary"
             >
-                Set password
+                {requiresConfirm ? "Set password" : "Confirm your password"}
             </Button>
         </React.Fragment>
     );
