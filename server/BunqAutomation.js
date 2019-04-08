@@ -34,9 +34,9 @@ class BunqAutomation {
         this.user = false;
     }
 
-    async startupCheck() {
+    async startup() {
         // check authentication inital startup status
-        await this.authentication.startupCheck();
+        await this.authentication.startup();
 
         if (this.authentication.hasStoredPassword) {
             // if a previous password has been saved, set uninitialzed status (versus first install)
@@ -54,7 +54,7 @@ class BunqAutomation {
         }
 
         // check bunqClient inital startup status
-        await this.bunqClientWrapper.startupCheck(this.authentication.encryptionKey);
+        await this.bunqClientWrapper.startup(this.authentication.encryptionKey);
     }
 
     /**

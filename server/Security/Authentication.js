@@ -24,7 +24,7 @@ export class Authentication {
         this.hasStoredPassword = false;
     }
 
-    async startupCheck() {
+    async startup() {
         // check if a password has been previously set
         const storedPasswordIv = await this.authenticationStorage.get(PASSWORD_IV_LOCATION);
         const storedPasswordHash = await this.authenticationStorage.get(PASSWORD_HASH_LOCATION);

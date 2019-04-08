@@ -1,6 +1,8 @@
 import LevelDb from "../StorageHandlers/LevelDb";
 import ConfigValidator from "./ConfigValidator";
 
+export const ACTIVE_ACTIONS_LOCATION = "ACTIVE_ACTIONS_LOCATION";
+
 class Pipeline {
     constructor(logger) {
         this.logger = logger;
@@ -15,6 +17,10 @@ class Pipeline {
 
         // active modules configured by the user
         this.activeActions = {};
+    }
+
+    async startup(){
+        const storedActiveActions = await this.pipelineStore.get(ACTIVE_ACTIONS_LOCATION)
     }
 
     activateAction(actionConfig){

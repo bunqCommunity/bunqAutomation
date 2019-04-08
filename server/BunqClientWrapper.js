@@ -9,6 +9,10 @@ export const BUNQ_API_KEYS_LOCATION = "BUNQ_API_KEYS_LOCATION";
 // info for the currently selected "main" API key
 export const BUNQ_API_KEY_SELECTED = "BUNQ_API_KEY_SELECTED";
 
+// properties which can be shared with the client safely
+// TODO add icon picker E.G. https://material.io/tools/icons/static/data.json
+const publicBunqApiKeyProperties = ["environment", "deviceName", "icon", "color", "errorState"];
+
 class BunqClientWrapper {
     constructor(logger) {
         this.logger = logger;
@@ -27,7 +31,7 @@ class BunqClientWrapper {
         this.selectedBunqApiKeyIdentifier = false;
     }
 
-    async startupCheck(encryptionKey = false) {
+    async startup(encryptionKey = false) {
         const selectedBunqApiKey = await this.bunqApiKeyStorage.get(BUNQ_API_KEY_SELECTED);
         if (selectedBunqApiKey) {
             this.selectedBunqApiKeyIdentifier = selectedBunqApiKey;
@@ -155,7 +159,7 @@ class BunqClientWrapper {
      */
     async loadStoredBunqApiKeys(encryptionKey) {
         const loadedBunqApiKeys = await this.bunqApiKeyStorage.get(BUNQ_API_KEYS_LOCATION);
-        if(!loadedBunqApiKeys) return false;
+        if (!loadedBunqApiKeys) return false;
 
         const setupErrors = [];
         const setupResults = await Promise.all(
@@ -217,11 +221,14 @@ class BunqClientWrapper {
 
             // map only values that we know that can be stored safely
             const mappedBunqApiKey = {
-                environment: bunqApiKeyInfo.environment,
-                deviceName: bunqApiKeyInfo.deviceName,
                 encryptionIv: bunqApiKeyInfo.encryptionIv,
                 encryptedApiKey: bunqApiKeyInfo.encryptedApiKey
             };
+            publicBunqApiKeyProperties.forEach(safeProperty => {
+                if (bunqApiKeyInfo[safeProperty]) {
+                    mappedBunqApiKey[safeProperty] = bunqApiKeyInfo[safeProperty];
+                }
+            });
 
             mappedBunqApiKeys[bunqApiKeyIdentifier] = mappedBunqApiKey;
         });
@@ -246,14 +253,13 @@ class BunqClientWrapper {
         const bunqApiKeyList = {};
         Object.keys(this.bunqApiKeyList).forEach(bunqApiKeyIdentifier => {
             const bunqApiKeyInfo = this.bunqApiKeyList[bunqApiKeyIdentifier];
+            const mappedBunqApiKey = {};
 
-            const mappedBunqApiKey = {
-                environment: bunqApiKeyInfo.environment,
-                deviceName: bunqApiKeyInfo.deviceName,
-                errorState: bunqApiKeyInfo.errorState,
-                encryptionIv: bunqApiKeyInfo.encryptionIv,
-                encryptedApiKey: bunqApiKeyInfo.encryptedApiKey
-            };
+            publicBunqApiKeyProperties.forEach(safeProperty => {
+                if (bunqApiKeyInfo[safeProperty]) {
+                    mappedBunqApiKey[safeProperty] = bunqApiKeyInfo[safeProperty];
+                }
+            });
 
             bunqApiKeyList[bunqApiKeyIdentifier] = mappedBunqApiKey;
         });
