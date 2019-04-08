@@ -39,6 +39,7 @@ export default function reducer(state = defaultState, action) {
                 .catch(err => console.error(err));
             return {
                 ...defaultState,
+                api_key: false,
                 loading: false
             };
         default:
