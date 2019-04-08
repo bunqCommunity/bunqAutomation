@@ -1,17 +1,14 @@
-import uuid from "uuid";
+import uuidLib from "uuid";
 
 class ActionConfig {
     constructor(uuid = false, options = {}) {
-        this.uuid = uuid || uuid.v4();
-        const { action = false, filters = [], outputs = [], validationErrors = {}, ...customOptions } = options;
-        this.action = action;
-        this.filters = filters;
-        this.outputs = outputs;
-        this.validationErrors = validationErrors;
-
-        Object.keys(customOptions).forEach(optionKey => {
-            this[optionKey] = customOptions[optionKey];
-        });
+        this.uuid = uuid || uuidLib.v4();
+        this.options = options;
+        this.action = false;
+        this.active = false;
+        this.filters = [];
+        this.outputs = [];
+        this.validationErrors = {};
     }
 }
 

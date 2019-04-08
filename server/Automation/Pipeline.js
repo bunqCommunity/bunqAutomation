@@ -4,7 +4,7 @@ import ConfigValidator from "./ConfigValidator";
 class Pipeline {
     constructor(logger) {
         this.logger = logger;
-        this.store = new LevelDb("bunq-automation-pipeline");
+        this.pipelineStore = new LevelDb("bunq-automation-pipeline");
         this.validator = new ConfigValidator(this);
 
         // available modules
@@ -17,6 +17,17 @@ class Pipeline {
         this.activeActions = {};
     }
 
+    activateAction(actionConfig){
+
+    }
+
+    validateRegistration(item) {
+        if (!item.id) return "No 'id' property set";
+        if (!item.description) return "No 'description' property set";
+
+        return true;
+    }
+
     registerAction(action) {
         if (this.actions[action.id]) throw new Error("An Action with this ID has already been registered");
 
@@ -27,14 +38,6 @@ class Pipeline {
         }
         throw new Error(`Invalid Action given: ${validation}`);
     }
-
-    validateRegistration(item) {
-        if (!item.id) return "No 'id' property set";
-        if (!item.description) return "No 'description' property set";
-
-        return true;
-    }
-
     registerFilter(filter) {
         if (this.actions[filter.id]) throw new Error("A Filter with this ID has already been registered");
 
@@ -45,7 +48,6 @@ class Pipeline {
         }
         throw new Error(`Invalid Filter given: ${validation}`);
     }
-
     registerOutput(output) {
         if (this.actions[output.id]) throw new Error("An Output with this ID has already been registered");
 
@@ -56,7 +58,6 @@ class Pipeline {
         }
         throw new Error(`Invalid Output given: ${validation}`);
     }
-
     registerSchedule(schedule) {
         if (this.actions[schedule.id]) throw new Error("A Schedule with this ID has already been registered");
 

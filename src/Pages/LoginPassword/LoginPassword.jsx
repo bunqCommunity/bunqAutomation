@@ -49,9 +49,8 @@ const LoginPassword = ({ classes }) => {
         return <Redirect to="/setup" />;
     }
 
-    console.log(serverStatusChecked, apiKey, serverStatus);
+    // console.log(serverStatusChecked, apiKey, serverStatus);
     if (serverStatusChecked && apiKey && serverStatus === "STATUS_API_READY") {
-        console.log(true);
         return <Redirect to="/" />;
     }
 

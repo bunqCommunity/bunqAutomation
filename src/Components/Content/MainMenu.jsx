@@ -95,7 +95,7 @@ const MainMenu = ({ classes, open, toggleMenu, logout }) => {
 
                 <ListItem className={classes.listFiller} />
 
-                <StandardMenuItem to="/content-tes" primary="Design preview" Icon={PaletteIcon} />
+                <StandardMenuItem to="/content-test" primary="Design preview" Icon={PaletteIcon} />
                 <ListItem button onClick={logout}>
                     <ListItemIcon>
                         <ExitToAppIcon />
