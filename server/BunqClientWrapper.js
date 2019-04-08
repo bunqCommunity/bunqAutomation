@@ -172,6 +172,10 @@ class BunqClientWrapper {
                     errorState: false
                 };
 
+                // ensure certain props exist
+                if (!bunqApiKeyInfo.icon) bunqApiKeyInfo.icon = "vpn_key";
+                if (!bunqApiKeyInfo.color) bunqApiKeyInfo.color = "inherit";
+
                 const decryptedApikey = await this.encryption.decrypt(
                     bunqApiKeyInfo.encryptedApiKey,
                     encryptionKey,

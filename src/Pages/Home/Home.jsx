@@ -7,6 +7,7 @@ import Content from "../../Components/Content/Content";
 import BalanceGraph from "./BalanceGraph";
 import ActionHistoryOverview from "./ActionHistoryOverview";
 import ActiveActions from "./ActiveActions";
+import ConnectedBunqApiKeys from "./ConnectedBunqApiKeys";
 
 const styles = theme => ({
     paper: {
@@ -24,8 +25,11 @@ const Home = () => {
                 <Grid item xs={12} sm={5} md={4}>
                     <ActionHistoryOverview />
                 </Grid>
-                <Grid item xs={12}>
-                    <ActiveActions />
+                <Grid item xs={12} sm={7} md={8}>
+                    <ActiveActions itemXs={12} itemSm={6} itemMd={6} />
+                </Grid>
+                <Grid item xs={12} sm={5} md={4}>
+                    <ConnectedBunqApiKeys />
                 </Grid>
             </Grid>
         </Content>

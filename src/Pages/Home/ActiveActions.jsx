@@ -47,7 +47,7 @@ const styles = theme => ({
     }
 });
 
-const ActionHistoryOverview = ({ classes }) => {
+const ActionHistoryOverview = ({ classes, itemXs = 12, itemSm = 6, itemMd = 4 }) => {
     const activeActions = [
         {
             type: "monthly-request",
@@ -77,7 +77,7 @@ const ActionHistoryOverview = ({ classes }) => {
     const activeActionComponents = activeActions.map((activeAction, index) => {
         const Icon = activeAction.Icon;
         return (
-            <Grid item xs={12} sm={6} md={4} key={index}>
+            <Grid item xs={itemXs} sm={itemSm} md={itemMd} key={index}>
                 <Paper className={classes.paper}>
                     <div className={classes.headerWrapper}>
                         <SvgIcon color="action">

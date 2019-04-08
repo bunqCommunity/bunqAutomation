@@ -75,8 +75,8 @@ const getOptions = theme => {
 };
 
 const getRandomNumber = (min, max) => Math.floor(Math.random() * max) + min;
-const getRandomData = (itemCount, customOptions = { min: -100, max: 300, start: 2000 }) => {
-    const defaultOptions = { min: -100, max: 300, start: 2000 };
+const getRandomData = (itemCount, customOptions = { min: 100, max: 300, start: 2000 }) => {
+    const defaultOptions = { min: 100, max: 300, start: 2000 };
     const options = { ...defaultOptions, ...customOptions };
     const dataSet = [];
     let previousNumber = options.start;
@@ -89,9 +89,8 @@ const getRandomData = (itemCount, customOptions = { min: -100, max: 300, start: 
 
         dataSet.push({ x: x, y: previousNumber });
         let changeAmount = getRandomNumber(options.min, options.max);
-        if (previousNumber + changeAmount < 0) {
-            changeAmount = getRandomNumber(options.min, options.max);
-        }
+        if (getRandomNumber(0, 10) < 5) changeAmount = changeAmount * -1;
+
         previousNumber += changeAmount;
     }
 
@@ -99,9 +98,9 @@ const getRandomData = (itemCount, customOptions = { min: -100, max: 300, start: 
 };
 
 const BalanceGraph = ({ classes, theme }) => {
-    const randomData = getRandomData(30);
-    const randomData2 = getRandomData(30);
-    const randomData3 = getRandomData(30, { min: -200 });
+    const randomData = getRandomData(30, { start: getRandomNumber(1000, 2000) });
+    const randomData2 = getRandomData(30, { start: getRandomNumber(1000, 2000) });
+    const randomData3 = getRandomData(30, { start: getRandomNumber(1000, 2000) });
     const options = getOptions(theme);
 
     return (
