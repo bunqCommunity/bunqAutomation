@@ -24,6 +24,7 @@ const styles = theme => ({
 
 const getOptions = theme => {
     const textColor = theme.palette.text.primary;
+
     return {
         maintainAspectRatio: false,
         scales: {
@@ -98,7 +99,6 @@ const getRandomData = (itemCount, customOptions = { min: -100, max: 300, start: 
 };
 
 const BalanceGraph = ({ classes, theme }) => {
-    console.log(theme);
     const randomData = getRandomData(30);
     const randomData2 = getRandomData(30);
     const randomData3 = getRandomData(30, { min: -200 });
@@ -116,7 +116,9 @@ const BalanceGraph = ({ classes, theme }) => {
             </div>
 
             <Paper className={classes.paper}>
+                {/* brute force reload on options change*/}
                 <Line
+                    key={JSON.stringify(options)}
                     options={options}
                     data={{
                         datasets: [

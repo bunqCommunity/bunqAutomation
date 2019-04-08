@@ -70,6 +70,15 @@ const ActionHistoryOverview = ({ classes }) => {
                         primary="Split salary across 4 accounts"
                         secondary={`Total amount: ${formatMoney(3112.12)}`}
                     />
+                </ListItem>,
+                <ListItem button key={2}>
+                    <ListItemIcon>
+                        <SavingsIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary="Auto saved 2% of each payment"
+                        secondary={`Total amount: ${formatMoney(1.35)}`}
+                    />
                 </ListItem>
             ]
         },

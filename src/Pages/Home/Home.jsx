@@ -6,6 +6,7 @@ import Content from "../../Components/Content/Content";
 
 import BalanceGraph from "./BalanceGraph";
 import ActionHistoryOverview from "./ActionHistoryOverview";
+import ActiveActions from "./ActiveActions";
 
 const styles = theme => ({
     paper: {
@@ -22,6 +23,9 @@ const Home = () => {
                 </Grid>
                 <Grid item xs={12} sm={5} md={4}>
                     <ActionHistoryOverview />
+                </Grid>
+                <Grid item xs={12}>
+                    <ActiveActions />
                 </Grid>
             </Grid>
         </Content>
