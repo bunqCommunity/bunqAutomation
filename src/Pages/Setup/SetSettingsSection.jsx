@@ -1,24 +1,49 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import { useMappedState } from "redux-react-hook";
+import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+
+import useTheme from "../../Redux/Actions/useTheme";
 
 const styles = theme => ({
+    gridItem: {
+        textAlign: "left"
+    },
+    gridItemRight: {
+        textAlign: "right"
+    },
     button: {
         marginTop: 16
     }
 });
 
-const SetSettingsSection = ({ classes }) => {
-    return (
-        <React.Fragment>
-            <Typography>No settings for now, you're good to go!</Typography>
+const mapState = state => ({
+    particles: state.theme.particles
+});
 
-            <Button className={classes.button} component={NavLink} to="/" variant="contained" color="primary">
-                Get started
-            </Button>
-        </React.Fragment>
+const SetSettingsSection = ({ classes }) => {
+    const { particles } = useMappedState(mapState);
+    const { toggleParticles } = useTheme();
+
+    return (
+        <Grid container alignContent="flex-start">
+            <Grid item xs={12} className={classes.gridItem}>
+                <FormControlLabel
+                    control={<Switch checked={particles} onChange={toggleParticles} color="primary" />}
+                    label="Display background particles"
+                />
+            </Grid>
+
+            <Grid item xs={12} className={classes.gridItemRight}>
+                <Button className={classes.button} component={NavLink} to="/" variant="contained" color="primary">
+                    Get started
+                </Button>
+            </Grid>
+        </Grid>
     );
 };
 

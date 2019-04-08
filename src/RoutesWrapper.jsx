@@ -10,26 +10,32 @@ import Snackbar from "./Components/Snackbar";
 import Routes from "./Routes";
 
 import useServerStatus from "./Redux/Actions/useServerStatus";
+import useAuthentication from "./Redux/Actions/useAuthentication";
 import useSocketEvent from "./Hooks/useSocketEvent";
 
+const lightTheme = createMuiTheme(MuiTheme.light);
+const darkTheme = createMuiTheme(MuiTheme.dark);
+
 const mapState = state => ({
-    darkMode: state.theme.darkMode
+    darkMode: state.theme.darkMode,
+
+    apiKey: state.authentication.api_key
 });
 
 const RoutesWrapper = () => {
     const socket = window.socket;
-    const { darkMode } = useMappedState(mapState);
+    const { darkMode, apiKey } = useMappedState(mapState);
     const { setServerStatus } = useServerStatus();
+    const { validateApiKey } = useAuthentication();
+
+    useEffect(() => {
+        if (socket) socket.emit("status");
+        validateApiKey(apiKey);
+    }, []);
 
     // check server status
     useSocketEvent("disconnect", () => setServerStatus("DISCONNECTED"));
-    useEffect(() => {
-        if (socket) socket.emit("status");
-    }, []);
     useSocketEvent("status", status => setServerStatus(status));
-
-    const lightTheme = createMuiTheme(MuiTheme.light);
-    const darkTheme = createMuiTheme(MuiTheme.dark);
 
     const selectedTheme = darkMode ? darkTheme : lightTheme;
 

@@ -68,22 +68,33 @@ const Setup = ({ classes }) => {
     const [environment, setEnvironment] = useState(false);
 
     const nextStep = () => setStep(step + 1);
-    const resetStep2 = () => {
+    const goToPassword = () => setStep(0);
+    const goToApiKey = () => {
         setBunqApiKeyField("");
         setEnvironment(false);
+        setStep(1);
     };
+    const goToSettings = () => setStep(2);
+
     const themedLogo = ThemedLogo(darkMode);
 
-    useEffect(() => {
-        if (serverStatusChecked && serverStatus === "STATUS_PASSWORD_READY") {
-            if (step < 1) setStep(1);
-        } else if (
-            serverStatusChecked &&
-            (serverStatus === "STATUS_UNINITIALIZED" || serverStatus === "STATUS_FIRST_INSTALL")
-        ) {
-            if (step > 0) setStep(0);
-        }
-    }, [serverStatus, serverStatusChecked]);
+    useEffect(
+        () => {
+            if (serverStatusChecked && serverStatus === "STATUS_PASSWORD_READY") {
+                if (step < 1) setStep(1);
+            } else if (
+                serverStatusChecked &&
+                (serverStatus === "STATUS_UNINITIALIZED" || serverStatus === "STATUS_FIRST_INSTALL")
+            ) {
+                if (step > 0) setStep(0);
+            }
+        },
+        [serverStatus, serverStatusChecked]
+    );
+
+    const step1Disabled = serverStatus !== "STATUS_UNINITIALIZED" && serverStatus !== "STATUS_FIRST_INSTALL";
+    const step2Disabled = !step1Disabled;
+    const step3Disabled = serverStatus !== "STATUS_API_READY";
 
     return (
         <MinimalContent title="bunqAutomation - Setup" alignTop={true}>
@@ -94,17 +105,21 @@ const Setup = ({ classes }) => {
                 </Typography>
 
                 <Paper className={classes.content}>
-                    <Stepper className={classes.stepper} activeStep={step} alternativeLabel>
+                    <Stepper className={classes.stepper} activeStep={step} nonLinear alternativeLabel>
                         <Step>
-                            <StepLabel>Set a password</StepLabel>
+                            <StepButton disabled={step1Disabled} onClick={goToPassword} completed={step > 0}>
+                                <StepLabel>Set a password</StepLabel>
+                            </StepButton>
                         </Step>
                         <Step>
-                            <StepButton onClick={resetStep2}>
+                            <StepButton disabled={step2Disabled} onClick={goToApiKey} completed={step > 1}>
                                 <StepLabel>Login with bunq</StepLabel>
                             </StepButton>
                         </Step>
                         <Step>
-                            <StepLabel>Change settings</StepLabel>
+                            <StepButton disabled={step3Disabled} onClick={goToSettings} completed={step > 2}>
+                                <StepLabel>Change settings</StepLabel>
+                            </StepButton>
                         </Step>
                     </Stepper>
 

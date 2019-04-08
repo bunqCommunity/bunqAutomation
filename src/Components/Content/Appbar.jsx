@@ -44,6 +44,9 @@ const styles = theme => ({
         marginLeft: 12,
         marginRight: 24
     },
+    themeButton: {
+        marginRight: 8
+    },
     menuButtonHidden: {
         display: "none"
     },
@@ -54,7 +57,8 @@ const styles = theme => ({
         paddingLeft: 24
     },
     userImage: {
-        height: 44
+        height: 44,
+        width: 44
     }
 });
 
@@ -76,13 +80,19 @@ const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
     const { toggleTheme } = useTheme();
     const { getUser } = useUser();
 
-    useEffect(() => {
-        if (!state.user && !state.userLoading && !state.authenticationLoading) getUser(true);
-    }, []);
+    useEffect(
+        () => {
+            if (!state.user && !state.userLoading && !state.authenticationLoading) getUser(true);
+        },
+        [state.user, state.authenticationLoading]
+    );
 
-    useEffect(() => {
-        if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") logout();
-    }, [state.serverStatusChecked, state.serverStatus]);
+    useEffect(
+        () => {
+            if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") logout();
+        },
+        [state.serverStatusChecked, state.serverStatus]
+    );
 
     let userComponent = <UserBunqImage className={classes.userImage} user={state.user} />;
     const hasNotifications = false;
@@ -116,7 +126,7 @@ const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
                     {title}
                 </Typography>
 
-                <IconButton color="inherit" onClick={toggleTheme}>
+                <IconButton className={classes.themeButton} color="inherit" onClick={toggleTheme}>
                     {state.darkMode ? <MoonIcon /> : <WbSunnyIcon />}
                 </IconButton>
                 {userComponent}

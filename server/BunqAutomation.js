@@ -84,7 +84,6 @@ class BunqAutomation {
         const result = await this.authentication.setPassword(password);
         if (result) this.status = STATUS_PASSWORD_READY;
     }
-
     async addBunqApiKey(bunqApiKey, environment, deviceName) {
         const result = await this.bunqClientWrapper.addBunqApiKey(
             this.authentication.encryptionKey,
@@ -94,7 +93,6 @@ class BunqAutomation {
         );
         if (result) this.status = STATUS_API_READY;
     }
-
     async loadStoredBunqApiKeys() {
         const result = await this.bunqClientWrapper.loadStoredBunqApiKeys(this.authentication.encryptionKey);
         if (result) this.status = STATUS_API_READY;
@@ -122,6 +120,13 @@ class BunqAutomation {
         this.user = users[userType];
 
         return this.user;
+    }
+
+    async getEvents(options = {}) {
+        await this.isApiReadyCheck();
+
+        const user = await this.getUser();
+        return await this.bunqJSClient.api.event.list(user.id, options);
     }
 
     /**

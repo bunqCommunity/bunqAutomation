@@ -62,6 +62,7 @@ const styles = theme => ({
 
 const mapState = state => ({
     darkMode: state.theme.darkMode,
+    particles: state.theme.particles,
 
     user: state.user.user,
     userLoading: state.user.loading,
@@ -72,15 +73,18 @@ const mapState = state => ({
 });
 
 const MinimalContent = ({ alignTop = false, classes, children, className = "", title = "bunqAutomation" }) => {
-    const { darkMode, serverStatus, user, userLoading, apiKey } = useMappedState(mapState);
+    const { darkMode, particles, serverStatus, user, userLoading, apiKey } = useMappedState(mapState);
     const { toggleTheme } = useTheme();
     const { getUser } = useUser();
 
-    useEffect(() => {
-        if (!userLoading && !user && apiKey && serverStatus === "STATUS_API_READY") {
-            getUser();
-        }
-    }, [user, apiKey, serverStatus]);
+    useEffect(
+        () => {
+            if (!userLoading && !user && apiKey && serverStatus === "STATUS_API_READY") {
+                getUser();
+            }
+        },
+        [user, apiKey, serverStatus]
+    );
 
     let serverStatusText = "";
     let hoverText = "";
@@ -120,7 +124,7 @@ const MinimalContent = ({ alignTop = false, classes, children, className = "", t
             <div className={classNames(classes.root, className, alignTop && classes.rootTop)}>
                 <Helmet title={title} />
 
-                {darkMode && (
+                {darkMode && particles && (
                     <ReactParticles
                         style={{
                             position: "absolute",

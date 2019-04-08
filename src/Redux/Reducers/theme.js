@@ -15,7 +15,7 @@ export default function reducer(state = defaultState, action) {
                 darkMode: !state.darkMode
             };
         case "PARTICLES_TOGGLE":
-            localStorage.setItem(THEME_PARTICLES, !state.darkMode);
+            localStorage.setItem(THEME_PARTICLES, !state.particles);
             return {
                 ...state,
                 particles: !state.particles
