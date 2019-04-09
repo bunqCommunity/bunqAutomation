@@ -17,6 +17,7 @@ import HistoryIcon from "@material-ui/icons/History";
 import AccountCheck from "../../Components/Icons/AccountCheck";
 
 import { formatMoney } from "../../Functions/AmountFormatting";
+import { green, lightBlue, purple, salmon } from "../../Config/Colors";
 
 const styles = theme => ({
     paperHeader: {
@@ -48,12 +49,18 @@ const styles = theme => ({
     }
 });
 
+const getListItemStyle = color => ({
+    margin: "4px 0px",
+    borderLeft: `4px solid ${color}`,
+    borderRadius: "4px 0px 0px 4px"
+});
+
 const ActionHistoryOverview = ({ classes }) => {
     const groupedItems = [
         {
             date: "Today",
             items: [
-                <ListItem button key={0}>
+                <ListItem button key={0} style={getListItemStyle(salmon)}>
                     <ListItemIcon>
                         <AccountCheck />
                     </ListItemIcon>
@@ -62,7 +69,7 @@ const ActionHistoryOverview = ({ classes }) => {
                         secondary="mikey122@example.com"
                     />
                 </ListItem>,
-                <ListItem button key={1}>
+                <ListItem button key={1} style={getListItemStyle(lightBlue)}>
                     <ListItemIcon>
                         <CallSplitIcon />
                     </ListItemIcon>
@@ -71,12 +78,12 @@ const ActionHistoryOverview = ({ classes }) => {
                         secondary={`Total amount: ${formatMoney(3112.12)}`}
                     />
                 </ListItem>,
-                <ListItem button key={2}>
+                <ListItem button key={2} style={getListItemStyle(purple)}>
                     <ListItemIcon>
                         <SavingsIcon />
                     </ListItemIcon>
                     <ListItemText
-                        primary="Auto saved 2% of each payment"
+                        primary="Auto saved 2% for 1 payment"
                         secondary={`Total amount: ${formatMoney(1.35)}`}
                     />
                 </ListItem>
@@ -85,7 +92,7 @@ const ActionHistoryOverview = ({ classes }) => {
         {
             date: "Yesterday",
             items: [
-                <ListItem button key={0}>
+                <ListItem button key={0} style={getListItemStyle(green)}>
                     <ListItemIcon>
                         <MailIcon />
                     </ListItemIcon>
@@ -94,12 +101,12 @@ const ActionHistoryOverview = ({ classes }) => {
                         secondary={`mikey122@example.com and 2 others`}
                     />
                 </ListItem>,
-                <ListItem button key={1}>
+                <ListItem button key={1} style={getListItemStyle(purple)}>
                     <ListItemIcon>
                         <SavingsIcon />
                     </ListItemIcon>
                     <ListItemText
-                        primary="Auto saved 2% of each payment"
+                        primary="Auto saved 2% for 3 payments"
                         secondary={`Total amount: ${formatMoney(7.12)}`}
                     />
                 </ListItem>

@@ -3,7 +3,9 @@ import { withTheme } from "@material-ui/core/styles";
 import { Doughnut } from "react-chartjs-2";
 
 import { formatMoney } from "../../Functions/AmountFormatting";
-import { yellow, purple, lightBlue } from "./Colors";
+import { yellow, purple, lightBlue } from "../../Config/Colors";
+
+import DoughtnutAmountTotalLabel from "./Plugins/DoughnutAmountTotalLable";
 
 const getOptions = theme => {
     const textColor = theme.palette.text.primary;
@@ -11,6 +13,7 @@ const getOptions = theme => {
     return {
         maintainAspectRatio: false,
         responsive: true,
+        cutoutPercentage: 80,
         tooltips: {
             mode: "label",
             intersect: false,
@@ -55,6 +58,7 @@ const AccountBalancePieChart = ({ forceUpdate = false, theme }) => {
         <Doughnut
             key={JSON.stringify(options)}
             options={options}
+            plugins={[DoughtnutAmountTotalLabel]}
             data={{
                 datasets: [
                     {

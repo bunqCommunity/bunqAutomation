@@ -4,8 +4,8 @@ import Paper from "@material-ui/core/Paper";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import Typography from "@material-ui/core/Typography";
 
-import Finance from "../../Components/Icons/Finance";
 import Refresh from "@material-ui/icons/Refresh";
+import PieChartIcon from "@material-ui/icons/PieChart";
 
 import AccountBalancePieChart from "../../Components/Charts/AccountBalancePieChart";
 
@@ -33,7 +33,7 @@ const AccountBalance = ({ classes, theme }) => {
         <React.Fragment>
             <div className={classes.paperHeader}>
                 <SvgIcon color="action">
-                    <Finance />
+                    <PieChartIcon />
                 </SvgIcon>
                 <Typography className={classes.paperHeaderText} variant="subtitle1">
                     Account balance

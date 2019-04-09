@@ -59,6 +59,11 @@ We have a public [Telegram chat group ](https://t.me/bunqcommunity).
 Feel free to create a new issue for any suggestions, bugs or general ideas you have on Github or 
 contact us through one of the above.
 
+## Screenshots
+Based on test data and current designs and not functional yet.
+
+![First dashboard screenshot](./files/screenshot.png)
+
 ## Contributors ![Contributer count](https://img.shields.io/github/contributors/bunqcommunity/bunqautomation.svg)
 
 [![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/images/0)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/links/0)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/images/1)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/links/1)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/images/2)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/links/2)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/images/3)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/links/3)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/images/4)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/links/4)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/images/5)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/links/5)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/images/6)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/links/6)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/images/7)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqAutomation/links/7)

@@ -3,7 +3,7 @@ import { withTheme } from "@material-ui/core/styles";
 import { Line } from "react-chartjs-2";
 
 import { formatMoney } from "../../Functions/AmountFormatting";
-import { yellow, purple, lightBlue } from "./Colors";
+import { yellow, purple, lightBlue } from "../../Config/Colors";
 
 const getOptions = theme => {
     const textColor = theme.palette.text.primary;

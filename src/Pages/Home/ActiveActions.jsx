@@ -9,10 +9,11 @@ import CheckIcon from "@material-ui/icons/Check";
 import SavingsIcon from "@material-ui/icons/Save";
 import CallSplitIcon from "@material-ui/icons/CallSplit";
 import MailIcon from "@material-ui/icons/Mail";
-import HistoryIcon from "@material-ui/icons/History";
+import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import AccountCheck from "../../Components/Icons/AccountCheck";
 
 import { formatMoney } from "../../Functions/AmountFormatting";
+import { darkGreen, green, lightBlue, purple, salmon } from "../../Config/Colors";
 
 const styles = theme => ({
     headerWrapper: {
@@ -51,35 +52,45 @@ const styles = theme => ({
 const ActionHistoryOverview = ({ classes, itemXs = 12, itemSm = 6, itemMd = 4 }) => {
     const activeActions = [
         {
-            type: "monthly-request",
             Icon: AccountCheck,
             primary: `Monthly request for ${formatMoney(5)}`,
-            secondary: "To: mikey122@example.com"
+            secondary: "To mikey122@example.com",
+            color: salmon
         },
         {
-            type: "Split salary",
             Icon: CallSplitIcon,
             primary: "Split salary across 4 accounts",
-            secondary: `Payments, Savings and 2 other accounts`
+            secondary: `Payments, Savings and 2 other accounts`,
+            color: lightBlue
         },
         {
-            type: "Split salary",
             Icon: MailIcon,
             primary: "Send monthly invoice to 3 people",
-            secondary: `mikey122@example.com and 2 others`
+            secondary: `mikey122@example.com and 2 others`,
+            color: green
         },
         {
-            type: "Split salary",
+            Icon: NotificationIcon,
+            primary: `Warn if balance falls below ${formatMoney(50)}`,
+            secondary: "Subscriptions and payments",
+            color: darkGreen
+        },
+        {
             Icon: SavingsIcon,
-            primary: "Auto save 2% of each payment"
+            primary: "Auto save 2% of each payment",
+            secondary: "Enabled for Payments and Shopping",
+            color: purple
         }
     ];
 
     const activeActionComponents = activeActions.map((activeAction, index) => {
         const Icon = activeAction.Icon;
+        const inlineStyle = {
+            borderLeft: `6px solid ${activeAction.color}`
+        };
         return (
             <Grid item xs={itemXs} sm={itemSm} md={itemMd} key={index}>
-                <Paper className={classes.paper}>
+                <Paper className={classes.paper} style={inlineStyle}>
                     <div className={classes.headerWrapper}>
                         <SvgIcon color="action">
                             <Icon />
