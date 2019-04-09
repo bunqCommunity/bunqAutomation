@@ -15,6 +15,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PaletteIcon from "@material-ui/icons/Palette";
 import KeyIcon from "@material-ui/icons/VpnKey";
+import BubbleChartIcon from "@material-ui/icons/BubbleChart";
 
 const drawerWidth = 240;
 
@@ -96,6 +97,7 @@ const MainMenu = ({ classes, open, toggleMenu, logout }) => {
                 <ListItem className={classes.listFiller} />
 
                 <StandardMenuItem to="/content-test" primary="Design preview" Icon={PaletteIcon} />
+                <StandardMenuItem to="/action-test" primary="Action test" Icon={BubbleChartIcon} />
                 <ListItem button onClick={logout}>
                     <ListItemIcon>
                         <ExitToAppIcon />
