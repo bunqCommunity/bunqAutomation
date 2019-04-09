@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import Typography from "@material-ui/core/Typography";
 
+import CheckIcon from "@material-ui/icons/Check";
 import SavingsIcon from "@material-ui/icons/Save";
 import CallSplitIcon from "@material-ui/icons/CallSplit";
 import MailIcon from "@material-ui/icons/Mail";
@@ -101,7 +102,7 @@ const ActionHistoryOverview = ({ classes, itemXs = 12, itemSm = 6, itemMd = 4 })
         <React.Fragment>
             <div className={classes.headerWrapper}>
                 <SvgIcon color="action">
-                    <HistoryIcon />
+                    <CheckIcon />
                 </SvgIcon>
                 <Typography className={classes.headerWrapperText} variant="subtitle1">
                     Active actions

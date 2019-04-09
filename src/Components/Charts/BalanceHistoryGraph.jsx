@@ -1,26 +1,9 @@
-import React from "react";
-import { withStyles, withTheme } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react";
+import { withTheme } from "@material-ui/core/styles";
 import { Line } from "react-chartjs-2";
-import Paper from "@material-ui/core/Paper";
-import SvgIcon from "@material-ui/core/SvgIcon";
-import Typography from "@material-ui/core/Typography";
-import Finance from "../../Components/Icons/Finance";
 
 import { formatMoney } from "../../Functions/AmountFormatting";
-
-const styles = theme => ({
-    paper: {
-        padding: 8,
-        height: 416
-    },
-    paperHeader: {
-        display: "flex",
-        margin: 8
-    },
-    paperHeaderText: {
-        marginLeft: 8
-    }
-});
+import { yellow, purple, lightBlue } from "./Colors";
 
 const getOptions = theme => {
     const textColor = theme.palette.text.primary;
@@ -75,6 +58,7 @@ const getOptions = theme => {
 };
 
 const getRandomNumber = (min, max) => Math.floor(Math.random() * max) + min;
+
 const getRandomData = (itemCount, customOptions = { min: 100, max: 300, start: 2000 }) => {
     const defaultOptions = { min: 100, max: 300, start: 2000 };
     const options = { ...defaultOptions, ...customOptions };
@@ -92,56 +76,50 @@ const getRandomData = (itemCount, customOptions = { min: 100, max: 300, start: 2
         if (getRandomNumber(0, 10) < 5) changeAmount = changeAmount * -1;
 
         previousNumber += changeAmount;
+        if (previousNumber < 0) previousNumber = 500;
     }
 
     return dataSet;
 };
 
-const BalanceGraph = ({ classes, theme }) => {
-    const randomData = getRandomData(30, { start: getRandomNumber(1000, 2000) });
-    const randomData2 = getRandomData(30, { start: getRandomNumber(1000, 2000) });
-    const randomData3 = getRandomData(30, { start: getRandomNumber(1000, 2000) });
+const BalanceHistoryGraph = ({ forceUpdate = false, theme }) => {
+    const [dataSet1, setDataSet1] = useState([]);
+    const [dataSet2, setDataSet2] = useState([]);
+    const [dataSet3, setDataSet3] = useState([]);
+
+    useEffect(() => {
+        setDataSet1(getRandomData(30, { start: getRandomNumber(500, 1000) }));
+        setDataSet2(getRandomData(30, { start: getRandomNumber(1000, 2000) }));
+        setDataSet3(getRandomData(30, { start: getRandomNumber(250, 500) }));
+    }, [forceUpdate]);
+
     const options = getOptions(theme);
 
     return (
-        <React.Fragment>
-            <div className={classes.paperHeader}>
-                <SvgIcon color="action">
-                    <Finance />
-                </SvgIcon>
-                <Typography className={classes.paperHeaderText} variant="subtitle1">
-                    Balance history
-                </Typography>
-            </div>
-
-            <Paper className={classes.paper}>
-                {/* brute force reload on options change*/}
-                <Line
-                    key={JSON.stringify(options)}
-                    options={options}
-                    data={{
-                        datasets: [
-                            {
-                                data: randomData,
-                                backgroundColor: "rgba(0, 255, 151, 0.8)",
-                                label: "Payments"
-                            },
-                            {
-                                data: randomData2,
-                                backgroundColor: "rgba(255, 0, 18, 0.8)",
-                                label: "Savings"
-                            },
-                            {
-                                data: randomData3,
-                                backgroundColor: "rgba(6,162,255,0.8)",
-                                label: "Subscriptions"
-                            }
-                        ]
-                    }}
-                />
-            </Paper>
-        </React.Fragment>
+        <Line
+            key={JSON.stringify(options)}
+            options={options}
+            data={{
+                datasets: [
+                    {
+                        data: dataSet1,
+                        backgroundColor: yellow,
+                        label: "Payments"
+                    },
+                    {
+                        data: dataSet2,
+                        backgroundColor: purple,
+                        label: "Savings"
+                    },
+                    {
+                        data: dataSet3,
+                        backgroundColor: lightBlue,
+                        label: "Subscriptions"
+                    }
+                ]
+            }}
+        />
     );
 };
 
-export default withTheme()(withStyles(styles)(BalanceGraph));
+export default withTheme()(BalanceHistoryGraph);

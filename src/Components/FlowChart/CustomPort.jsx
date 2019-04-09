@@ -1,11 +1,11 @@
 import React from "react";
-import SvgIcon from "@material-ui/core/SvgIcon";
+import SvgIcon from "@material-ui/core/SvgIcon/index";
 import ArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 
 const PortCustom = ({ port }) => {
-    let portIcon = <CheckCircle />;
+    let portIcon = null;
     if (port.properties && port.properties.icon) {
         switch (port.properties.icon) {
             case "arrow-right":
@@ -13,6 +13,9 @@ const PortCustom = ({ port }) => {
                 break;
             case "arrow-left":
                 portIcon = <ArrowLeftIcon />;
+                break;
+            default:
+                portIcon = <CheckCircle />;
                 break;
         }
     }

@@ -3,10 +3,10 @@ import { FlowChartWithState } from "@mrblenny/react-flow-chart";
 
 import Content from "../../Components/Content/Content";
 
-import CustomCanvas from "./CustomCanvas";
-import CustomNode from "./CustomNode";
-import CustomNodeInner from "./CustomNodeInner";
-import CustomPort from "./CustomPort";
+import CustomCanvas from "../../Components/FlowChart/CustomCanvas";
+import CustomNode from "../../Components/FlowChart/CustomNode";
+import CustomNodeInner from "../../Components/FlowChart/CustomNodeInner";
+import CustomPort from "../../Components/FlowChart/CustomPort";
 
 const standardLeftPort = id =>
     Object.assign(

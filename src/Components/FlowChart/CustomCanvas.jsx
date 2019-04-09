@@ -1,5 +1,5 @@
 import React from "react";
-import { withTheme } from "@material-ui/core/styles";
+import { withTheme } from "@material-ui/core/styles/index";
 
 const CanvasCustom = ({ children, theme }) => {
     const darkTheme = theme.palette.type === "dark";
