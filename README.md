@@ -1,3 +1,8 @@
 # bunqAutomation
 
 In development under the [develop](https://github.com/bunqCommunity/bunqAutomation/tree/develop) branch.
+
+## Screenshots
+Current design for the dashboard, not functional yet.
+
+![First dashboard screenshot](./files/screenshot.png)
