@@ -155,18 +155,5 @@ export default (app, opts, next) => {
     //     }
     // });
 
-    app.route({
-        url: "/api-keys",
-        method: "GET",
-        preHandler: app.auth([app.apiKeyAuthentication]),
-        handler: async (request, reply) => {
-            reply.send({
-                stored: await app.bunqAutomation.bunqClientWrapper.bunqApiKeyStorage.get("BUNQ_API_KEYS_LOCATION"),
-                selected: await app.bunqAutomation.bunqClientWrapper.bunqApiKeyStorage.get("BUNQ_API_KEY_SELECTED"),
-                loaded: app.bunqAutomation.bunqClientWrapper.getBunqApiKeyList()
-            });
-        }
-    });
-
     next();
 };

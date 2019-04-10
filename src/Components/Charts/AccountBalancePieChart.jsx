@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withTheme } from "@material-ui/core/styles";
 import { Doughnut } from "react-chartjs-2";
 
 import { formatMoney } from "../../Functions/AmountFormatting";
-import { yellow, purple, lightBlue } from "../../Config/Colors";
+import { getColorByIndex } from "../../Config/Colors";
 
 import DoughtnutAmountTotalLabel from "./Plugins/DoughnutAmountTotalLable";
 
@@ -39,20 +39,36 @@ const getOptions = theme => {
     };
 };
 
-const getRandomNumber = (min, max) => Math.floor(Math.random() * max) + min;
-
-const AccountBalancePieChart = ({ forceUpdate = false, theme }) => {
-    const [accountBalance1, setAccountBalance1] = useState(0);
-    const [accountBalance2, setAccountBalance2] = useState(0);
-    const [accountBalance3, setAccountBalance3] = useState(0);
+const AccountBalancePieChart = ({ theme, monetaryAccounts }) => {
+    const options = getOptions(theme);
+    const [backgroundColors, setBackgroundColors] = useState([]);
+    const [labels, setLabels] = useState([]);
+    const [data, setData] = useState([]);
 
     useEffect(() => {
-        setAccountBalance1(getRandomNumber(500, 1000));
-        setAccountBalance2(getRandomNumber(1000, 2000));
-        setAccountBalance3(getRandomNumber(250, 500));
-    }, [forceUpdate]);
+        if (monetaryAccounts) {
+            // temporary arrays
+            const tempBackgroundColors = [];
+            const tempLabels = [];
+            const tempData = [];
 
-    const options = getOptions(theme);
+            // push a color/label/data to the arrays
+            monetaryAccounts.forEach((monetaryAccount, index) => {
+                tempBackgroundColors.push(getColorByIndex(index));
+                tempLabels.push(monetaryAccount.description);
+                tempData.push(parseFloat(monetaryAccount.balance.value));
+            });
+
+            setBackgroundColors(tempBackgroundColors);
+            setLabels(tempLabels);
+            setData(tempData);
+        }
+    }, [JSON.stringify(monetaryAccounts)]);
+
+    console.log("");
+    console.log(backgroundColors);
+    console.log(labels);
+    console.log(data);
 
     return (
         <Doughnut
@@ -62,12 +78,12 @@ const AccountBalancePieChart = ({ forceUpdate = false, theme }) => {
             data={{
                 datasets: [
                     {
-                        backgroundColor: [yellow, purple, lightBlue],
+                        backgroundColor: backgroundColors,
                         labels: ["Account balances"],
-                        data: [accountBalance1, accountBalance2, accountBalance3]
+                        data: data
                     }
                 ],
-                labels: ["Payments", "Savings", "Subscriptions"]
+                labels: labels
             }}
         />
     );

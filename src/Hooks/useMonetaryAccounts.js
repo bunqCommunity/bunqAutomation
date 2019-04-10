@@ -9,27 +9,27 @@ const mapState = state => ({
 });
 
 export default () => {
-    const [bunqApiKeys, setBunqApiKeys] = useState(false);
+    const [monetaryAccounts, setMonetaryAccounts] = useState(false);
     const { apiKey, serverStatusChecked, serverStatus } = useMappedState(mapState);
 
-    const checkStoredApiKeys = () => {
+    const updateMonetaryAccounts = () => {
         window.apiClient
-            .get(`/bunq-api-keys`)
+            .get(`/bunq/monetary-accounts`)
             .then(result => {
-                setBunqApiKeys(result.loaded);
+                setMonetaryAccounts(result.monetary_accounts);
             })
             .catch(error => {
                 console.error(error);
-                setBunqApiKeys({});
+                setMonetaryAccounts([]);
             });
     };
 
     useEffect(() => {
         // all details available and server is ready
-        if (!bunqApiKeys && apiKey && serverStatusChecked && serverStatus === "STATUS_API_READY") {
-            checkStoredApiKeys();
+        if (!monetaryAccounts && apiKey && serverStatusChecked && serverStatus === "STATUS_API_READY") {
+            updateMonetaryAccounts();
         }
     }, [apiKey, serverStatusChecked, serverStatus]);
 
-    return bunqApiKeys;
+    return [monetaryAccounts, updateMonetaryAccounts];
 };

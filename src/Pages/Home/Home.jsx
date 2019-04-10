@@ -8,7 +8,6 @@ import BalanceGraph from "./BalanceHistory";
 import ActionHistoryOverview from "./ActionHistoryOverview";
 import ActiveActions from "./ActiveActions";
 import AccountBalance from "./AccountBalance";
-// import ConnectedBunqApiKeys from "./ConnectedBunqApiKeys";
 
 const styles = theme => ({
     paper: {
@@ -32,9 +31,6 @@ const Home = () => {
                 <Grid item xs={12} sm={6} md={4}>
                     <ActionHistoryOverview />
                 </Grid>
-                {/*<Grid item xs={12} sm={6} md={4}>*/}
-                {/*    <ConnectedBunqApiKeys />*/}
-                {/*</Grid>*/}
             </Grid>
         </Content>
     );

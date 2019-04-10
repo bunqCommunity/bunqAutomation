@@ -7,6 +7,8 @@ import Typography from "@material-ui/core/Typography";
 import Refresh from "@material-ui/icons/Refresh";
 import PieChartIcon from "@material-ui/icons/PieChart";
 
+import useMonetaryAccounts from "../../Hooks/useMonetaryAccounts";
+
 import AccountBalancePieChart from "../../Components/Charts/AccountBalancePieChart";
 
 const styles = () => ({
@@ -26,8 +28,8 @@ const styles = () => ({
     }
 });
 
-const AccountBalance = ({ classes, theme }) => {
-    const [forceUpdate, setForceUpdate] = useState(new Date());
+const AccountBalance = ({ classes }) => {
+    const [monetaryAccounts, updateMonetaryAccounts] = useMonetaryAccounts();
 
     return (
         <React.Fragment>
@@ -40,13 +42,13 @@ const AccountBalance = ({ classes, theme }) => {
                 </Typography>
 
                 <span className={classes.paperHeaderFill} />
-                <SvgIcon onClick={() => setForceUpdate(new Date())} color="action">
+                <SvgIcon onClick={updateMonetaryAccounts} color="action">
                     <Refresh />
                 </SvgIcon>
             </div>
 
             <Paper className={classes.paper}>
-                <AccountBalancePieChart forceUpdate={forceUpdate} />
+                <AccountBalancePieChart monetaryAccounts={monetaryAccounts} />
             </Paper>
         </React.Fragment>
     );

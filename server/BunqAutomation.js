@@ -129,6 +129,14 @@ class BunqAutomation {
         return await this.bunqJSClient.api.event.list(user.id, options);
     }
 
+    async getMonetaryAccounts(options = {}, keyIdentifier = false) {
+        await this.isApiReadyCheck(keyIdentifier);
+
+        const user = await this.getUser();
+
+        return await this.bunqJSClient.api.monetaryAccount.list(user.id, options);
+    }
+
     /**
      * Fetches a bunq image by uuid and caches it
      * @param imageUuid

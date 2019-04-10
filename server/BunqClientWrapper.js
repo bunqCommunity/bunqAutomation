@@ -57,8 +57,16 @@ class BunqClientWrapper {
      * @returns {boolean|boolean|BunqJSClient|*}
      */
     get bunqJSClient() {
-        if (this.bunqApiKeyList[this.selectedBunqApiKeyIdentifier]) {
-            const selectedBunqApiKey = this.bunqApiKeyList[this.selectedBunqApiKeyIdentifier];
+        return this.getBunqJSClient(this.selectedBunqApiKeyIdentifier);
+    }
+
+    /**
+     * Returns a bunqJSClient by the given identifier
+     * @returns {boolean|boolean|BunqJSClient|*}
+     */
+    getBunqJSClient(identifier){
+        if (this.bunqApiKeyList[identifier]) {
+            const selectedBunqApiKey = this.bunqApiKeyList[identifier];
             if (selectedBunqApiKey.bunqJSClient) {
                 return selectedBunqApiKey.bunqJSClient;
             }

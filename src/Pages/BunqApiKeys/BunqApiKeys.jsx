@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -12,6 +12,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import SandboxIcon from "@material-ui/icons/BugReport";
 
 import Content from "../../Components/Content/Content";
+import useBunqApiKeys from "../../Hooks/useBunqApiKeys";
 
 const styles = theme => ({
     gridItemRight: {
@@ -20,19 +21,7 @@ const styles = theme => ({
 });
 
 const BunqApiKeys = ({ classes }) => {
-    const [bunqApiKeys, setBunqApiKeys] = useState({});
-
-    const checkStoredApiKeys = () => {
-        window.apiClient
-            .get(`/setup/api-keys`)
-            .then(result => {
-                setBunqApiKeys(result.loaded);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    };
-    useEffect(() => checkStoredApiKeys(), []);
+    const bunqApiKeys = useBunqApiKeys();
 
     const bunqApiKeyListItems = Object.keys(bunqApiKeys).map(identifier => {
         const storedKey = bunqApiKeys[identifier];
@@ -59,7 +48,7 @@ const BunqApiKeys = ({ classes }) => {
                 <Grid item xs={4} className={classes.gridItemRight}>
                     <Typography variant="h5">btn</Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} md={6}>
                     <Paper style={{ padding: 12 }}>
                         <List>{bunqApiKeyListItems}</List>
                     </Paper>
