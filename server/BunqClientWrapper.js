@@ -49,6 +49,7 @@ class BunqClientWrapper {
      */
     async switchBunqApiKey(identifier) {
         this.selectedBunqApiKeyIdentifier = identifier;
+
         await this.bunqApiKeyStorage.set(BUNQ_API_KEY_SELECTED, identifier);
     }
 
@@ -64,13 +65,16 @@ class BunqClientWrapper {
      * Returns a bunqJSClient by the given identifier
      * @returns {boolean|boolean|BunqJSClient|*}
      */
-    getBunqJSClient(identifier){
+    getBunqJSClient(identifier) {
+        if (identifier === false) identifier = this.selectedBunqApiKeyIdentifier;
+
         if (this.bunqApiKeyList[identifier]) {
             const selectedBunqApiKey = this.bunqApiKeyList[identifier];
             if (selectedBunqApiKey.bunqJSClient) {
                 return selectedBunqApiKey.bunqJSClient;
             }
         }
+
         return false;
     }
 
@@ -120,15 +124,36 @@ class BunqClientWrapper {
         // overwrite the existing details if any
         this.bunqApiKeyList[bunqApiKeyIdentifier] = bunqApiKeyInfo;
 
-        // select the key if no other key is stored
-        if (!this.selectedBunqApiKeyIdentifier) {
-            await this.switchBunqApiKey(bunqApiKeyIdentifier);
-        }
+        // select the key
+        await this.switchBunqApiKey(bunqApiKeyIdentifier);
 
         // store the updated list
         await this.storeBunqApiKeys();
 
         return true;
+    }
+
+    /**
+     * Remove a stored key by its identifier
+     * @param encryptionKey
+     * @param identifier
+     * @returns {Promise<void>}
+     */
+    async removeBunqApiKey(encryptionKey, identifier) {
+        if (this.bunqApiKeyList[identifier]) {
+            delete this.bunqApiKeyList[identifier];
+
+            await this.storeBunqApiKeys();
+
+            // check if this was the currently active api key
+            if (this.selectedBunqApiKeyIdentifier === identifier) {
+                const identifierList = Object.keys(this.bunqApiKeyList);
+                if (identifierList.length > 0) {
+                    // select the first key
+                    await this.switchBunqApiKey(identifierList[0]);
+                }
+            }
+        }
     }
 
     /**
@@ -170,7 +195,7 @@ class BunqClientWrapper {
         if (!loadedBunqApiKeys) return false;
 
         const setupErrors = [];
-        const setupResults = await Promise.all(
+        await Promise.all(
             Object.keys(loadedBunqApiKeys).map(async identifier => {
                 const bunqApiKeyInfo = {
                     ...loadedBunqApiKeys[identifier],
@@ -217,8 +242,7 @@ class BunqClientWrapper {
         );
 
         return {
-            errors: setupErrors,
-            results: setupResults
+            errors: setupErrors
         };
     }
 

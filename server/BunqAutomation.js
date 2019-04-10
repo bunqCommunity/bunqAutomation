@@ -59,11 +59,14 @@ class BunqAutomation {
 
     /**
      * Standard check around API calls
+     * @param keyIdentifier
      * @returns {Promise<boolean>}
      */
-    async isApiReadyCheck() {
+    async isApiReadyCheck(keyIdentifier = false) {
         if (this.status === STATUS_API_READY) {
-            if (!this.bunqJSClient) {
+            if (!keyIdentifier && !this.bunqJSClient) {
+                throw new NoBunqApiKeyError();
+            } else if (keyIdentifier && !this.bunqClientWrapper.getBunqJSClient(keyIdentifier)) {
                 throw new NoBunqApiKeyError();
             }
             return true;
@@ -80,6 +83,11 @@ class BunqAutomation {
         return true;
     }
 
+    /**
+     * Wrappers around nested classes to update the bunqAutomation status correctly
+     * @param password
+     * @returns {Promise<void>}
+     */
     async setPassword(password) {
         const result = await this.authentication.setPassword(password);
         if (result) this.status = STATUS_PASSWORD_READY;
@@ -107,14 +115,16 @@ class BunqAutomation {
     }
 
     /**
-     * Retrieves the bunq user info
-     * @params {boolean} forceUpdate
-     * @returns {Promise<void>}
+     * Get active user for given key
+     * @param forceUpdate
+     * @param keyIdentifier
+     * @returns {Promise<boolean>}
      */
-    async getUser(forceUpdate = false) {
-        await this.isApiReadyCheck();
+    async getUser(forceUpdate = false, keyIdentifier = false) {
+        await this.isApiReadyCheck(keyIdentifier);
 
-        const users = await this.bunqJSClient.getUsers(forceUpdate);
+        const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
+        const users = await client.getUsers(forceUpdate);
         const userType = Object.keys(users)[0];
 
         this.user = users[userType];
@@ -122,19 +132,34 @@ class BunqAutomation {
         return this.user;
     }
 
-    async getEvents(options = {}) {
-        await this.isApiReadyCheck();
+    /**
+     * Get events
+     * @param options
+     * @param keyIdentifier
+     * @returns {Promise<any>}
+     */
+    async getEvents(options = {}, keyIdentifier = false) {
+        await this.isApiReadyCheck(keyIdentifier);
 
         const user = await this.getUser();
-        return await this.bunqJSClient.api.event.list(user.id, options);
+
+        const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
+        return await client.api.event.list(user.id, options);
     }
 
+    /**
+     * Get monetary accounts
+     * @param options
+     * @param keyIdentifier
+     * @returns {Promise<any>}
+     */
     async getMonetaryAccounts(options = {}, keyIdentifier = false) {
         await this.isApiReadyCheck(keyIdentifier);
 
         const user = await this.getUser();
 
-        return await this.bunqJSClient.api.monetaryAccount.list(user.id, options);
+        const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
+        return await client.api.monetaryAccount.list(user.id, options);
     }
 
     /**
@@ -142,8 +167,8 @@ class BunqAutomation {
      * @param imageUuid
      * @returns {Promise<any>}
      */
-    async getImage(imageUuid) {
-        await this.isApiReadyCheck();
+    async getImage(imageUuid, keyIdentifier = false) {
+        await this.isApiReadyCheck(keyIdentifier);
 
         const imageFileName = `${imageUuid}.png`;
         const storedImage = await this.fileStore.exists(imageFileName);
@@ -151,7 +176,8 @@ class BunqAutomation {
             return this.fileStore.stream(imageFileName);
         }
 
-        const imageContents = await this.bunqJSClient.api.attachmentContent.get(imageUuid, {
+        const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
+        const imageContents = await client.api.attachmentContent.get(imageUuid, {
             base64: false
         });
 
