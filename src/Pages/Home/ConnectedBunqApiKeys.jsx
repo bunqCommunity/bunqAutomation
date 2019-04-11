@@ -14,8 +14,6 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import KeyIcon from "@material-ui/icons/VpnKey";
 import WarningIcon from "@material-ui/icons/Warning";
 
-import useBunqApiKeys from "../../Hooks/useBunqApiKeys";
-
 const styles = theme => ({
     paperHeader: {
         display: "flex",
@@ -33,7 +31,7 @@ const styles = theme => ({
 });
 
 const ConnectedBunqApiKeys = ({ classes }) => {
-    const bunqApiKeys = useBunqApiKeys();
+    const bunqApiKeys = {};
 
     const bunqApiKeyComponents = Object.keys(bunqApiKeys).map(identifier => {
         const bunqApiKey = bunqApiKeys[identifier];

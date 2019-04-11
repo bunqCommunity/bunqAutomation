@@ -1,6 +1,6 @@
 import { useDispatch } from "redux-react-hook";
 
-const useTheme = () => {
+const useThemeActions = () => {
     const dispatch = useDispatch();
 
     const toggleTheme = () => {
@@ -16,4 +16,4 @@ const useTheme = () => {
     };
 };
 
-export default useTheme;
+export default useThemeActions;

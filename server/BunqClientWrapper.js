@@ -6,9 +6,6 @@ import Encryption from "./Security/Encryption";
 // location where the full api key list is stored
 export const BUNQ_API_KEYS_LOCATION = "BUNQ_API_KEYS_LOCATION";
 
-// info for the currently selected "main" API key
-export const BUNQ_API_KEY_SELECTED = "BUNQ_API_KEY_SELECTED";
-
 // properties which can be shared with the client safely
 // TODO add icon picker E.G. https://material.io/tools/icons/static/data.json
 const publicBunqApiKeyProperties = ["environment", "deviceName", "icon", "color", "errorState"];
@@ -27,38 +24,12 @@ class BunqClientWrapper {
 
         // a list of bunq API keys with the unique key as their
         this.bunqApiKeyList = {};
-        // which key is currently used by default
-        this.selectedBunqApiKeyIdentifier = false;
     }
 
     async startup(encryptionKey = false) {
-        const selectedBunqApiKey = await this.bunqApiKeyStorage.get(BUNQ_API_KEY_SELECTED);
-        if (selectedBunqApiKey) {
-            this.selectedBunqApiKeyIdentifier = selectedBunqApiKey;
-        }
-
         if (encryptionKey) {
             await this.loadStoredBunqApiKeys(encryptionKey);
         }
-    }
-
-    /**
-     * Set a different bunq API key as the default and store the selection
-     * @param identifier
-     * @returns {Promise<void>}
-     */
-    async switchBunqApiKey(identifier) {
-        this.selectedBunqApiKeyIdentifier = identifier;
-
-        await this.bunqApiKeyStorage.set(BUNQ_API_KEY_SELECTED, identifier);
-    }
-
-    /**
-     * Returns false or the currently selected api client
-     * @returns {boolean|boolean|BunqJSClient|*}
-     */
-    get bunqJSClient() {
-        return this.getBunqJSClient(this.selectedBunqApiKeyIdentifier);
     }
 
     /**
@@ -66,8 +37,6 @@ class BunqClientWrapper {
      * @returns {boolean|boolean|BunqJSClient|*}
      */
     getBunqJSClient(identifier) {
-        if (identifier === false) identifier = this.selectedBunqApiKeyIdentifier;
-
         if (this.bunqApiKeyList[identifier]) {
             const selectedBunqApiKey = this.bunqApiKeyList[identifier];
             if (selectedBunqApiKey.bunqJSClient) {
@@ -124,9 +93,6 @@ class BunqClientWrapper {
         // overwrite the existing details if any
         this.bunqApiKeyList[bunqApiKeyIdentifier] = bunqApiKeyInfo;
 
-        // select the key
-        await this.switchBunqApiKey(bunqApiKeyIdentifier);
-
         // store the updated list
         await this.storeBunqApiKeys();
 
@@ -143,16 +109,8 @@ class BunqClientWrapper {
         if (this.bunqApiKeyList[identifier]) {
             delete this.bunqApiKeyList[identifier];
 
+            // update the new list
             await this.storeBunqApiKeys();
-
-            // check if this was the currently active api key
-            if (this.selectedBunqApiKeyIdentifier === identifier) {
-                const identifierList = Object.keys(this.bunqApiKeyList);
-                if (identifierList.length > 0) {
-                    // select the first key
-                    await this.switchBunqApiKey(identifierList[0]);
-                }
-            }
         }
     }
 
@@ -307,8 +265,7 @@ class BunqClientWrapper {
      */
     async reset() {
         await Promise.all([
-            this.bunqApiKeyStorage.remove(BUNQ_API_KEYS_LOCATION),
-            this.bunqApiKeyStorage.remove(BUNQ_API_KEY_SELECTED)
+            this.bunqApiKeyStorage.remove(BUNQ_API_KEYS_LOCATION)
         ]);
     }
 }

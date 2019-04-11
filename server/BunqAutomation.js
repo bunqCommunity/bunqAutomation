@@ -2,7 +2,12 @@ import Pipeline from "./Automation/Pipeline";
 import FileStore from "./StorageHandlers/FileStore";
 import LevelDb from "./StorageHandlers/LevelDb";
 
-import { NoBunqApiKeyError, NoPasswordSetError } from "./Errors";
+import {
+    BunqJSClientNotReadyError,
+    NoBunqApiKeyError,
+    NoBunqApiKeyIdentifierError,
+    NoPasswordSetError
+} from "./Errors";
 import BunqClientWrapper from "./BunqClientWrapper";
 import Authentication from "./Security/Authentication";
 
@@ -62,12 +67,12 @@ class BunqAutomation {
      * @param keyIdentifier
      * @returns {Promise<boolean>}
      */
-    async isApiReadyCheck(keyIdentifier = false) {
+    async isApiReadyCheck(keyIdentifier) {
         if (this.status === STATUS_API_READY) {
-            if (!keyIdentifier && !this.bunqJSClient) {
-                throw new NoBunqApiKeyError();
+            if (!keyIdentifier) {
+                throw new NoBunqApiKeyIdentifierError();
             } else if (keyIdentifier && !this.bunqClientWrapper.getBunqJSClient(keyIdentifier)) {
-                throw new NoBunqApiKeyError();
+                throw new BunqJSClientNotReadyError();
             }
             return true;
         }
@@ -116,11 +121,11 @@ class BunqAutomation {
 
     /**
      * Get active user for given key
-     * @param forceUpdate
      * @param keyIdentifier
+     * @param forceUpdate
      * @returns {Promise<boolean>}
      */
-    async getUser(forceUpdate = false, keyIdentifier = false) {
+    async getUser(keyIdentifier, forceUpdate = false) {
         await this.isApiReadyCheck(keyIdentifier);
 
         const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
@@ -134,11 +139,11 @@ class BunqAutomation {
 
     /**
      * Get events
-     * @param options
      * @param keyIdentifier
+     * @param options
      * @returns {Promise<any>}
      */
-    async getEvents(options = {}, keyIdentifier = false) {
+    async getEvents(keyIdentifier, options = {}) {
         await this.isApiReadyCheck(keyIdentifier);
 
         const user = await this.getUser();
@@ -149,11 +154,11 @@ class BunqAutomation {
 
     /**
      * Get monetary accounts
-     * @param options
      * @param keyIdentifier
+     * @param options
      * @returns {Promise<any>}
      */
-    async getMonetaryAccounts(options = {}, keyIdentifier = false) {
+    async getMonetaryAccounts(keyIdentifier, options = {}) {
         await this.isApiReadyCheck(keyIdentifier);
 
         const user = await this.getUser();
@@ -164,10 +169,11 @@ class BunqAutomation {
 
     /**
      * Fetches a bunq image by uuid and caches it
+     * @param keyIdentifier
      * @param imageUuid
      * @returns {Promise<any>}
      */
-    async getImage(imageUuid, keyIdentifier = false) {
+    async getImage(keyIdentifier, imageUuid) {
         await this.isApiReadyCheck(keyIdentifier);
 
         const imageFileName = `${imageUuid}.png`;

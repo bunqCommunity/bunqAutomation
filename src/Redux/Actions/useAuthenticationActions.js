@@ -3,7 +3,7 @@ import { useDispatch } from "redux-react-hook";
 
 const apiBaseUrl = `${process.env.REACT_APP_SERVER_URL}/api`;
 
-const useAuthentication = () => {
+const useAuthenticationActions = () => {
     const dispatch = useDispatch();
 
     const loginWithPassword = (password, callback = false) => {
@@ -101,4 +101,4 @@ const useAuthentication = () => {
     };
 };
 
-export default useAuthentication;
+export default useAuthenticationActions;

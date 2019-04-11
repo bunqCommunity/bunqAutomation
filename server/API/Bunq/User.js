@@ -25,7 +25,8 @@ export default (app, opts, next) => {
         },
         async (request, reply) => {
             const forceUpdate = request.query && request.query.forceUpdate;
-            const userInfo = await app.bunqAutomation.getUser(forceUpdate);
+
+            const userInfo = await app.bunqAutomation.getUser(request.params.identifier, forceUpdate);
 
             reply.send({
                 user: userInfo

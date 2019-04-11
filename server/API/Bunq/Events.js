@@ -32,7 +32,7 @@ export default (app, opts, next) => {
                 });
             }
 
-            const events = await app.bunqAutomation.getEvents(options);
+            const events = await app.bunqAutomation.getEvents(request.params.identifier, options);
 
             reply.send({
                 events: events

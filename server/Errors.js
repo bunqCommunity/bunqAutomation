@@ -14,6 +14,20 @@ export class NoBunqApiKeyError extends DomainError {
     }
 }
 
+export class NoBunqApiKeyIdentifierError extends DomainError {
+    constructor(query) {
+        super(`No bunq API key identifier given`);
+        this.data = { query };
+    }
+}
+
+export class BunqJSClientNotReadyError extends DomainError {
+    constructor(query) {
+        super(`The bunq connection for this key is not ready or has errors`);
+        this.data = { query };
+    }
+}
+
 export class NoPasswordSetError extends DomainError {
     constructor(query) {
         super(`No password has been set yet.`);

@@ -29,7 +29,7 @@ export default (app, opts, next) => {
             const imageId = request.params.imageId;
             if (!imageId) throw new BadRequestError();
 
-            const imageContents = await app.bunqAutomation.getImage(imageId);
+            const imageContents = await app.bunqAutomation.getImage(request.params.identifier, imageId);
 
             reply.header("Content-Type", "image/png").send(imageContents);
         }

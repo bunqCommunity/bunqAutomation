@@ -17,8 +17,8 @@ import ServerIcon from "../Icons/Server";
 import ReactParticles from "../ReactParticles";
 import BunqImage from "../BunqImage";
 
-import useTheme from "../../Redux/Actions/useTheme";
-import useUser from "../../Redux/Actions/useUser";
+import useThemeActions from "../../Redux/Actions/useThemeActions";
+import useUserActions from "../../Redux/Actions/useUserActions";
 
 import { getUserImageUuid } from "../../Functions/ApiDataUtils";
 import ErrorBoundary from "../ErrorBoundary";
@@ -74,8 +74,8 @@ const mapState = state => ({
 
 const MinimalContent = ({ alignTop = false, classes, children, className = "", title = "bunqAutomation" }) => {
     const { darkMode, particles, serverStatus, user, userLoading, apiKey } = useMappedState(mapState);
-    const { toggleTheme } = useTheme();
-    const { getUser } = useUser();
+    const { toggleTheme } = useThemeActions();
+    const { getUser } = useUserActions();
 
     useEffect(
         () => {

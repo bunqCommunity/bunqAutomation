@@ -8,7 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import MinimalContent from "../../Components/MinimalContent/MinimalContent";
 import ThemedLogo from "../../Components/ThemedLogo";
 
-import useAuthentication from "../../Redux/Actions/useAuthentication";
+import useAuthenticationActions from "../../Redux/Actions/useAuthenticationActions";
 
 const styles = theme => ({
     root: {
@@ -39,7 +39,7 @@ const mapState = state => ({
 
 const LoginPassword = ({ classes }) => {
     const { darkMode, serverStatus, serverStatusChecked, apiKey } = useMappedState(mapState);
-    const { loginWithPassword } = useAuthentication();
+    const { loginWithPassword } = useAuthenticationActions();
 
     const [password, setPassword] = useState("testpassword1234");
 

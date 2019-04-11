@@ -8,12 +8,12 @@ export default app => {
         app.register(API, { prefix: "/api" });
 
         clientRoutes.forEach(route => {
-            app.get(route.path, (request, reply) => reply.sendFile("index.html"));
+            app.get(route.path, { hide: true, hidden: true }, (request, reply) => reply.sendFile("index.html"));
             if (!route.paths) return;
 
             // loop through extra paths
             route.paths.forEach(path => {
-                app.get(path, (request, reply) => reply.sendFile("index.html"));
+                app.get(path, { hide: true, hidden: true }, (request, reply) => reply.sendFile("index.html"));
             });
         });
 

@@ -23,6 +23,8 @@ export default function reducer(state = defaultState, action) {
                 ...state,
                 loading: false
             };
+
+        case "AUTHENTICATION_LOGOUT":
         case "USER_LOGOUT":
             return {
                 ...defaultState

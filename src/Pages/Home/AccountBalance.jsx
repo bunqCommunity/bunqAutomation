@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { withStyles, withTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import SvgIcon from "@material-ui/core/SvgIcon";
@@ -7,9 +7,8 @@ import Typography from "@material-ui/core/Typography";
 import Refresh from "@material-ui/icons/Refresh";
 import PieChartIcon from "@material-ui/icons/PieChart";
 
-import useMonetaryAccounts from "../../Hooks/useMonetaryAccounts";
-
 import AccountBalancePieChart from "../../Components/Charts/AccountBalancePieChart";
+import useMonetaryAccountsActions from "../../Redux/Actions/useMonetaryAccountsActions";
 
 const styles = () => ({
     paper: {
@@ -29,7 +28,8 @@ const styles = () => ({
 });
 
 const AccountBalance = ({ classes }) => {
-    const [monetaryAccounts, updateMonetaryAccounts] = useMonetaryAccounts();
+    const { getMonetaryAccounts } = useMonetaryAccountsActions();
+    const monetaryAccounts = [];
 
     return (
         <React.Fragment>
@@ -42,7 +42,7 @@ const AccountBalance = ({ classes }) => {
                 </Typography>
 
                 <span className={classes.paperHeaderFill} />
-                <SvgIcon onClick={updateMonetaryAccounts} color="action">
+                <SvgIcon onClick={getMonetaryAccounts} color="action">
                     <Refresh />
                 </SvgIcon>
             </div>

@@ -1,15 +1,13 @@
 import { useDispatch } from "redux-react-hook";
 
-const apiBaseUrl = `${process.env.REACT_APP_SERVER_URL}/api`;
-
-const useUser = () => {
+const useUserActions = () => {
     const dispatch = useDispatch();
 
     const getUser = (forceUpdate = false) => {
         userIsLoading();
 
         window.apiClient
-            .get(`${apiBaseUrl}/bunq/user?forceUpdate=${forceUpdate}`)
+            .get(`/bunq/:key/user?forceUpdate=${forceUpdate}`)
             .then(data => {
                 setUser(data.user ? data.user : false);
                 userIsNotLoading();
@@ -48,4 +46,4 @@ const useUser = () => {
     };
 };
 
-export default useUser;
+export default useUserActions;

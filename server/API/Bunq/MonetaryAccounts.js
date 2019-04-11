@@ -25,10 +25,9 @@ export default (app, opts, next) => {
                         options[key] = request.query[key];
                     }
                 });
-                if (request.query.keyIdentifier) keyIdentifier = request.query.keyIdentifier;
             }
 
-            const monetary_accounts = await app.bunqAutomation.getMonetaryAccounts(options, keyIdentifier);
+            const monetary_accounts = await app.bunqAutomation.getMonetaryAccounts(request.params.identifier, options);
 
             const formattedObjects = [];
             monetary_accounts.forEach(monetaryAccount => {

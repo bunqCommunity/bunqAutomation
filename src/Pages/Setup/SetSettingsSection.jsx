@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-import useTheme from "../../Redux/Actions/useTheme";
+import useThemeActions from "../../Redux/Actions/useThemeActions";
 
 const styles = theme => ({
     gridItem: {
@@ -27,7 +27,7 @@ const mapState = state => ({
 
 const SetSettingsSection = ({ classes }) => {
     const { particles } = useMappedState(mapState);
-    const { toggleParticles } = useTheme();
+    const { toggleParticles } = useThemeActions();
 
     return (
         <Grid container alignContent="flex-start">

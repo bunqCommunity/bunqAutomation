@@ -7,7 +7,7 @@ export default ({ setBunqApiKey }) => {
 
     const createCredentials = () => {
         window.apiClient
-            .post("/bunq/login/credentials")
+            .post("/public-bunq/login/credentials")
             .then(setCredentials)
             .catch(error => {
                 console.log(error);
@@ -15,7 +15,7 @@ export default ({ setBunqApiKey }) => {
     };
     const checkCredentials = () => {
         window.apiClient
-            .get(`/bunq/login/credentials/${credentials.uuid}`)
+            .get(`/public-bunq/login/credentials/${credentials.uuid}`)
             .then(result => {
                 if (result.status === "ACCEPTED") {
                     setBunqApiKey(result.api_key);

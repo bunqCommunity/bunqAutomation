@@ -14,9 +14,9 @@ import MoonIcon from "../Icons/Moon";
 
 import UserBunqImage from "../UserBunqImage";
 
-import useTheme from "../../Redux/Actions/useTheme";
-import useUser from "../../Redux/Actions/useUser";
-import useAuthentication from "../../Redux/Actions/useAuthentication";
+import useThemeActions from "../../Redux/Actions/useThemeActions";
+import useUserActions from "../../Redux/Actions/useUserActions";
+import useAuthenticationActions from "../../Redux/Actions/useAuthenticationActions";
 
 const drawerWidth = 240;
 
@@ -76,9 +76,9 @@ const mapState = state => ({
 
 const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
     const state = useMappedState(mapState);
-    const { logout } = useAuthentication();
-    const { toggleTheme } = useTheme();
-    const { getUser } = useUser();
+    const { logout } = useAuthenticationActions();
+    const { toggleTheme } = useThemeActions();
+    const { getUser } = useUserActions();
 
     useEffect(
         () => {

@@ -3,7 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
-import useAuthentication from "../../Redux/Actions/useAuthentication";
+import useAuthenticationActions from "../../Redux/Actions/useAuthenticationActions";
 
 const styles = () => ({
     textField: {
@@ -26,7 +26,7 @@ const SetPasswordSection = ({
     setPasswordConfirm,
     serverStatus
 }) => {
-    const { loginWithPassword } = useAuthentication();
+    const { loginWithPassword } = useAuthenticationActions();
 
     const [error, setError] = useState("");
     const [errorConfirm, setErrorConfirm] = useState("");

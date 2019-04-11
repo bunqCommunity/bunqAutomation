@@ -1,6 +1,6 @@
 import { useDispatch } from "redux-react-hook";
 
-const useServerStatus = () => {
+const useServerStatusActions = () => {
     const dispatch = useDispatch();
 
     const setServerStatus = status => {
@@ -17,4 +17,4 @@ const useServerStatus = () => {
     };
 };
 
-export default useServerStatus;
+export default useServerStatusActions;

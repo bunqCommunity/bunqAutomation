@@ -16,7 +16,14 @@ const swaggerDocs = (fastify, options, next) => {
             // schemes: ["https","http"],
             consumes: ["application/json"],
             produces: ["application/json"],
-            tags: [{ name: "setup", description: "Setup bunqAutomation with passwords and API keys" }],
+            tags: [
+                { name: "setup", description: "Setup bunqAutomation with passwords and API keys" },
+                { name: "bunq", description: "bunq endpoints which require an authenticated bunq connection" },
+                {
+                    name: "public-bunq",
+                    description: "bunq endpoints which don't require an authenticated bunq connection"
+                }
+            ],
             securityDefinitions: {
                 apiKey: {
                     type: "apiKey",

@@ -8,8 +8,8 @@ import MainMenu from "./MainMenu";
 
 import useStoredBoolean from "../../Hooks/useStoredBoolean";
 
-import useUser from "../../Redux/Actions/useUser";
-import useAuthentication from "../../Redux/Actions/useAuthentication";
+import useUserActions from "../../Redux/Actions/useUserActions";
+import useAuthenticationActions from "../../Redux/Actions/useAuthenticationActions";
 import ErrorBoundary from "../ErrorBoundary";
 
 const styles = theme => ({
@@ -41,8 +41,8 @@ const mapState = state => ({
 const Content = ({ classes, children, title = "bunqAutomation" }) => {
     const [menuOpen, toggleMenu] = useStoredBoolean("main-menu");
     const state = useMappedState(mapState);
-    const { logout } = useAuthentication();
-    const { getUser } = useUser();
+    const { logout } = useAuthenticationActions();
+    const { getUser } = useUserActions();
 
     useEffect(() => {
         if (!state.user && !state.userLoading && !state.authenticationLoading) getUser();

@@ -1,6 +1,6 @@
 import { useDispatch } from "redux-react-hook";
 
-const useSnackbar = () => {
+const useSnackbarActions = () => {
     const dispatch = useDispatch();
 
     const openSnackbar = (message, duration = 5000) => {
@@ -17,4 +17,4 @@ const useSnackbar = () => {
     };
 };
 
-export default useSnackbar;
+export default useSnackbarActions;

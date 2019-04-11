@@ -12,7 +12,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import SandboxIcon from "@material-ui/icons/BugReport";
 
 import Content from "../../Components/Content/Content";
-import useBunqApiKeys from "../../Hooks/useBunqApiKeys";
 
 const styles = theme => ({
     gridItemRight: {
@@ -21,7 +20,7 @@ const styles = theme => ({
 });
 
 const BunqApiKeys = ({ classes }) => {
-    const bunqApiKeys = useBunqApiKeys();
+    const bunqApiKeys = {}
 
     const bunqApiKeyListItems = Object.keys(bunqApiKeys).map(identifier => {
         const storedKey = bunqApiKeys[identifier];

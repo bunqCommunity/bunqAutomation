@@ -6,8 +6,8 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
 import BunqQrCode from "./BunqQrCode";
-import useAuthentication from "../../Redux/Actions/useAuthentication";
-import useSnackbar from "../../Redux/Actions/useSnackbar";
+import useAuthenticationActions from "../../Redux/Actions/useAuthenticationActions";
+import useSnackbarActions from "../../Redux/Actions/useSnackbarActions";
 
 const styles = theme => ({
     textField: {
@@ -48,14 +48,14 @@ const SetBunqKeySection = ({
     environment,
     setEnvironment
 }) => {
-    const { loginBunqApiKey } = useAuthentication();
-    const { openSnackbar } = useSnackbar();
+    const { loginBunqApiKey } = useAuthenticationActions();
+    const { openSnackbar } = useSnackbarActions();
 
     const setBunqKeyCb = e => setBunqApiKeyField(e.target.value);
     const setDeviceNameCb = e => setDeviceName(e.target.value);
     const createSandboxUser = () => {
         window.apiClient
-            .post("/bunq/login/sandbox-user")
+            .post("/public-bunq/login/sandbox-user")
             .then(setBunqApiKeyField)
             .catch(error => {
                 console.log(error);
