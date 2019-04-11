@@ -10,7 +10,6 @@
         "build": "yarn run build:server && yarn run build:client",
         "build:server": "./node_modules/.bin/babel server --out-dir build-server",
         "build:client": "react-scripts build",
-        "postbuild:client": "./node_modules/.bin/sw-precache --config src/ServiceWorker/sw-precache-config.js",
         "server": "./node_modules/.bin/nodemon --config .nodemonrc.json --exec babel-node server/Server.js",
         "react": "react-scripts start",
         "postinstall": "node scripts/install.js",
@@ -62,7 +61,8 @@
         "socket.io-client": "^2.2.0",
         "storm-react-diagrams": "^5.2.1",
         "three": "^0.103.0",
-        "uuid": "^3.3.2"
+        "uuid": "^3.3.2",
+        "web-push": "^3.3.3"
     },
     "devDependencies": {
         "@babel/cli": "^7.2.3",
@@ -77,8 +77,7 @@
         "babel-plugin-dynamic-import-node": "^2.2.0",
         "nodemon": "^1.18.10",
         "prettier": "^1.16.4",
-        "prop-types": "^15.7.2",
-        "sw-precache": "^5.2.1"
+        "prop-types": "^15.7.2"
     },
     "browserslist": [
         "last 1 version",

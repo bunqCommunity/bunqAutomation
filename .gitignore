@@ -2,8 +2,9 @@
 storage
 !storage/.gitkeep
 
-# dotenv environment variables file
+# private files
 .env
+src/Config/vapid-public-key.json
 
 # Logs
 logs
