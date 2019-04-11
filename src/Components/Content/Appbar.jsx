@@ -7,6 +7,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 import MenuIcon from "@material-ui/icons/Menu";
 import WbSunnyIcon from "@material-ui/icons/WbSunny";
@@ -40,6 +41,12 @@ const styles = theme => ({
             duration: theme.transitions.duration.enteringScreen
         })
     },
+    linearColorPrimary: {
+        backgroundColor: "rgb(60,150,133)"
+    },
+    linearBarColorPrimary: {
+        backgroundColor: "#00695c"
+    },
     menuButton: {
         marginLeft: 12,
         marginRight: 24
@@ -64,9 +71,10 @@ const styles = theme => ({
 
 const mapState = state => ({
     user: state.user.user,
-    userLoading: state.user.loading,
 
+    userLoading: state.user.loading,
     authenticationLoading: state.authentication.loading,
+    bunqApiKeysLoading: state.bunq_api_keys.loading,
 
     serverStatusChecked: state.server_status.checked,
     serverStatus: state.server_status.status,
@@ -102,6 +110,9 @@ const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
         );
     }
 
+    const isLoading = state.userLoading || state.authenticationLoading || state.bunqApiKeysLoading;
+    console.log(isLoading);
+
     return (
         <AppBar position="absolute" className={classNames(classes.appBar, !menuOpen && classes.appBarShift)}>
             <Toolbar disableGutters={!true} className={classes.toolbar}>
@@ -129,6 +140,16 @@ const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
                 </IconButton>
                 {userComponent}
             </Toolbar>
+
+            {isLoading && (
+                <LinearProgress
+                    classes={{
+                        colorPrimary: classes.linearColorPrimary,
+                        barColorPrimary: classes.linearBarColorPrimary
+                    }}
+                    color="primary"
+                />
+            )}
         </AppBar>
     );
 };

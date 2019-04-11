@@ -2,8 +2,6 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
-import SvgIcon from "@material-ui/core/SvgIcon";
-import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -16,22 +14,15 @@ import MailIcon from "@material-ui/icons/Mail";
 import HistoryIcon from "@material-ui/icons/History";
 import AccountCheck from "../../Components/Icons/AccountCheck";
 
+import PaperSectionHeader from "../../Components/PaperSectionHeader";
+
 import { formatMoney } from "../../Functions/AmountFormatting";
 import { green, lightBlue, purple, salmon } from "../../Config/Colors";
 
 const styles = theme => ({
-    paperHeader: {
-        display: "flex",
-        alignItems: "center",
-        margin: 8
-    },
-    paperHeaderText: {
-        marginLeft: 8
-    },
     paper: {
         padding: 8
     },
-
     list: {
         width: "100%",
         paddingTop: 0,
@@ -116,14 +107,7 @@ const ActionHistoryOverview = ({ classes }) => {
 
     return (
         <React.Fragment>
-            <div className={classes.paperHeader}>
-                <SvgIcon color="action">
-                    <HistoryIcon />
-                </SvgIcon>
-                <Typography className={classes.paperHeaderText} variant="subtitle1">
-                    Completed actions
-                </Typography>
-            </div>
+            <PaperSectionHeader title="Completed actions" icon={HistoryIcon} />
 
             <Paper className={classes.paper}>
                 <List className={classes.list}>

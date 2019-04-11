@@ -19,7 +19,7 @@ const getOptions = theme => {
         cutoutPercentage: 80,
         tooltips: {
             mode: "label",
-            intersect: false,
+            intersect: true,
             label: "mylabel",
             callbacks: {
                 label: function(tooltipItem, data) {

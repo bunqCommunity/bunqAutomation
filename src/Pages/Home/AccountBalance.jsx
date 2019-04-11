@@ -1,14 +1,11 @@
 import React from "react";
 import { withStyles, withTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import SvgIcon from "@material-ui/core/SvgIcon";
-import Typography from "@material-ui/core/Typography";
-import LinearProgress from "@material-ui/core/LinearProgress";
 
-import Refresh from "@material-ui/icons/Refresh";
 import PieChartIcon from "@material-ui/icons/PieChart";
 
 import AccountBalancePieChart from "../../Components/Charts/AccountBalancePieChart";
+import PaperSectionHeader from "../../Components/PaperSectionHeader";
 
 import useMonetaryAccounts from "../../Redux/Hooks/useMonetaryAccounts";
 
@@ -37,23 +34,15 @@ const AccountBalance = ({ classes }) => {
 
     return (
         <React.Fragment>
-            <div className={classes.paperHeader}>
-                <SvgIcon color="action">
-                    <PieChartIcon />
-                </SvgIcon>
-                <Typography className={classes.paperHeaderText} variant="subtitle1">
-                    Account balance
-                </Typography>
-
-                <span className={classes.paperHeaderFill} />
-                <SvgIcon className={classes.updateIcon} onClick={updateMonetaryAccounts} color="action">
-                    <Refresh />
-                </SvgIcon>
-            </div>
+            <PaperSectionHeader
+                secondaryIcon={true}
+                title="Account balance"
+                icon={PieChartIcon}
+                onClick={updateMonetaryAccounts}
+                loading={monetaryAccountsLoading}
+            />
 
             <Paper className={classes.paper}>
-                {monetaryAccountsLoading && <LinearProgress color="secondary" />}
-
                 <AccountBalancePieChart monetaryAccounts={monetaryAccounts} />
             </Paper>
         </React.Fragment>

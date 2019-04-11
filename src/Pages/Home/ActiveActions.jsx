@@ -15,6 +15,8 @@ import AccountCheck from "../../Components/Icons/AccountCheck";
 import { formatMoney } from "../../Functions/AmountFormatting";
 import { darkGreen, green, lightBlue, purple, salmon } from "../../Config/Colors";
 
+import PaperSectionHeader from "../../Components/PaperSectionHeader";
+
 const styles = theme => ({
     headerWrapper: {
         display: "flex",
@@ -111,14 +113,7 @@ const ActionHistoryOverview = ({ classes, itemXs = 12, itemSm = 6, itemMd = 4 })
 
     return (
         <React.Fragment>
-            <div className={classes.headerWrapper}>
-                <SvgIcon color="action">
-                    <CheckIcon />
-                </SvgIcon>
-                <Typography className={classes.headerWrapperText} variant="subtitle1">
-                    Active actions
-                </Typography>
-            </div>
+            <PaperSectionHeader title="Active actions" icon={CheckIcon} />
 
             <Grid container spacing={16}>
                 {activeActionComponents}

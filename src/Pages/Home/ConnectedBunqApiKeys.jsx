@@ -1,10 +1,8 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
-import SvgIcon from "@material-ui/core/SvgIcon";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -14,20 +12,12 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import KeyIcon from "@material-ui/icons/VpnKey";
 import WarningIcon from "@material-ui/icons/Warning";
 
+import PaperSectionHeader from "../../Components/PaperSectionHeader";
+
 const styles = theme => ({
-    paperHeader: {
-        display: "flex",
-        alignItems: "center",
-        margin: 8
-    },
-    paperHeaderText: {
-        marginLeft: 8
-    },
     paper: {
         padding: 8
-    },
-
-    list: {}
+    }
 });
 
 const ConnectedBunqApiKeys = ({ classes }) => {
@@ -57,17 +47,10 @@ const ConnectedBunqApiKeys = ({ classes }) => {
 
     return (
         <React.Fragment>
-            <div className={classes.paperHeader}>
-                <SvgIcon color="action">
-                    <KeyIcon />
-                </SvgIcon>
-                <Typography className={classes.paperHeaderText} variant="subtitle1">
-                    bunq API keys
-                </Typography>
-            </div>
+            <PaperSectionHeader title="bunq API keys" icon={KeyIcon} />
 
             <Paper className={classes.paper}>
-                <List className={classes.list}>{bunqApiKeyComponents}</List>
+                <List>{bunqApiKeyComponents}</List>
             </Paper>
         </React.Fragment>
     );

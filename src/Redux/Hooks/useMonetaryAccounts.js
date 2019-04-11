@@ -18,6 +18,6 @@ export default () => {
         monetaryAccounts: accounts,
         monetaryAccountsLoading: loading,
 
-        updateMonetaryAccounts: updateMonetaryAccounts
+        updateMonetaryAccounts: () => dispatch(updateMonetaryAccounts())
     };
 };

@@ -12,6 +12,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
 import SandboxIcon from "@material-ui/icons/BugReport";
+import ArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 
 import Content from "../../Components/Content/Content";
 
@@ -25,19 +26,26 @@ const styles = theme => ({
 
 const mapState = state => ({
     bunqApiKeys: state.bunq_api_keys.bunq_api_keys,
+    selelctedApiKey: state.bunq_api_keys.selected,
     bunqApiKeysLoading: state.bunq_api_keys.loading
 });
 
 const BunqApiKeys = ({ classes }) => {
     const dispatch = useDispatch();
-    const { bunqApiKeys, bunqApiKeysLoading } = useMappedState(mapState);
+    const { bunqApiKeys, selelctedApiKey, bunqApiKeysLoading } = useMappedState(mapState);
 
     const bunqApiKeyListItems = Object.keys(bunqApiKeys).map(identifier => {
         const storedKey = bunqApiKeys[identifier];
 
         return (
             <ListItem button key={identifier} onClick={() => dispatch(selectBunqApiKey(identifier))}>
+                {selelctedApiKey === identifier && (
+                    <ListItemIcon>
+                        <ArrowRightIcon />
+                    </ListItemIcon>
+                )}
                 <ListItemText
+                    inset={selelctedApiKey !== identifier}
                     primary={storedKey.deviceName}
                     secondary={storedKey.errorState ? "Has errors" : "Active and ready"}
                 />
