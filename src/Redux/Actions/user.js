@@ -1,4 +1,4 @@
-export const getUser = (forceUpdate = false) => {
+export const updateUser = (forceUpdate = false) => {
     return dispatch => {
         dispatch(userIsLoading());
 

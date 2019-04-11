@@ -7,12 +7,15 @@ import { getColorByIndex } from "../../Config/Colors";
 
 import DoughtnutAmountTotalLabel from "./Plugins/DoughnutAmountTotalLable";
 
+import { doughnutOptions } from "./DefaultOptions";
+
 const getOptions = theme => {
     const textColor = theme.palette.text.primary;
 
+    const defaultOptions = doughnutOptions(theme, {}, "money");
+
     return {
-        maintainAspectRatio: false,
-        responsive: true,
+        ...defaultOptions,
         cutoutPercentage: 80,
         tooltips: {
             mode: "label",
@@ -28,6 +31,7 @@ const getOptions = theme => {
             }
         },
         legend: {
+            display: false,
             labels: {
                 fontColor: textColor
             }
@@ -58,6 +62,7 @@ const AccountBalancePieChart = ({ theme, monetaryAccounts }) => {
                 tempLabels.push(monetaryAccount.description);
                 tempData.push(parseFloat(monetaryAccount.balance.value));
             });
+            tempData.sort((a, b) => (a > b ? -1 : 1));
 
             setBackgroundColors(tempBackgroundColors);
             setLabels(tempLabels);

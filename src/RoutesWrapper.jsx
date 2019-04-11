@@ -11,6 +11,7 @@ import Routes from "./Routes";
 
 import { setServerStatus } from "./Redux/Actions/server_status";
 import { validateApiKey } from "./Redux/Actions/authentication";
+import { getBunqApiKeys } from "./Redux/Actions/bunq_api_keys";
 import useSocketEvent from "./Hooks/useSocketEvent";
 
 const lightTheme = createMuiTheme(MuiTheme.light);
@@ -35,6 +36,8 @@ const RoutesWrapper = () => {
 
         // validate our api key
         dispatch(validateApiKey(apiKey));
+
+        if (apiKey) dispatch(getBunqApiKeys());
     }, []);
 
     // check server status

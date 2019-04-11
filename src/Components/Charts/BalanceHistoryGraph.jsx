@@ -5,39 +5,19 @@ import { Line } from "react-chartjs-2";
 import { formatMoney } from "../../Functions/AmountFormatting";
 import { yellow, purple, lightBlue } from "../../Config/Colors";
 
+import { xAxesSeries, yAxesDefault } from "./DefaultOptions";
+
 const getOptions = theme => {
     const textColor = theme.palette.text.primary;
+
+    const yAxes = [yAxesDefault(theme, true)];
+    const xAxes = [xAxesSeries(theme)];
 
     return {
         maintainAspectRatio: false,
         scales: {
-            yAxes: [
-                {
-                    stacked: true,
-                    fontColor: textColor,
-                    ticks: {
-                        fontColor: textColor,
-                        beginAtZero: true,
-                        callback: function(value, index, values) {
-                            return formatMoney(value);
-                        }
-                    }
-                }
-            ],
-            xAxes: [
-                {
-                    fontColor: textColor,
-                    type: "time",
-                    distribution: "series",
-                    bounds: "ticks",
-                    ticks: {
-                        fontColor: textColor
-                    },
-                    time: {
-                        unit: "month"
-                    }
-                }
-            ]
+            yAxes: yAxes,
+            xAxes: xAxes
         },
         tooltips: {
             mode: "label",
@@ -53,6 +33,9 @@ const getOptions = theme => {
             labels: {
                 fontColor: textColor
             }
+        },
+        animation: {
+            animateScale: false
         }
     };
 };

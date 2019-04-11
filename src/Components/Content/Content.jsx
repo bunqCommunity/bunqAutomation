@@ -8,7 +8,7 @@ import MainMenu from "./MainMenu";
 
 import useStoredBoolean from "../../Hooks/useStoredBoolean";
 
-import { getUser } from "../../Redux/Actions/user";
+import { updateUser } from "../../Redux/Actions/user";
 import { logout as logoutAuth } from "../../Redux/Actions/authentication";
 import ErrorBoundary from "../ErrorBoundary";
 
@@ -46,7 +46,7 @@ const Content = ({ classes, children, title = "bunqAutomation" }) => {
     const logout = () => dispatch(logoutAuth());
 
     useEffect(() => {
-        if (!state.user && !state.userLoading && !state.authenticationLoading) dispatch(getUser());
+        if (!state.user && !state.userLoading && !state.authenticationLoading) dispatch(updateUser());
     }, []);
 
     useEffect(() => {

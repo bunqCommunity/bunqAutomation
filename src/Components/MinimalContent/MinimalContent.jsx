@@ -18,7 +18,7 @@ import ReactParticles from "../ReactParticles";
 import BunqImage from "../BunqImage";
 
 import { toggleTheme } from "../../Redux/Actions/theme";
-import { getUser } from "../../Redux/Actions/user";
+import { updateUser } from "../../Redux/Actions/user";
 
 import { getUserImageUuid } from "../../Functions/ApiDataUtils";
 import ErrorBoundary from "../ErrorBoundary";
@@ -78,7 +78,7 @@ const MinimalContent = ({ alignTop = false, classes, children, className = "", t
 
     useEffect(() => {
         if (!userLoading && !user && apiKey && serverStatus === "STATUS_API_READY") {
-            dispatch(getUser());
+            dispatch(updateUser());
         }
     }, [user, apiKey, serverStatus]);
 

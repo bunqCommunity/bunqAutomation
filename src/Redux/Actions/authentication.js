@@ -12,8 +12,6 @@ export const loginWithPassword = (password, callback = false) => {
                 password: password
             })
             .then(data => {
-                dispatch(getBunqApiKeys());
-
                 dispatch(setApiKey(data.api_key));
                 dispatch(authenticationIsNotLoading());
                 window.socket && window.socket.emit("status");

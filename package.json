@@ -26,6 +26,7 @@
         "axios": "^0.18.0",
         "chalk": "^2.4.1",
         "chart.js": "^2.8.0",
+        "chartjs-plugin-datalabels": "^0.6.0",
         "classnames": "^2.2.6",
         "dotenv": "^6.2.0",
         "fastify": "^2.1.0",

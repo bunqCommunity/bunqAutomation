@@ -23,6 +23,9 @@ const styles = () => ({
     },
     paperHeaderFill: {
         flexGrow: 1
+    },
+    updateIcon: {
+        cursor: "pointer"
     }
 });
 
@@ -40,7 +43,7 @@ const BalanceHistory = ({ classes, theme }) => {
                 </Typography>
 
                 <span className={classes.paperHeaderFill} />
-                <SvgIcon onClick={() => setForceUpdate(new Date())} color="action">
+                <SvgIcon className={classes.updateIcon} onClick={() => setForceUpdate(new Date())} color="action">
                     <Refresh />
                 </SvgIcon>
             </div>

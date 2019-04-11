@@ -16,7 +16,7 @@ const randomIndex = () => getRandomNumber(0, colors.length);
 // return the same color for the index
 export const getColorByIndex = index => {
     const colorIndex = index % (colors.length - 1);
-    console.log(colorIndex);
+
     return colors[colorIndex];
 };
 

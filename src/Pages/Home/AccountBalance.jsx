@@ -26,6 +26,9 @@ const styles = () => ({
     },
     paperHeaderFill: {
         flexGrow: 1
+    },
+    updateIcon: {
+        cursor: "pointer"
     }
 });
 
@@ -43,14 +46,14 @@ const AccountBalance = ({ classes }) => {
                 </Typography>
 
                 <span className={classes.paperHeaderFill} />
-                <SvgIcon onClick={updateMonetaryAccounts} color="action">
+                <SvgIcon className={classes.updateIcon} onClick={updateMonetaryAccounts} color="action">
                     <Refresh />
                 </SvgIcon>
             </div>
 
-            {monetaryAccountsLoading && <LinearProgress />}
-
             <Paper className={classes.paper}>
+                {monetaryAccountsLoading && <LinearProgress color="secondary" />}
+
                 <AccountBalancePieChart monetaryAccounts={monetaryAccounts} />
             </Paper>
         </React.Fragment>
