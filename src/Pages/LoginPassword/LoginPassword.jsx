@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
-import { useMappedState } from "redux-react-hook";
+import { useMappedState, useDispatch } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -8,7 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import MinimalContent from "../../Components/MinimalContent/MinimalContent";
 import ThemedLogo from "../../Components/ThemedLogo";
 
-import useAuthenticationActions from "../../Redux/Actions/useAuthenticationActions";
+import { loginWithPassword } from "../../Redux/Actions/authentication";
 
 const styles = theme => ({
     root: {
@@ -38,8 +38,8 @@ const mapState = state => ({
 });
 
 const LoginPassword = ({ classes }) => {
+    const dispatch = useDispatch();
     const { darkMode, serverStatus, serverStatusChecked, apiKey } = useMappedState(mapState);
-    const { loginWithPassword } = useAuthenticationActions();
 
     const [password, setPassword] = useState("testpassword1234");
 
@@ -70,7 +70,7 @@ const LoginPassword = ({ classes }) => {
                     variant="contained"
                     color="primary"
                     disabled={!password || password.length < 8 || serverStatus === "DISCONNECTED"}
-                    onClick={e => loginWithPassword(password)}
+                    onClick={() => dispatch(loginWithPassword(password))}
                 >
                     Login
                 </Button>

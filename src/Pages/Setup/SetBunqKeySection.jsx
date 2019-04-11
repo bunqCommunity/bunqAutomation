@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
 import classNames from "classnames";
 import Grid from "@material-ui/core/Grid";
@@ -6,8 +7,9 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
 import BunqQrCode from "./BunqQrCode";
-import useAuthenticationActions from "../../Redux/Actions/useAuthenticationActions";
-import useSnackbarActions from "../../Redux/Actions/useSnackbarActions";
+
+import { loginBunqApiKey } from "../../Redux/Actions/authentication";
+import { openSnackbar } from "../../Redux/Actions/snackbar";
 
 const styles = theme => ({
     textField: {
@@ -48,8 +50,7 @@ const SetBunqKeySection = ({
     environment,
     setEnvironment
 }) => {
-    const { loginBunqApiKey } = useAuthenticationActions();
-    const { openSnackbar } = useSnackbarActions();
+    const dispatch = useDispatch();
 
     const setBunqKeyCb = e => setBunqApiKeyField(e.target.value);
     const setDeviceNameCb = e => setDeviceName(e.target.value);
@@ -62,13 +63,14 @@ const SetBunqKeySection = ({
             });
     };
     const login = () => {
-        loginBunqApiKey(bunqApiKey, environment, deviceName, result => {
+        const callback = result => {
             if (result === true) {
                 nextStep();
             } else {
-                openSnackbar("Failed to authenticate! The API key or IP address might be invalid");
+                dispatch(openSnackbar("Failed to authenticate! The API key or IP address might be invalid"));
             }
-        });
+        };
+        dispatch(loginBunqApiKey(bunqApiKey, environment, deviceName, callback));
     };
 
     if (environment === false) {

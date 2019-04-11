@@ -13,12 +13,10 @@ export default (app, opts, next) => {
             }
         },
         async (request, reply) => {
-            const options = {};
-            let keyIdentifier = false;
-
             // white list these options so only valid options are sent to bunq api
             const whitelistedQueryOptions = ["count", "newer_id", "older_id"];
 
+            const options = {};
             if (request.query) {
                 Object.keys(request.query).forEach(key => {
                     if (whitelistedQueryOptions.includes(key)) {

@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { withStyles } from "@material-ui/core/styles";
-import { useMappedState } from "redux-react-hook";
+import { useMappedState, useDispatch } from "redux-react-hook";
 
 import Appbar from "./Appbar";
 import MainMenu from "./MainMenu";
 
 import useStoredBoolean from "../../Hooks/useStoredBoolean";
 
-import useUserActions from "../../Redux/Actions/useUserActions";
-import useAuthenticationActions from "../../Redux/Actions/useAuthenticationActions";
+import { getUser } from "../../Redux/Actions/user";
+import { logout as logoutAuth } from "../../Redux/Actions/authentication";
 import ErrorBoundary from "../ErrorBoundary";
 
 const styles = theme => ({
@@ -39,13 +39,14 @@ const mapState = state => ({
 });
 
 const Content = ({ classes, children, title = "bunqAutomation" }) => {
-    const [menuOpen, toggleMenu] = useStoredBoolean("main-menu");
+    const dispatch = useDispatch();
     const state = useMappedState(mapState);
-    const { logout } = useAuthenticationActions();
-    const { getUser } = useUserActions();
+    const [menuOpen, toggleMenu] = useStoredBoolean("main-menu");
+
+    const logout = () => dispatch(logoutAuth());
 
     useEffect(() => {
-        if (!state.user && !state.userLoading && !state.authenticationLoading) getUser();
+        if (!state.user && !state.userLoading && !state.authenticationLoading) dispatch(getUser());
     }, []);
 
     useEffect(() => {

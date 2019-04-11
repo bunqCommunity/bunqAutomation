@@ -13,12 +13,12 @@ export default function reducer(state = defaultState, action) {
 
             // check if selected key still exists
             let selectedKey = state.selected;
-            if (!bunqApiKeys[state.selected]) {
+            if (!state.selected || !bunqApiKeys[state.selected]) {
                 selectedKey = Object.keys(bunqApiKeys)[0];
-                localStorage.setItem(SELECTED_BUNQ_API_KEY_LOCATION, selectedKey);
-
-                if (window.apiClient) window.apiClient.selectBunqApiKey(selectedKey);
             }
+
+            localStorage.setItem(SELECTED_BUNQ_API_KEY_LOCATION, selectedKey);
+            if (window.apiClient) window.apiClient.selectBunqApiKey(selectedKey);
 
             return {
                 ...state,

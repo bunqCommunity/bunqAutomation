@@ -1,28 +1,27 @@
 import React from "react";
-import { useMappedState } from "redux-react-hook";
+import { useMappedState, useDispatch } from "redux-react-hook";
 import Snackbar from "@material-ui/core/Snackbar";
 
-import useSnackbarActions from "../Redux/Actions/useSnackbarActions";
+import { closeSnackbar } from "../Redux/Actions/snackbar";
 
 const mapState = state => ({
     snackbar: state.snackbar
 });
 
 const SnackbarComponent = () => {
+    const dispatch = useDispatch();
     const { snackbar } = useMappedState(mapState);
-    const { openSnackbar, closeSnackbar } = useSnackbarActions();
-    window.openSnackbar = openSnackbar;
 
     return (
         <Snackbar
             autoHideDuration={snackbar.duration}
+            message={snackbar.message}
+            open={snackbar.open}
             anchorOrigin={{
                 vertical: "top",
                 horizontal: "right"
             }}
-            open={snackbar.open}
-            message={snackbar.message}
-            onClose={closeSnackbar}
+            onClose={() => dispatch(closeSnackbar())}
         />
     );
 };

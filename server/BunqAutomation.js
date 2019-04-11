@@ -146,7 +146,7 @@ class BunqAutomation {
     async getEvents(keyIdentifier, options = {}) {
         await this.isApiReadyCheck(keyIdentifier);
 
-        const user = await this.getUser();
+        const user = await this.getUser(keyIdentifier);
 
         const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
         return await client.api.event.list(user.id, options);
@@ -161,7 +161,7 @@ class BunqAutomation {
     async getMonetaryAccounts(keyIdentifier, options = {}) {
         await this.isApiReadyCheck(keyIdentifier);
 
-        const user = await this.getUser();
+        const user = await this.getUser(keyIdentifier);
 
         const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
         return await client.api.monetaryAccount.list(user.id, options);

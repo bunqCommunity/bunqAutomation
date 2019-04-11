@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useMappedState } from "redux-react-hook";
+import { useMappedState, useDispatch } from "redux-react-hook";
 import { createMuiTheme } from "@material-ui/core/styles";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -9,8 +9,8 @@ import MuiTheme from "./Config/MuiTheme";
 import Snackbar from "./Components/Snackbar";
 import Routes from "./Routes";
 
-import useServerStatusActions from "./Redux/Actions/useServerStatusActions";
-import useAuthenticationActions from "./Redux/Actions/useAuthenticationActions";
+import { setServerStatus } from "./Redux/Actions/server_status";
+import { validateApiKey } from "./Redux/Actions/authentication";
 import useSocketEvent from "./Hooks/useSocketEvent";
 
 const lightTheme = createMuiTheme(MuiTheme.light);
@@ -24,18 +24,22 @@ const mapState = state => ({
 
 const RoutesWrapper = () => {
     const socket = window.socket;
+    const dispatch = useDispatch();
     const { darkMode, apiKey } = useMappedState(mapState);
-    const { setServerStatus } = useServerStatusActions();
-    const { validateApiKey } = useAuthenticationActions();
+
+    const setStatus = status => dispatch(setServerStatus(status));
 
     useEffect(() => {
+        // request status update
         if (socket) socket.emit("status");
-        validateApiKey(apiKey);
+
+        // validate our api key
+        dispatch(validateApiKey(apiKey));
     }, []);
 
     // check server status
-    useSocketEvent("disconnect", () => setServerStatus("DISCONNECTED"));
-    useSocketEvent("status", status => setServerStatus(status));
+    useSocketEvent("disconnect", () => setStatus("DISCONNECTED"));
+    useSocketEvent("status", status => setStatus(status));
 
     const selectedTheme = darkMode ? darkTheme : lightTheme;
 

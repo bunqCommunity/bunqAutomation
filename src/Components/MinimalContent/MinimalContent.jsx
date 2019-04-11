@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { Helmet } from "react-helmet";
 import { NavLink } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import { useMappedState } from "redux-react-hook";
+import { useMappedState, useDispatch } from "redux-react-hook";
 import IconButton from "@material-ui/core/IconButton";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
@@ -17,8 +17,8 @@ import ServerIcon from "../Icons/Server";
 import ReactParticles from "../ReactParticles";
 import BunqImage from "../BunqImage";
 
-import useThemeActions from "../../Redux/Actions/useThemeActions";
-import useUserActions from "../../Redux/Actions/useUserActions";
+import { toggleTheme } from "../../Redux/Actions/theme";
+import { getUser } from "../../Redux/Actions/user";
 
 import { getUserImageUuid } from "../../Functions/ApiDataUtils";
 import ErrorBoundary from "../ErrorBoundary";
@@ -73,18 +73,14 @@ const mapState = state => ({
 });
 
 const MinimalContent = ({ alignTop = false, classes, children, className = "", title = "bunqAutomation" }) => {
+    const dispatch = useDispatch();
     const { darkMode, particles, serverStatus, user, userLoading, apiKey } = useMappedState(mapState);
-    const { toggleTheme } = useThemeActions();
-    const { getUser } = useUserActions();
 
-    useEffect(
-        () => {
-            if (!userLoading && !user && apiKey && serverStatus === "STATUS_API_READY") {
-                getUser();
-            }
-        },
-        [user, apiKey, serverStatus]
-    );
+    useEffect(() => {
+        if (!userLoading && !user && apiKey && serverStatus === "STATUS_API_READY") {
+            dispatch(getUser());
+        }
+    }, [user, apiKey, serverStatus]);
 
     let serverStatusText = "";
     let hoverText = "";
@@ -154,7 +150,7 @@ const MinimalContent = ({ alignTop = false, classes, children, className = "", t
 
                 <div className={classNames(classes.topContent, classes.topRightContent)}>
                     <Tooltip title="Toggle themes" aria-label="Toggle between light and dark theme">
-                        <IconButton className={classes.topContentButton} onClick={toggleTheme}>
+                        <IconButton className={classes.topContentButton} onClick={() => dispatch(toggleTheme())}>
                             {darkMode ? <MoonIcon /> : <WbSunnyIcon />}
                         </IconButton>
                     </Tooltip>

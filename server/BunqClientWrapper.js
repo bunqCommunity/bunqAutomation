@@ -245,6 +245,7 @@ class BunqClientWrapper {
      */
     getBunqApiKeyList() {
         const bunqApiKeyList = {};
+
         Object.keys(this.bunqApiKeyList).forEach(bunqApiKeyIdentifier => {
             const bunqApiKeyInfo = this.bunqApiKeyList[bunqApiKeyIdentifier];
             const mappedBunqApiKey = {};
@@ -257,6 +258,7 @@ class BunqClientWrapper {
 
             bunqApiKeyList[bunqApiKeyIdentifier] = mappedBunqApiKey;
         });
+
         return bunqApiKeyList;
     }
 
@@ -264,9 +266,7 @@ class BunqClientWrapper {
      * @returns {Promise<void>}
      */
     async reset() {
-        await Promise.all([
-            this.bunqApiKeyStorage.remove(BUNQ_API_KEYS_LOCATION)
-        ]);
+        await Promise.all([this.bunqApiKeyStorage.remove(BUNQ_API_KEYS_LOCATION)]);
     }
 }
 

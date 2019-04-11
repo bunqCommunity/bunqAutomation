@@ -20,7 +20,7 @@ const styles = theme => ({
 });
 
 const BunqApiKeys = ({ classes }) => {
-    const bunqApiKeys = {}
+    const bunqApiKeys = {};
 
     const bunqApiKeyListItems = Object.keys(bunqApiKeys).map(identifier => {
         const storedKey = bunqApiKeys[identifier];

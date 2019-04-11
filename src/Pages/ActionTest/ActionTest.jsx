@@ -45,7 +45,7 @@ export const chart = {
                 y: 100
             },
             ports: {
-                port1: standardRightPort("port1"),
+                port1: standardRightPort("port1")
             }
         },
         node2: {

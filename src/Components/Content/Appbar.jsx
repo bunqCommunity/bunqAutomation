@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-import { useMappedState } from "redux-react-hook";
+import { useMappedState, useDispatch } from "redux-react-hook";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -14,9 +14,9 @@ import MoonIcon from "../Icons/Moon";
 
 import UserBunqImage from "../UserBunqImage";
 
-import useThemeActions from "../../Redux/Actions/useThemeActions";
-import useUserActions from "../../Redux/Actions/useUserActions";
-import useAuthenticationActions from "../../Redux/Actions/useAuthenticationActions";
+import { toggleTheme } from "../../Redux/Actions/theme";
+import { getUser } from "../../Redux/Actions/user";
+import { logout as logoutAuth } from "../../Redux/Actions/authentication";
 
 const drawerWidth = 240;
 
@@ -75,24 +75,22 @@ const mapState = state => ({
 });
 
 const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
+    const dispatch = useDispatch();
     const state = useMappedState(mapState);
-    const { logout } = useAuthenticationActions();
-    const { toggleTheme } = useThemeActions();
-    const { getUser } = useUserActions();
 
-    useEffect(
-        () => {
-            if (!state.user && !state.userLoading && !state.authenticationLoading) getUser(true);
-        },
-        [state.user, state.authenticationLoading]
-    );
+    const logout = () => dispatch(logoutAuth());
 
-    useEffect(
-        () => {
-            if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") logout();
-        },
-        [state.serverStatusChecked, state.serverStatus]
-    );
+    useEffect(() => {
+        if (!state.user && !state.userLoading && !state.authenticationLoading) {
+            dispatch(getUser(true));
+        }
+    }, [state.user, state.authenticationLoading]);
+
+    useEffect(() => {
+        if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") {
+            logout();
+        }
+    }, [state.serverStatusChecked, state.serverStatus]);
 
     let userComponent = <UserBunqImage className={classes.userImage} user={state.user} />;
     const hasNotifications = false;
@@ -126,7 +124,7 @@ const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
                     {title}
                 </Typography>
 
-                <IconButton className={classes.themeButton} color="inherit" onClick={toggleTheme}>
+                <IconButton className={classes.themeButton} color="inherit" onClick={() => dispatch(toggleTheme())}>
                     {state.darkMode ? <MoonIcon /> : <WbSunnyIcon />}
                 </IconButton>
                 {userComponent}

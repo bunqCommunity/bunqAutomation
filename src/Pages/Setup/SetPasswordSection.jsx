@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "redux-react-hook";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
-import useAuthenticationActions from "../../Redux/Actions/useAuthenticationActions";
+import { loginWithPassword } from "../../Redux/Actions/authentication";
 
 const styles = () => ({
     textField: {
@@ -26,8 +27,7 @@ const SetPasswordSection = ({
     setPasswordConfirm,
     serverStatus
 }) => {
-    const { loginWithPassword } = useAuthenticationActions();
-
+    const dispatch = useDispatch();
     const [error, setError] = useState("");
     const [errorConfirm, setErrorConfirm] = useState("");
 
@@ -63,7 +63,7 @@ const SetPasswordSection = ({
         setPasswordConfirm(e.target.value);
     };
     const login = () => {
-        if (!invalidForm) loginWithPassword(password);
+        if (!invalidForm) dispatch(loginWithPassword(password));
     };
 
     return (

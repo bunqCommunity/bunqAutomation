@@ -78,19 +78,16 @@ const Setup = ({ classes }) => {
 
     const themedLogo = ThemedLogo(darkMode);
 
-    useEffect(
-        () => {
-            if (serverStatusChecked && serverStatus === "STATUS_PASSWORD_READY") {
-                if (step < 1) setStep(1);
-            } else if (
-                serverStatusChecked &&
-                (serverStatus === "STATUS_UNINITIALIZED" || serverStatus === "STATUS_FIRST_INSTALL")
-            ) {
-                if (step > 0) setStep(0);
-            }
-        },
-        [serverStatus, serverStatusChecked]
-    );
+    useEffect(() => {
+        if (serverStatusChecked && serverStatus === "STATUS_PASSWORD_READY") {
+            if (step < 1) setStep(1);
+        } else if (
+            serverStatusChecked &&
+            (serverStatus === "STATUS_UNINITIALIZED" || serverStatus === "STATUS_FIRST_INSTALL")
+        ) {
+            if (step > 0) setStep(0);
+        }
+    }, [serverStatus, serverStatusChecked]);
 
     const step1Disabled = serverStatus !== "STATUS_UNINITIALIZED" && serverStatus !== "STATUS_FIRST_INSTALL";
     const step2Disabled = !step1Disabled;

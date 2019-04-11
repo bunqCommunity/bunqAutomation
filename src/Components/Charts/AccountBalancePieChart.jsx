@@ -65,11 +65,6 @@ const AccountBalancePieChart = ({ theme, monetaryAccounts }) => {
         }
     }, [JSON.stringify(monetaryAccounts)]);
 
-    console.log("");
-    console.log(backgroundColors);
-    console.log(labels);
-    console.log(data);
-
     return (
         <Doughnut
             key={JSON.stringify(options)}
