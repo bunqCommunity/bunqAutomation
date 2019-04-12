@@ -1,11 +1,8 @@
 let notificationUrl = "";
 
 self.addEventListener("push", function(event) {
-    console.log("Push received: ", event);
     let _data = event.data ? JSON.parse(event.data.text()) : {};
     notificationUrl = _data.url;
-
-    console.log(_data);
 
     event.waitUntil(
         self.registration.showNotification(_data.title, {

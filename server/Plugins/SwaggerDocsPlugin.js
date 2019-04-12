@@ -2,6 +2,12 @@ const fastifyPlugin = require("fastify-plugin");
 const fastifySwagger = require("fastify-swagger");
 import packageJson from "../../package";
 
+export const swaggerSecuritySchema = [
+    {
+        apiKey: []
+    }
+];
+
 const swaggerDocs = (fastify, options, next) => {
     // https://github.com/fastify/fastify-swagger
     fastify.register(fastifySwagger, {
@@ -22,12 +28,24 @@ const swaggerDocs = (fastify, options, next) => {
                 {
                     name: "public-bunq",
                     description: "bunq endpoints which don't require an authenticated bunq connection"
+                },
+                {
+                    name: "server-management",
+                    description: "Endpoints to check and manage the server status"
+                },
+                {
+                    name: "web-push",
+                    description: "Browser subscription management for web push"
+                },
+                {
+                    name: "front-end",
+                    description: "Front-end routes which are auto generated for the SPA"
                 }
             ],
             securityDefinitions: {
                 apiKey: {
                     type: "apiKey",
-                    name: "X-Bunq-Automation-Auth",
+                    name: "x-bunq-automation-authorization",
                     in: "header"
                 }
             }

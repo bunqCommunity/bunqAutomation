@@ -70,8 +70,6 @@ class NotificationService {
             })
         );
 
-        console.log(emittedPushEvents);
-
         return emittedPushEvents;
     }
 

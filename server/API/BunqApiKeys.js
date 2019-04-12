@@ -1,9 +1,15 @@
+import { swaggerSecuritySchema } from "../Plugins/SwaggerDocsPlugin";
+
 export default (app, opts, next) => {
     const bunqClientWrapper = app.bunqAutomation.bunqClientWrapper;
 
     app.route({
         url: "/",
         method: "GET",
+        schema: {
+            tags: ["server-management"],
+            security: swaggerSecuritySchema
+        },
         preHandler: app.auth([app.apiKeyAuthentication]),
         handler: async (request, reply) => {
             reply.send({

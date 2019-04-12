@@ -4,7 +4,7 @@ export default (app, opts, next) => {
         {
             schema: {
                 description: "get the API health status",
-                tags: [],
+                tags: ["server-management"],
                 summary: "get the API health status",
                 response: {
                     200: {

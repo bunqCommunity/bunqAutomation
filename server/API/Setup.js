@@ -1,13 +1,8 @@
 import RateLimitPlugin from "../Plugins/Authentication/RateLimitPlugin";
+import { swaggerSecuritySchema } from "../Plugins/SwaggerDocsPlugin";
 import { BadRequestError } from "../Errors";
 import { STATUS_FIRST_INSTALL, STATUS_PASSWORD_READY, STATUS_UNINITIALIZED } from "../BunqAutomation";
 import BunqApiErrorFormatter from "../Functions/BunqApiErrorFormatter";
-
-const swaggerSecuritySchema = [
-    {
-        apiKey: []
-    }
-];
 
 export default (app, opts, next) => {
     const bunqAutomation = app.bunqAutomation;

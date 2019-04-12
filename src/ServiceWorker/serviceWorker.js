@@ -24,8 +24,6 @@ export function register(config) {
             .then(function(swReg) {
                 swReg.pushManager.getSubscription().then(function(subscription) {
                     if (!(subscription === null)) {
-                        console.log("User is subscribed", subscription);
-
                         saveSubscription(subscription);
                     } else {
                         swReg.pushManager

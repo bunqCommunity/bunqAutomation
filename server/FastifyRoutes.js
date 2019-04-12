@@ -8,12 +8,26 @@ export default app => {
         app.register(API, { prefix: "/api" });
 
         clientRoutes.forEach(route => {
-            app.get(route.path, { hide: true, hidden: true }, (request, reply) => reply.sendFile("index.html"));
+            app.route({
+                url: route.path,
+                method: "GET",
+                schema: {
+                    tags: ["front-end"]
+                },
+                handler: (request, reply) => reply.sendFile("index.html")
+            });
             if (!route.paths) return;
 
             // loop through extra paths
             route.paths.forEach(path => {
-                app.get(path, { hide: true, hidden: true }, (request, reply) => reply.sendFile("index.html"));
+                app.route({
+                    url: path,
+                    method: "GET",
+                    schema: {
+                        tags: ["front-end"]
+                    },
+                    handler: (request, reply) => reply.sendFile("index.html")
+                });
             });
         });
 
