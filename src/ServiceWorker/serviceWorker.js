@@ -60,13 +60,16 @@ export function unregister() {
 
 function saveSubscription(subscription) {
     const storedSubscription = localStorage.getItem(SUBSCRIPTION_STORAGE_KEY);
-    const stringifiedSubscription = JSON.stringify(subscription);
 
     if (!storedSubscription || storedSubscription === "FAILED") {
         axios
-            .post(`${process.env.REACT_APP_SERVER_URL}/web-push/subscribe`, JSON.stringify(subscription))
+            .post(`${process.env.REACT_APP_SERVER_URL}/api/web-push/subscribe`, subscription, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
             .then(() => {
-                localStorage.setItem(SUBSCRIPTION_STORAGE_KEY, stringifiedSubscription);
+                localStorage.setItem(SUBSCRIPTION_STORAGE_KEY, "SUCCESS");
                 console.log("Sent subscription to server");
             })
             .catch(error => {

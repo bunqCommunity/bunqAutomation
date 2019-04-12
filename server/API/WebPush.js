@@ -1,60 +1,30 @@
-const webPush = require("web-push");
-
 export default (app, opts, next) => {
-    const bunqAutomation = app.bunqAutomation;
-
     app.route({
         url: "/subscribe",
-        method: "GET",
+        method: "POST",
+        schema: {
+            tags: ["web-push"]
+        },
         handler: async (request, reply) => {
-            // TODO store subscribe event in a list
+            await app.notificationService.subscribeWebPush(request.body);
 
-            reply.status(500).send({
-                error: "Not implemented"
+            reply.status(200).send({
+                status: "success"
             });
         }
     });
 
-    app.get("/test-push", (request, reply) => {
-        const pushSubscription = JSON.parse("");
+    app.route({
+        url: "/test-push",
+        method: "GET",
+        schema: {
+            tags: ["web-push"]
+        },
+        handler: async (request, reply) => {
+            await app.notificationService.notify("My title", "A longer message text");
 
-        const payload = {
-            // ttl: req.body.ttl, // default 4 weeks
-            title: "Notification title",
-            message: "Notification message!",
-            url: process.env.REACT_APP_SERVER_URL,
-            // image: req.body.image,
-            icon: "/android-chrome-192x192.png",
-            badge: "/android-chrome-192x192.png",
-            timestamp: new Date().getTime()
-        };
-
-        const pushPayload = JSON.stringify(payload);
-        const vapidKeys = require("../../storage/vapid-keys.json");
-
-        const pushOptions = {
-            vapidDetails: {
-                subject: "https://github.com/bunqCommunity/bunqAutomation",
-                privateKey: vapidKeys.privateKey,
-                publicKey: vapidKeys.publicKey
-            },
-            headers: {}
-        };
-        webPush
-            .sendNotification(pushSubscription, pushPayload, pushOptions)
-            .then(value => {
-                console.log({
-                    status: true,
-                    data: value
-                });
-            })
-            .catch(err => {
-                console.log({
-                    status: false,
-                    data: err
-                });
-            });
-        reply.send("no");
+            reply.send("Done");
+        }
     });
 
     next();

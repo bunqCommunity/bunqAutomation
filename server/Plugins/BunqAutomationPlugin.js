@@ -6,7 +6,7 @@ import BunqAutomation from "../BunqAutomation";
 
 const bunqAutomationPlugin = (fastify, options, next) => {
     const bunqAutomation = new BunqAutomation(fastify.log);
-    bunqAutomation.startup().then(done => {
+    bunqAutomation.startup(fastify.server).then(done => {
         fastify.decorate("bunqAutomation", bunqAutomation);
 
         // register our custom things in bunqAutomation

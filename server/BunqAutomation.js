@@ -10,6 +10,8 @@ import {
 } from "./Errors";
 import BunqClientWrapper from "./BunqClientWrapper";
 import Authentication from "./Security/Authentication";
+import SocketServer from "./SocketServer";
+import NotificationService from "./NotificationService";
 
 export const STATUS_FIRST_INSTALL = "STATUS_FIRST_INSTALL";
 export const STATUS_UNINITIALIZED = "STATUS_UNINITIALIZED";
@@ -22,15 +24,14 @@ class BunqAutomation {
         this.fileStore = new FileStore();
         this.settingsStore = new LevelDb("bunq-automation-settings");
 
+        this.socketServer = new SocketServer(this);
         this.pipeline = new Pipeline(this.logger);
         this.authentication = new Authentication(this.logger);
         this.bunqClientWrapper = new BunqClientWrapper(this.logger);
+        this.notificationService = new NotificationService(this.socketServer);
 
         // set a reference in the authentication handler
         this.authentication.bunqAutomation = this;
-
-        // socket server is optional
-        this.socketServer = false;
 
         // by default set as first install status
         this._status = STATUS_FIRST_INSTALL;
@@ -39,7 +40,10 @@ class BunqAutomation {
         this.user = false;
     }
 
-    async startup() {
+    async startup(httpServer) {
+        // start the socket server and bind it to the http server
+        await this.socketServer.setup(httpServer);
+
         // check authentication inital startup status
         await this.authentication.startup();
 

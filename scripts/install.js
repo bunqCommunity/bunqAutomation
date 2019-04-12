@@ -5,7 +5,7 @@ const webPush = require("web-push");
 const baseProjectPath = `${__dirname}${path.sep}..${path.sep}`;
 const baseStorageDir = `${baseProjectPath}storage${path.sep}`;
 
-const targetVapidPrivateKeyFile = path.normalize(`${baseStorageDir}vapid-private-key.json`);
+const targetVapidPrivateKeyFile = path.normalize(`${baseStorageDir}vapid-keys.json`);
 const targetVapidPublicKeyFile = path.normalize(
     `${baseProjectPath}src${path.sep}Config${path.sep}vapid-public-key.json`
 );
@@ -13,7 +13,7 @@ const targetVapidPublicKeyFile = path.normalize(
 const generateWebPushKeys = function() {
     const vapidKeys = webPush.generateVAPIDKeys();
 
-    fs.writeFileSync(targetVapidPrivateKeyFile, JSON.stringify(vapidKeys.privateKey));
+    fs.writeFileSync(targetVapidPrivateKeyFile, JSON.stringify(vapidKeys));
     fs.writeFileSync(targetVapidPublicKeyFile, JSON.stringify(vapidKeys.publicKey));
 
     console.log(`Created VAPID keys for push notifications, make sure to rebuild the application`);

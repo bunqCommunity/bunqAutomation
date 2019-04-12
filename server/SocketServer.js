@@ -1,22 +1,16 @@
 import io from "socket.io";
 
 class SocketServer {
-    constructor(httpServer) {
-        this.httpServer = httpServer;
+    constructor(bunqAutomation) {
+        this.bunqAutomation = bunqAutomation;
 
+        this.logger = this.bunqAutomation.logger;
         this.socketServer = false;
     }
 
-    setup(bunqAutomation) {
-        // connect with bunqAutomation
-        this.bunqAutomation = bunqAutomation;
-        this.bunqAutomation.socketServer = this;
-
-        // get the logger object
-        this.logger = bunqAutomation.logger;
-
+    setup(httpServer) {
         // create socket server
-        this.socketServer = io(this.httpServer, { origins: "*:*" });
+        this.socketServer = io(httpServer, { origins: "*:*" });
 
         // listen for connections
         this.socketServer.on("connection", client => {
@@ -43,10 +37,10 @@ class SocketServer {
         });
     }
 
-    emit(data) {
+    emit(eventType, data = "") {
         if (!this.socketServer) return;
 
-        this.socketServer.emit(data);
+        this.socketServer.emit(eventType, data);
     }
 }
 

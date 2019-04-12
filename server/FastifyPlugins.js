@@ -9,6 +9,7 @@ import BunqAutomationPlugin from "./Plugins/BunqAutomationPlugin";
 import ApiKeyAuthenticationPlugin from "./Plugins/Authentication/ApiKeyAuthenticationPlugin";
 import SchemaRegistrationPlugin from "./Plugins/SchemaRegistrationPlugin";
 import SocketServerPlugin from "./Plugins/SocketServerPlugin";
+import NotificationServicePlugin from "./Plugins/NotificationServicePlugin";
 
 export default app => {
     app.register(fastifyCompress);
@@ -26,4 +27,5 @@ export default app => {
 
     app.register(BunqAutomationPlugin);
     app.register(SocketServerPlugin);
+    app.register(NotificationServicePlugin);
 };
