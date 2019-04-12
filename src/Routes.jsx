@@ -29,12 +29,14 @@ const Routes = () => {
 
         // wrap the lazy loading component in a renderer to redirect for authenticated/unauthenticated routes
         const renderer = props => {
-            if (serverStatusChecked && !route.ignoreRedirects) {
+            if (serverStatusChecked && !route.ignoreRedirects && !loading) {
                 switch (serverStatus) {
                     case "STATUS_FIRST_INSTALL":
                     case "STATUS_PASSWORD_READY":
                         // first install or only a password means we need to do more setup actions
-                        if (window.location.pathname !== "/setup") return <Redirect to="/setup" />;
+                        if (window.location.pathname !== "/setup") {
+                            return <Redirect to="/setup" />;
+                        }
                         break;
                     default:
                         break;

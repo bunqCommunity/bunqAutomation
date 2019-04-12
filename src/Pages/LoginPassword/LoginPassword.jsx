@@ -56,12 +56,13 @@ const LoginPassword = ({ classes }) => {
 
     return (
         <MinimalContent title="bunqAutomation - Login">
-            <div className={classes.root}>
+            <form className={classes.root}>
                 <img className={classes.image} alt="bunqAutomation logo" src={themedLogo} />
                 <TextField
                     className={classes.textField}
                     type="password"
                     placeholder="Password"
+                    autoComplete="current-password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                 />
@@ -74,7 +75,7 @@ const LoginPassword = ({ classes }) => {
                 >
                     Login
                 </Button>
-            </div>
+            </form>
         </MinimalContent>
     );
 };

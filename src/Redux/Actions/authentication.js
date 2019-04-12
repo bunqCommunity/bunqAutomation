@@ -74,10 +74,9 @@ export const validateApiKey = apiKey => {
             .post(
                 `/setup/validate-api-key`,
                 {},
+                {},
                 {
-                    headers: {
-                        "x-bunq-automation-authorization": apiKey
-                    }
+                    "x-bunq-automation-authorization": apiKey
                 }
             )
             .then(() => {
