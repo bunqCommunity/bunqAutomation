@@ -7,6 +7,7 @@ export default (app, opts, next) => {
         url: "/",
         method: "GET",
         schema: {
+            summary: "get the currently stored bunq API keys",
             tags: ["server-management"],
             security: swaggerSecuritySchema
         },

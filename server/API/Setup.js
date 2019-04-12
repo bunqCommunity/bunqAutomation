@@ -48,8 +48,7 @@ export default (app, opts, next) => {
                         }
                     }
                 }
-            },
-            security: swaggerSecuritySchema
+            }
         }
     });
 

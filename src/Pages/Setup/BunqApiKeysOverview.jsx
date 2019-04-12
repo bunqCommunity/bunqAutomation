@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
+import { useDispatch, useMappedState } from "redux-react-hook";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -9,31 +10,28 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 import SandboxIcon from "@material-ui/icons/BugReport";
 
+import { getBunqApiKeys } from "../../Redux/Actions/bunq_api_keys";
+
 const styles = theme => ({
     subHeader: {
         textAlign: "left"
     }
 });
 
+const mapState = state => ({
+    bunqApiKeys: state.bunq_api_keys.bunq_api_keys,
+    bunqApiKeysLoading: state.bunq_api_keys.loading
+});
 const BunqApiKeysOverview = ({ classes }) => {
-    const [storedApiKeys, setStoredApiKeys] = useState(false);
+    const dispatch = useDispatch();
+    const { bunqApiKeys, bunqApiKeysLoading } = useMappedState(mapState);
 
-    const checkStoredApiKeys = () => {
-        window.apiClient
-            .get(`/setup/api-keys`)
-            .then(result => {
-                setStoredApiKeys(result.loaded);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    };
-    useEffect(() => checkStoredApiKeys(), []);
+    useEffect(() => dispatch(getBunqApiKeys()), []);
 
-    if (!storedApiKeys) return null;
+    if (!bunqApiKeys) return null;
 
-    const bunqApiKeys = Object.keys(storedApiKeys).map(identifier => {
-        const storedKey = storedApiKeys[identifier];
+    const bunqApiKeyItems = Object.keys(bunqApiKeys).map(identifier => {
+        const storedKey = bunqApiKeys[identifier];
 
         return (
             <ListItem key={identifier}>
@@ -51,7 +49,7 @@ const BunqApiKeysOverview = ({ classes }) => {
     return (
         <List>
             <ListSubheader className={classes.subHeader}>Available API keys</ListSubheader>
-            {bunqApiKeys}
+            {bunqApiKeyItems}
         </List>
     );
 };
