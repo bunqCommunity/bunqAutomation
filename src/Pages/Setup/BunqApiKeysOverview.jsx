@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { useDispatch, useMappedState } from "redux-react-hook";
 import List from "@material-ui/core/List";
@@ -24,7 +24,7 @@ const mapState = state => ({
 });
 const BunqApiKeysOverview = ({ classes }) => {
     const dispatch = useDispatch();
-    const { bunqApiKeys, bunqApiKeysLoading } = useMappedState(mapState);
+    const { bunqApiKeys } = useMappedState(mapState);
 
     useEffect(() => dispatch(getBunqApiKeys()), []);
 

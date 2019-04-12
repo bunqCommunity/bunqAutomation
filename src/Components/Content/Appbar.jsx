@@ -111,7 +111,6 @@ const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
     }
 
     const isLoading = state.userLoading || state.authenticationLoading || state.bunqApiKeysLoading;
-    console.log(isLoading);
 
     return (
         <AppBar position="absolute" className={classNames(classes.appBar, !menuOpen && classes.appBarShift)}>
