@@ -8,7 +8,8 @@ export const PASSWORD_IV_LOCATION = "PASSWORD_IV";
 export const PASSWORD_HASH_LOCATION = "PASSWORD_HASH";
 
 export const BUNQ_API_KEY_HEADER = `x-bunq-automation-authorization`;
-export const DEFAULT_API_KEY_EXPIRY_TIME = 60 * 60;
+export const DEFAULT_API_KEY_EXPIRY_TIME = 3600;
+export const YEARLY_API_KEY_EXPIRY_TIME = 3600 * 24 * 365;
 
 export class Authentication {
     constructor(logger) {
@@ -34,15 +35,17 @@ export class Authentication {
 
     /**
      * Creates a new bunqAutomation API key
+     * @param {string}
      * @returns {Promise<*>}
      */
-    async createApiKey() {
+    async createApiKey(apiKeyType = "TEMPORARY") {
         const apiKey = uuid.v4();
         const date = new Date();
 
         await this.apiKeyStorage.set(apiKey, {
             created: date,
-            updated: date
+            updated: date,
+            type: apiKeyType
         });
 
         return apiKey;
@@ -62,7 +65,11 @@ export class Authentication {
 
         const currentDate = new Date();
         const expiryDate = new Date(storedApiKey.updated);
-        expiryDate.setSeconds(expiryDate.getSeconds() + DEFAULT_API_KEY_EXPIRY_TIME);
+
+        // get the allowed expiry time for this key type
+        const expiryTime = storedApiKey.type === "PERMANENT" ? YEARLY_API_KEY_EXPIRY_TIME : DEFAULT_API_KEY_EXPIRY_TIME;
+
+        expiryDate.setSeconds(expiryDate.getSeconds() + expiryTime);
         const isValid = currentDate < expiryDate;
 
         this.logger.debug(`Valid: ${isValid}. Expires in ${Math.round((expiryDate - currentDate) / 1000)} seconds`);

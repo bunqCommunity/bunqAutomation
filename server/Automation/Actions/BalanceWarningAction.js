@@ -1,5 +1,4 @@
 import { consoleMessageOutputId } from "../Outputs/ConsoleMessageOutput";
-import { instantScheduleId } from "../Schedules/InstantSchedule";
 
 export const balanceWarningActionId = "BALANCE_WARNING";
 export const balanceWarningActionDescription =
@@ -10,14 +9,18 @@ class BalanceWarningAction {
         this.id = balanceWarningActionId;
         this.description = balanceWarningActionDescription;
 
-        // what kind of event/action should trigger this
+        this.options = {
+            allAccounts: {
+                type: "BOOLEAN",
+                descsription: "Check total balance or filter for a specific few",
+                defaultValue: true
+            }
+        };
+
         this.type = "MUTATION";
         // TODO add account filter, for now we use the total account balance
         this.filters = [];
-        // the output is the console message output handler
         this.outputs = [consoleMessageOutputId];
-        // log it instantly
-        this.schedules = [instantScheduleId];
     }
 }
 

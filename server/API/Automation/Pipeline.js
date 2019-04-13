@@ -38,5 +38,37 @@ export default (app, opts, next) => {
         }
     );
 
+    app.get(
+        "/test",
+        {
+            schema: {
+                tags: ["automation"],
+                summary: "test route",
+                security: swaggerSecuritySchema
+            }
+        },
+        async (request, reply) => {
+            const pipeline = app.bunqAutomation.pipeline;
+
+            const config = {
+                active: false,
+                action: "BALANCE_WARNING",
+                options: {
+                    allAccounts: true
+                },
+                outputs: [
+                    {
+                        type: "CONSOLE_MESSAGE",
+                        schedule: "INSTANT"
+                    }
+                ]
+            };
+
+            const result = pipeline.updateAction(config);
+
+            reply.send({ result: result });
+        }
+    );
+
     next();
 };

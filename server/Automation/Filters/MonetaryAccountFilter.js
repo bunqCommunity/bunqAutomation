@@ -5,8 +5,6 @@ class MonetaryAccountFilter {
     constructor() {
         this.id = monetaryAccountFilterId;
         this.description = monetaryAccountFilterDescription;
-
-        this.disabled = true;
     }
 }
 

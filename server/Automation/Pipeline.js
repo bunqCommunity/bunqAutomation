@@ -23,7 +23,10 @@ class Pipeline {
         const storedActiveActions = await this.pipelineStore.get(ACTIVE_ACTIONS_LOCATION);
     }
 
-    activateAction(actionConfig) {}
+    updateAction(actionConfig) {
+
+        return actionConfig;
+    }
 
     validateRegistration(item) {
         if (!item.id) return "No 'id' property set";

@@ -62,7 +62,8 @@
         "storm-react-diagrams": "^5.2.1",
         "three": "^0.103.0",
         "uuid": "^3.3.2",
-        "web-push": "^3.3.3"
+        "web-push": "^3.3.3",
+        "yargs": "^13.2.2"
     },
     "devDependencies": {
         "@babel/cli": "^7.2.3",
