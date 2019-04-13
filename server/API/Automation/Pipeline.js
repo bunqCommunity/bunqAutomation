@@ -56,6 +56,12 @@ export default (app, opts, next) => {
                 options: {
                     allAccounts: true
                 },
+                filters: [
+                    {
+                        type: "MONETARY_ACCOUNT",
+                        filterValues: []
+                    }
+                ],
                 outputs: [
                     {
                         type: "CONSOLE_MESSAGE",
@@ -64,9 +70,9 @@ export default (app, opts, next) => {
                 ]
             };
 
-            const result = pipeline.updateAction(config);
+            const result = pipeline.actionConfigFromJson(config);
 
-            reply.send({ result: result });
+            reply.send(result);
         }
     );
 

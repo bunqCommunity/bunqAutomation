@@ -1,15 +1,15 @@
-import {instantScheduleId} from "../Schedules/InstantSchedule";
+import { instantScheduleId } from "../Schedules/InstantSchedule";
 
 export const consoleMessageOutputId = "CONSOLE_MESSAGE";
-export const consoleMessageOutputDescription ="Outputs a message to the console";
+export const consoleMessageOutputDescription = "Outputs a message to the console";
 
 class ConsoleMessageOutput {
     constructor() {
         this.id = consoleMessageOutputId;
-        this.description = consoleMessageOutputDescription
+        this.description = consoleMessageOutputDescription;
 
         // log it instantly
-        this.schedules = [instantScheduleId];
+        this.schedule = instantScheduleId;
     }
 
     output(message) {

@@ -1,5 +1,6 @@
 import LevelDb from "../StorageHandlers/LevelDb";
 import ConfigValidator from "./ConfigValidator";
+import ActionConfig from "./ActionConfig";
 
 export const ACTIVE_ACTIONS_LOCATION = "ACTIVE_ACTIONS_LOCATION";
 
@@ -24,8 +25,64 @@ class Pipeline {
     }
 
     updateAction(actionConfig) {
+        return actionConfig;
+    }
+
+    actionConfigFromJson(config) {
+        const uuid = config.uuid || false;
+        const actionConfig = new ActionConfig(uuid);
+
+        // set options from the confing
+        actionConfig.active = !!config.active;
+        actionConfig.action = config.action;
+        actionConfig.options = config.options;
+        actionConfig.filters = config.filters;
+        actionConfig.outputs = config.outputs;
+
+        if (!actionConfig.action || !this.actions[actionConfig.action]) {
+            actionConfig.validationErrors.push("Invalid or missing Action type");
+        }
+
+        this.validateActionConfigFilters(actionConfig);
+        this.validateActionConfigOutputs(actionConfig);
 
         return actionConfig;
+    }
+
+    validateActionConfigFilters(actionConfig) {
+        if (!Array.isArray(actionConfig.filters)) {
+            actionConfig.validationErrors.push("Filters option is not an Array");
+            return;
+        }
+
+        actionConfig.filters.forEach((filter, index) => {
+            if (!this.filters[filter.type]) {
+                actionConfig.validationErrors.push(`Invalid or missing Filter type for index ${index}`);
+            }
+
+            if (!Array.isArray(filter.filterValues)) {
+                actionConfig.validationErrors.push(
+                    `The given 'filterValues' option is not an array for index ${index}`
+                );
+                return;
+            }
+        });
+    }
+
+    validateActionConfigOutputs(actionConfig) {
+        if (!Array.isArray(actionConfig.outputs)) {
+            actionConfig.validationErrors.push(`Outputs option is not an Array`);
+            return;
+        }
+
+        actionConfig.outputs.forEach((output, index) => {
+            if (!this.outputs[output.type]) {
+                actionConfig.validationErrors.push(`Invalid or missing Output type for index ${index}`);
+            }
+            if (!this.schedules[output.schedule]) {
+                actionConfig.validationErrors.push(`Invalid or missing Schedule type for index ${index}`);
+            }
+        });
     }
 
     validateRegistration(item) {
@@ -35,6 +92,9 @@ class Pipeline {
         return true;
     }
 
+    /**
+     * Registration handlers
+     */
     registerAction(action) {
         if (this.actions[action.id]) throw new Error("An Action with this ID has already been registered");
 
@@ -43,7 +103,7 @@ class Pipeline {
             this.actions[action.id] = action;
             return true;
         }
-        throw new Error(`Invalid Action given: ${validation}`);
+        throw new Error(`Invalid Action: ${validation}`);
     }
     registerFilter(filter) {
         if (this.actions[filter.id]) throw new Error("A Filter with this ID has already been registered");
@@ -53,7 +113,7 @@ class Pipeline {
             this.filters[filter.id] = filter;
             return true;
         }
-        throw new Error(`Invalid Filter given: ${validation}`);
+        throw new Error(`Invalid Filter: ${validation}`);
     }
     registerOutput(output) {
         if (this.actions[output.id]) throw new Error("An Output with this ID has already been registered");
@@ -63,7 +123,7 @@ class Pipeline {
             this.outputs[output.id] = output;
             return true;
         }
-        throw new Error(`Invalid Output given: ${validation}`);
+        throw new Error(`Invalid Output: ${validation}`);
     }
     registerSchedule(schedule) {
         if (this.actions[schedule.id]) throw new Error("A Schedule with this ID has already been registered");
@@ -73,7 +133,7 @@ class Pipeline {
             this.schedules[schedule.id] = schedule;
             return true;
         }
-        throw new Error(`Invalid Schedule given: ${validation}`);
+        throw new Error(`Invalid Schedule: ${validation}`);
     }
 }
 

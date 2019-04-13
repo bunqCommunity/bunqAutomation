@@ -1,4 +1,5 @@
 import { consoleMessageOutputId } from "../Outputs/ConsoleMessageOutput";
+import {monetaryAccountFilterId} from "../Filters/MonetaryAccountFilter";
 
 export const balanceWarningActionId = "BALANCE_WARNING";
 export const balanceWarningActionDescription =
@@ -12,14 +13,13 @@ class BalanceWarningAction {
         this.options = {
             allAccounts: {
                 type: "BOOLEAN",
-                descsription: "Check total balance or filter for a specific few",
-                defaultValue: true
+                defaultValue: true,
+                description: "Check total balance or filter for a specific few"
             }
         };
 
         this.type = "MUTATION";
-        // TODO add account filter, for now we use the total account balance
-        this.filters = [];
+        this.filters = [monetaryAccountFilterId];
         this.outputs = [consoleMessageOutputId];
     }
 }
