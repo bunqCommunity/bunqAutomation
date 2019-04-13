@@ -3,7 +3,7 @@ export default (app, opts, next) => {
         "/credentials",
         {
             schema: {
-                tags: ["public-bunq"],
+                tags: ["bunq-public"],
                 summary: "Creates new login credentials",
                 security: [
                     {
@@ -29,7 +29,7 @@ export default (app, opts, next) => {
         "/credentials/:uuid",
         {
             schema: {
-                tags: ["public-bunq"],
+                tags: ["bunq-public"],
                 summary: "Checks the status for a given credential",
                 security: [
                     {
@@ -52,7 +52,7 @@ export default (app, opts, next) => {
         "/sandbox-user",
         {
             schema: {
-                tags: ["public-bunq"],
+                tags: ["bunq-public"],
                 summary: "Creates a new sandbox user and returns the API key",
                 security: [
                     {

@@ -9,33 +9,43 @@ const normalizePath = modulePath => path.join("..", "..", modulePath);
  */
 export default async pipeline => {
     const globOptions = {};
-    const Actions = glob.sync("./Actions/*.js", globOptions);
-    const Filters = glob.sync("./Filters/*.js", globOptions);
-    const Outputs = glob.sync("./Outputs/*.js", globOptions);
-    const Schedules = glob.sync("./Schedules/*.js", globOptions);
+    const basePath = `server${path.sep}Automation${path.sep}`;
+
+    const Actions = glob.sync(`${basePath}Actions/*.js`, globOptions);
+    const Filters = glob.sync(`${basePath}Filters/*.js`, globOptions);
+    const Outputs = glob.sync(`${basePath}Outputs/*.js`, globOptions);
+    const Schedules = glob.sync(`${basePath}Schedules/*.js`, globOptions);
 
     await Promise.all(
         Actions.map(async actionPath => {
             const Action = await import(normalizePath(actionPath));
-            pipeline.registerAction(new Action.default());
+            const Instance = new Action.default();
+
+            if (!Instance.disabled) pipeline.registerAction(Instance);
         })
     );
     await Promise.all(
         Filters.map(async filterPath => {
             const Filter = await import(normalizePath(filterPath));
-            pipeline.registerFilter(new Filter.default());
+            const Instance = new Filter.default();
+
+            if (!Instance.disabled) pipeline.registerFilter(Instance);
         })
     );
     await Promise.all(
         Outputs.map(async outputPath => {
             const Output = await import(normalizePath(outputPath));
-            pipeline.registerOutput(new Output.default());
+            const Instance = new Output.default();
+
+            if (!Instance.disabled) pipeline.registerOutput(Instance);
         })
     );
     await Promise.all(
         Schedules.map(async schedulePath => {
             const Schedule = await import(normalizePath(schedulePath));
-            pipeline.registerSchedule(new Schedule.default());
+            const Instance = new Schedule.default();
+
+            if (!Instance.disabled) pipeline.registerSchedule(Instance);
         })
     );
 };

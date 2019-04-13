@@ -56,7 +56,7 @@ const SetBunqKeySection = ({
     const setDeviceNameCb = e => setDeviceName(e.target.value);
     const createSandboxUser = () => {
         window.apiClient
-            .post("/public-bunq/login/sandbox-user")
+            .post("/bunq-public/login/sandbox-user")
             .then(setBunqApiKeyField)
             .catch(error => {
                 console.log(error);

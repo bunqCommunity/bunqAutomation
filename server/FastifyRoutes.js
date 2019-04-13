@@ -12,7 +12,7 @@ export default app => {
                 url: route.path,
                 method: "GET",
                 schema: {
-                    tags: ["front-end"]
+                    hide: true
                 },
                 handler: (request, reply) => reply.sendFile("index.html")
             });
@@ -24,7 +24,7 @@ export default app => {
                     url: path,
                     method: "GET",
                     schema: {
-                        tags: ["front-end"]
+                        hide: true
                     },
                     handler: (request, reply) => reply.sendFile("index.html")
                 });

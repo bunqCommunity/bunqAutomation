@@ -23,23 +23,23 @@ const swaggerDocs = (fastify, options, next) => {
             consumes: ["application/json"],
             produces: ["application/json"],
             tags: [
-                { name: "setup", description: "Setup bunqAutomation with passwords and API keys" },
+                {
+                    name: "automation",
+                    description: "Manage and view the different automation options and tasks"
+                },
                 { name: "bunq", description: "bunq endpoints which require an authenticated bunq connection" },
                 {
-                    name: "public-bunq",
+                    name: "bunq-public",
                     description: "bunq endpoints which don't require an authenticated bunq connection"
                 },
                 {
                     name: "server-management",
                     description: "Endpoints to check and manage the server status"
                 },
+                { name: "setup", description: "Setup bunqAutomation with passwords and API keys" },
                 {
                     name: "web-push",
                     description: "Browser subscription management for web push"
-                },
-                {
-                    name: "front-end",
-                    description: "Front-end routes which are auto generated for the SPA"
                 }
             ],
             securityDefinitions: {

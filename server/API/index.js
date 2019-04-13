@@ -1,3 +1,4 @@
+import Automation from "./Automation";
 import Bunq from "./Bunq";
 import BunqApiKeys from "./BunqApiKeys";
 import Health from "./Health";
@@ -14,8 +15,9 @@ export default (app, opts, next) => {
     app.register((app, opts, next) => {
         app.addHook("preHandler", app.auth([app.apiKeyAuthentication]));
 
+        app.register(Automation, { prefix: "/automation" });
         app.register(Bunq, { prefix: "/bunq/:identifier" });
-        app.register(PublicBunq, { prefix: "/public-bunq" });
+        app.register(PublicBunq, { prefix: "/bunq-public" });
         app.register(BunqApiKeys, { prefix: "/bunq-api-keys" });
 
         next();
