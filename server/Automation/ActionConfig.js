@@ -7,8 +7,8 @@ class ActionConfig {
 
         this.action = false;
         this.options = {};
-        this.filters = [];
-        this.outputs = [];
+        this.filters = {};
+        this.outputs = {};
         this.validationErrors = [];
     }
 }

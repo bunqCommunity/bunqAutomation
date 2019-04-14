@@ -56,19 +56,21 @@ class Pipeline {
     validateActionConfigFilters(actionConfig) {
         if (!actionConfig.filters) return;
 
-        if (!Array.isArray(actionConfig.filters)) {
-            actionConfig.validationErrors.push("Filters property is not an Array");
+        if (!isObject(actionConfig.filters)) {
+            actionConfig.validationErrors.push("Filters property is not an Object");
             return;
         }
 
-        actionConfig.filters.forEach((filter, index) => {
+        Object.keys(actionConfig.filters).forEach(filterId => {
+            const filter = actionConfig.filters[filterId];
+
             if (!this.filters[filter.type]) {
-                actionConfig.validationErrors.push(`Invalid or missing Filter type for index '${index}'`);
+                actionConfig.validationErrors.push(`Invalid or missing Filter type for index '${filterId}'`);
             }
 
             if (!Array.isArray(filter.filterValues)) {
                 actionConfig.validationErrors.push(
-                    `The given 'filterValues' option is not an array for index '${index}'`
+                    `The given 'filterValues' option is not an array for index '${filterId}'`
                 );
                 return;
             }
@@ -78,17 +80,19 @@ class Pipeline {
     validateActionConfigOutputs(actionConfig) {
         if (!actionConfig.outputs) return;
 
-        if (!Array.isArray(actionConfig.outputs)) {
-            actionConfig.validationErrors.push(`Outputs property is not an Array`);
+        if (!isObject(actionConfig.outputs)) {
+            actionConfig.validationErrors.push(`Outputs property is not an Object`);
             return;
         }
 
-        actionConfig.outputs.forEach((output, index) => {
+        Object.keys(actionConfig.outputs).forEach(outputId => {
+            const output = actionConfig.outputs[outputId];
+
             if (!this.outputs[output.type]) {
-                actionConfig.validationErrors.push(`Invalid or missing Output type for index '${index}'`);
+                actionConfig.validationErrors.push(`Invalid or missing Output type for index '${outputId}'`);
             }
             if (!this.schedules[output.schedule]) {
-                actionConfig.validationErrors.push(`Invalid or missing Schedule type for index '${index}'`);
+                actionConfig.validationErrors.push(`Invalid or missing Schedule type for index '${outputId}'`);
             }
         });
     }
@@ -96,7 +100,7 @@ class Pipeline {
     validateActionConfigOptions(actionConfig, action) {
         if (!actionConfig.options) return;
 
-        if (actionConfig.options && !isObject(actionConfig.options)) {
+        if (!isObject(actionConfig.options)) {
             actionConfig.validationErrors.push(`Options property is not an Object`);
             return;
         }

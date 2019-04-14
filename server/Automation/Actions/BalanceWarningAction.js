@@ -1,12 +1,16 @@
+import ToJSONHandler from "../ToJSONHandler";
+
 import { consoleMessageOutputId } from "../Outputs/ConsoleMessageOutput";
-import {monetaryAccountFilterId} from "../Filters/MonetaryAccountFilter";
+import { monetaryAccountFilterId } from "../Filters/MonetaryAccountFilter";
 
 export const balanceWarningActionId = "BALANCE_WARNING";
 export const balanceWarningActionDescription =
     "Warns if all or a subset of the user's monetary accounts reaches a limit";
 
 class BalanceWarningAction {
-    constructor() {
+    constructor(store) {
+        this.store = store;
+
         this.id = balanceWarningActionId;
         this.description = balanceWarningActionDescription;
 
@@ -32,6 +36,10 @@ class BalanceWarningAction {
         this.filters = [monetaryAccountFilterId];
         this.outputs = [consoleMessageOutputId];
     }
+
+    toJSON = () => ToJSONHandler(this);
+
+    check() {}
 }
 
 export default BalanceWarningAction;

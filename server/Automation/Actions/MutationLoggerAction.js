@@ -1,4 +1,5 @@
 import { consoleMessageOutputId } from "../Outputs/ConsoleMessageOutput";
+import ToJSONHandler from "../ToJSONHandler";
 
 export const mutationLoggerActionId = "MUTATION_LOGGER";
 export const mutationLoggerActionDescription ="Logs to the console when triggered";
@@ -13,6 +14,8 @@ class MutationLoggerAction {
         this.filters = [];
         this.outputs = [consoleMessageOutputId];
     }
+
+    toJSON = () => ToJSONHandler(this);
 }
 
 export default MutationLoggerAction;

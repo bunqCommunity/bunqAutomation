@@ -57,18 +57,18 @@ export default (app, opts, next) => {
                 options: {
                     balance: 8000
                 },
-                filters: [
-                    {
+                filters: {
+                    filterId1: {
                         type: "MONETARY_ACCOUNT",
                         filterValues: [8370]
                     }
-                ],
-                outputs: [
-                    {
+                },
+                outputs: {
+                    outputId1: {
                         type: "CONSOLE_MESSAGE",
-                        schedule: "INSTANT"
+                        schedule: { type: "INSTANT" }
                     }
-                ]
+                }
             };
 
             const result = pipeline.actionConfigFromJson(config);

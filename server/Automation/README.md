@@ -22,7 +22,7 @@ An output can be anything but common outputs will be Payments (single or batched
 
 #### Schedule
 
-Each output has a Schedule. Any Schedule that isn't `INSTANT` will be stored in a store with the Output type. Every minute all stored outputs which are still pending are checked if they should be completed.
+Each output has a Schedule. Any Schedule that isn't `INSTANT` will be stored in a store. Every minute all stored outputs which are still pending are checked if they should be completed.
 
 It is the Output's responsibility to store, update and delete any pending updates.
 
@@ -31,5 +31,3 @@ For example: This also means that a Output output with a DAILY schedule is respo
 #### Options
 
 Options are key => type combinations to keep them somewhat generic and make the front-end components more re-usable.
-
-A defaultOptions property can be used to set default values for each option.

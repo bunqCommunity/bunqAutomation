@@ -19,7 +19,7 @@ export default async pipeline => {
     await Promise.all(
         Actions.map(async actionPath => {
             const Action = await import(normalizePath(actionPath));
-            const Instance = new Action.default();
+            const Instance = new Action.default(pipeline.pipelineStore);
 
             if (!Instance.disabled) pipeline.registerAction(Instance);
         })
@@ -27,7 +27,7 @@ export default async pipeline => {
     await Promise.all(
         Filters.map(async filterPath => {
             const Filter = await import(normalizePath(filterPath));
-            const Instance = new Filter.default();
+            const Instance = new Filter.default(pipeline.pipelineStore);
 
             if (!Instance.disabled) pipeline.registerFilter(Instance);
         })
@@ -35,7 +35,7 @@ export default async pipeline => {
     await Promise.all(
         Outputs.map(async outputPath => {
             const Output = await import(normalizePath(outputPath));
-            const Instance = new Output.default();
+            const Instance = new Output.default(pipeline.pipelineStore);
 
             if (!Instance.disabled) pipeline.registerOutput(Instance);
         })
@@ -43,7 +43,7 @@ export default async pipeline => {
     await Promise.all(
         Schedules.map(async schedulePath => {
             const Schedule = await import(normalizePath(schedulePath));
-            const Instance = new Schedule.default();
+            const Instance = new Schedule.default(pipeline.pipelineStore);
 
             if (!Instance.disabled) pipeline.registerSchedule(Instance);
         })
