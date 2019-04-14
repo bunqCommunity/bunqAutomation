@@ -4,6 +4,8 @@ import ActionConfig from "./ActionConfig";
 
 export const ACTIVE_ACTIONS_LOCATION = "ACTIVE_ACTIONS_LOCATION";
 
+const isObject = a => !!a && a.constructor === Object;
+
 class Pipeline {
     constructor(logger) {
         this.logger = logger;
@@ -41,6 +43,8 @@ class Pipeline {
 
         if (!actionConfig.action || !this.actions[actionConfig.action]) {
             actionConfig.validationErrors.push("Invalid or missing Action type");
+        } else {
+            this.validateActionConfigOptions(actionConfig, this.actions[actionConfig.action]);
         }
 
         this.validateActionConfigFilters(actionConfig);
@@ -50,19 +54,21 @@ class Pipeline {
     }
 
     validateActionConfigFilters(actionConfig) {
+        if (!actionConfig.filters) return;
+
         if (!Array.isArray(actionConfig.filters)) {
-            actionConfig.validationErrors.push("Filters option is not an Array");
+            actionConfig.validationErrors.push("Filters property is not an Array");
             return;
         }
 
         actionConfig.filters.forEach((filter, index) => {
             if (!this.filters[filter.type]) {
-                actionConfig.validationErrors.push(`Invalid or missing Filter type for index ${index}`);
+                actionConfig.validationErrors.push(`Invalid or missing Filter type for index '${index}'`);
             }
 
             if (!Array.isArray(filter.filterValues)) {
                 actionConfig.validationErrors.push(
-                    `The given 'filterValues' option is not an array for index ${index}`
+                    `The given 'filterValues' option is not an array for index '${index}'`
                 );
                 return;
             }
@@ -70,17 +76,76 @@ class Pipeline {
     }
 
     validateActionConfigOutputs(actionConfig) {
+        if (!actionConfig.outputs) return;
+
         if (!Array.isArray(actionConfig.outputs)) {
-            actionConfig.validationErrors.push(`Outputs option is not an Array`);
+            actionConfig.validationErrors.push(`Outputs property is not an Array`);
             return;
         }
 
         actionConfig.outputs.forEach((output, index) => {
             if (!this.outputs[output.type]) {
-                actionConfig.validationErrors.push(`Invalid or missing Output type for index ${index}`);
+                actionConfig.validationErrors.push(`Invalid or missing Output type for index '${index}'`);
             }
             if (!this.schedules[output.schedule]) {
-                actionConfig.validationErrors.push(`Invalid or missing Schedule type for index ${index}`);
+                actionConfig.validationErrors.push(`Invalid or missing Schedule type for index '${index}'`);
+            }
+        });
+    }
+
+    validateActionConfigOptions(actionConfig, action) {
+        if (!actionConfig.options) return;
+
+        if (actionConfig.options && !isObject(actionConfig.options)) {
+            actionConfig.validationErrors.push(`Options property is not an Object`);
+            return;
+        }
+
+        if (!action.options) {
+            actionConfig.validationErrors.push(`Options property is not an Object`);
+        }
+
+        // go through each config option and cast to the configured value
+        Object.keys(actionConfig.options).forEach(optionKey => {
+            const optionValue = actionConfig.options[optionKey];
+
+            if (!action.options || !action.options[optionKey]) {
+                actionConfig.validationErrors.push(`Invalid or option given for option '${optionKey}'`);
+                return;
+            }
+
+            const actionOptionConfig = action.options[optionKey];
+            switch (actionOptionConfig.type) {
+                case "STRING":
+                    actionConfig.options[optionKey] = String(optionValue);
+                    break;
+                case "NUMBER":
+                    actionConfig.options[optionKey] = Number(optionValue);
+                    if (isNaN(actionConfig.options[optionKey])) {
+                        actionConfig.validationErrors.push(
+                            `The '${optionKey}' value failed to parse as a number 'NaN'`
+                        );
+                    }
+                    break;
+                case "BOOLEAN":
+                    actionConfig.options[optionKey] = optionValue === true || optionValue === "true";
+                    break;
+                default:
+                // nothing
+            }
+        });
+
+        // check the possible options and set default values
+        Object.keys(action.options).forEach(optionKey => {
+            const optionConfig = action.options[optionKey];
+
+            if (typeof actionConfig.options[optionKey] === "undefined") {
+                if (optionConfig.required) {
+                    actionConfig.validationErrors.push(`Missing required option '${optionKey}'`);
+                }
+                if (typeof optionConfig.defaultValue !== "undefined") {
+                    actionConfig.options[optionKey] = optionConfig.defaultValue;
+                }
             }
         });
     }

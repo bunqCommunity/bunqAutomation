@@ -11,10 +11,20 @@ class BalanceWarningAction {
         this.description = balanceWarningActionDescription;
 
         this.options = {
+            balance: {
+                type: "NUMBER",
+                required: true,
+                description: "Check total balance or filter for a specific few"
+            },
             allAccounts: {
                 type: "BOOLEAN",
                 defaultValue: true,
                 description: "Check total balance or filter for a specific few"
+            },
+            reverse: {
+                type: "BOOLEAN",
+                defaultValue: false,
+                description: "Warn if the balance goes over the target value instead of under"
             }
         };
 

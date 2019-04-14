@@ -52,14 +52,15 @@ export default (app, opts, next) => {
 
             const config = {
                 active: false,
+                uuid: "800f9e55-e007-4dbe-8f27-ec460c344b6d",
                 action: "BALANCE_WARNING",
                 options: {
-                    allAccounts: true
+                    balance: 8000
                 },
                 filters: [
                     {
                         type: "MONETARY_ACCOUNT",
-                        filterValues: []
+                        filterValues: [8370]
                     }
                 ],
                 outputs: [
