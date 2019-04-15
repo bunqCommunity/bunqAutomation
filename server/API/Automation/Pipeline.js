@@ -54,17 +54,25 @@ export default (app, opts, next) => {
                 active: false,
                 uuid: "800f9e55-e007-4dbe-8f27-ec460c344b6d",
                 action: "BALANCE_WARNING",
+                children: ["e3fff355-c080-4f98-b7e7-5196e4a1fd04", "7f0a4813-92a6-4bc6-a133-6c315b1ac6d9"],
                 options: {
                     balance: 8000
                 },
                 filters: {
-                    filterId1: {
+                    "e3fff355-c080-4f98-b7e7-5196e4a1fd04": {
+                        children: ["32191185-918f-44e2-b2ef-4f6c6ed0656e"],
+                        type: "MONETARY_ACCOUNT",
+                        filterValues: [5060]
+                    },
+
+                    "7f0a4813-92a6-4bc6-a133-6c315b1ac6d9": {
+                        children: ["32191185-918f-44e2-b2ef-4f6c6ed0656e"],
                         type: "MONETARY_ACCOUNT",
                         filterValues: [8370]
                     }
                 },
                 outputs: {
-                    outputId1: {
+                    "32191185-918f-44e2-b2ef-4f6c6ed0656e": {
                         type: "CONSOLE_MESSAGE",
                         schedule: { type: "INSTANT" }
                     }

@@ -40,12 +40,15 @@ class Pipeline {
         actionConfig.options = config.options;
         actionConfig.filters = config.filters;
         actionConfig.outputs = config.outputs;
+        actionConfig.children = config.children;
 
         if (!actionConfig.action || !this.actions[actionConfig.action]) {
             actionConfig.validationErrors.push("Invalid or missing Action type");
         } else {
             this.validateActionConfigOptions(actionConfig, this.actions[actionConfig.action]);
         }
+
+        // TODO check if children IDs exist
 
         this.validateActionConfigFilters(actionConfig);
         this.validateActionConfigOutputs(actionConfig);
@@ -91,7 +94,7 @@ class Pipeline {
             if (!this.outputs[output.type]) {
                 actionConfig.validationErrors.push(`Invalid or missing Output type for index '${outputId}'`);
             }
-            if (!this.schedules[output.schedule]) {
+            if (!this.schedules[output.schedule.type]) {
                 actionConfig.validationErrors.push(`Invalid or missing Schedule type for index '${outputId}'`);
             }
         });

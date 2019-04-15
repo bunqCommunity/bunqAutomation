@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlowChartWithState } from "@mrblenny/react-flow-chart";
+import * as actions from "@mrblenny/react-flow-chart/src/container/actions";
+import * as dagre from "dagre";
 
 import Content from "../../Components/Content/Content";
 
@@ -31,104 +33,192 @@ const standardRightPort = id =>
         }
     );
 
-export const chart = {
-    offset: {
-        x: 0,
-        y: 0
-    },
-    nodes: {
-        node1: {
-            id: "node1",
-            type: "action:monthly-request",
-            position: {
-                x: 50,
-                y: 100
-            },
-            ports: {
-                port1: standardRightPort("port1")
-            }
+const dagreGridSize = {
+    width: 150,
+    height: 150
+};
+
+const mapDagreNodes = nodes => {
+    return Object.keys(nodes).map(nodeId => {
+        return { id: nodeId, metadata: { ...dagreGridSize, id: nodeId } };
+    });
+};
+const mapDagreEdges = links => {
+    return Object.keys(links).map(linkId => {
+        return { from: links[linkId].from.nodeId, to: links[linkId].to.nodeId };
+    });
+};
+
+const actionConfigToFlowChart = actionConfig => {
+    const chart = {
+        offset: {
+            x: 0,
+            y: 0
         },
-        node2: {
-            id: "node2",
-            type: "filter:test",
-            position: {
-                x: 200,
-                y: 100
-            },
-            ports: {
-                port1: standardLeftPort("port1"),
-                port2: standardRightPort("port2")
-            }
+        nodes: {},
+        links: {},
+        selected: {},
+        hovered: {}
+    };
+
+    chart.nodes[actionConfig.uuid] = {
+        id: actionConfig.uuid,
+        type: `action:${actionConfig.action}`,
+        configType: "action",
+        children: actionConfig.children ? actionConfig.children : [],
+        position: {
+            x: 50,
+            y: 50
         },
-        node3: {
-            id: "node3",
-            type: "filter:test",
-            position: {
-                x: 350,
-                y: 100
-            },
-            ports: {
-                port1: standardLeftPort("port1"),
-                port2: standardRightPort("port2")
-            }
-        },
-        node4: {
-            id: "node4",
-            type: "output:request",
-            position: {
-                x: 500,
-                y: 100
-            },
-            ports: {
-                port1: standardLeftPort("port1"),
-                port2: standardRightPort("port2")
-            }
+        ports: {
+            output: standardRightPort("output")
         }
-    },
-    links: {
-        link1: {
-            id: "link1",
-            from: {
-                nodeId: "node1",
-                portId: "port1"
-            },
-            to: {
-                nodeId: "node2",
-                portId: "port1"
+    };
+    Object.keys(actionConfig.filters).forEach(filterId => {
+        const filter = actionConfig.filters[filterId];
+
+        chart.nodes[filterId] = {
+            id: filterId,
+            type: `filter:${filter.type}`,
+            configType: "filter",
+            children: filter.children ? filter.children : [],
+            column: 1,
+            ports: {
+                input: standardLeftPort("input"),
+                output: standardRightPort("output")
             }
-        },
-        link2: {
-            id: "link2",
-            from: {
-                nodeId: "node2",
-                portId: "port2"
-            },
-            to: {
-                nodeId: "node3",
-                portId: "port1"
+        };
+    });
+    Object.keys(actionConfig.outputs).forEach(outputId => {
+        const output = actionConfig.outputs[outputId];
+
+        chart.nodes[outputId] = {
+            id: outputId,
+            type: `output:${output.type}`,
+            configType: "output",
+            children: output.children ? output.children : [],
+            column: 2,
+            ports: {
+                input: standardLeftPort("input"),
+                output: standardRightPort("output")
             }
-        },
-        link3: {
-            id: "link3",
-            from: {
-                nodeId: "node3",
-                portId: "port2"
-            },
-            to: {
-                nodeId: "node4",
-                portId: "port1"
-            }
-        }
-    },
-    selected: {},
-    hovered: {}
+        };
+    });
+
+    // setup all links
+    Object.keys(chart.nodes).forEach(nodeId => {
+        const node = chart.nodes[nodeId];
+
+        node.children.forEach(childId => {
+            const linkId = `${nodeId}:${childId}`;
+
+            chart.links[linkId] = {
+                id: linkId,
+                from: {
+                    nodeId: nodeId,
+                    portId: "output"
+                },
+                to: {
+                    nodeId: childId,
+                    portId: "input"
+                }
+            };
+        });
+    });
+
+    const rankDirection = "LR";
+
+    const dagreGraph = new dagre.graphlib.Graph();
+    dagreGraph.setDefaultEdgeLabel(() => ({}));
+    dagreGraph.setGraph({
+        rankDir: rankDirection
+    });
+
+    // map our nodes to a dagre compatible node
+    const dagreNodes = mapDagreNodes(chart.nodes);
+    dagreNodes.forEach(dagreNode => {
+        dagreGraph.setNode(dagreNode.id, dagreNode.metadata);
+    });
+
+    // map our links to dagre edges so it knows in what order to put the nodes
+    const dagreEdges = mapDagreEdges(chart.links);
+    dagreEdges.forEach(dagreEdge => {
+        dagreGraph.setEdge(dagreEdge.from, dagreEdge.to);
+    });
+
+    dagre.layout(dagreGraph);
+
+    dagreGraph.nodes().forEach(node => {
+        const dagreNode = dagreGraph.node(node);
+        chart.nodes[node].position = {
+            x: dagreNode.x,
+            y: dagreNode.y
+        };
+    });
+
+    return chart;
 };
 
 const ActionTest = () => {
+    const [actionConfig, setActionConfig] = useState(false);
+    const [flowChart, setFlowChart] = useState(false);
+
+    useEffect(() => {
+        window.apiClient
+            .get("/automation/pipeline/test")
+            .then(result => setActionConfig(result))
+            .catch(error => console.error(error));
+    }, []);
+
+    useEffect(() => {
+        if (!actionConfig) return;
+
+        const flowChartResult = actionConfigToFlowChart(actionConfig);
+        setFlowChart(flowChartResult);
+    }, [JSON.stringify(actionConfig)]);
+
+    const addFilter = () => {
+        const newFilterId = new Date().getTime();
+        const clonedConfig = { ...actionConfig };
+
+        clonedConfig.children = [...actionConfig.children];
+        clonedConfig.children.push(newFilterId);
+
+        clonedConfig.filters = { ...actionConfig.filters };
+        clonedConfig.filters[newFilterId] = {
+            type: "MONETARY_ACCOUNT",
+            children: [Object.keys(actionConfig.outputs)[0]]
+        };
+
+        setActionConfig(clonedConfig);
+    };
+    const addFilter2 = () => {
+        const newFilterId = new Date().getTime();
+        const clonedConfig = { ...actionConfig };
+
+        clonedConfig.filters = { ...actionConfig.filters };
+
+        const firstFilterId = Object.keys(clonedConfig.filters)[0];
+        const firstFilter = clonedConfig.filters[firstFilterId];
+        firstFilter.children.push(newFilterId);
+
+        clonedConfig.filters[newFilterId] = {
+            type: "MONETARY_ACCOUNT",
+            children: [Object.keys(actionConfig.outputs)[0]]
+        };
+
+        setActionConfig(clonedConfig);
+    };
+
+    if (!flowChart) return null;
+
     return (
         <Content title="bunqAutomation - Action test">
+            <button onClick={addFilter}>add filter1</button>
+            <button onClick={addFilter2}>add filter2</button>
             <FlowChartWithState
-                initialValue={chart}
+                key={JSON.stringify(flowChart)}
+                initialValue={flowChart}
                 Components={{
                     Port: CustomPort,
                     Node: CustomNode,

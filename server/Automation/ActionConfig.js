@@ -9,6 +9,7 @@ class ActionConfig {
         this.options = {};
         this.filters = {};
         this.outputs = {};
+        this.children = [];
         this.validationErrors = [];
     }
 }
