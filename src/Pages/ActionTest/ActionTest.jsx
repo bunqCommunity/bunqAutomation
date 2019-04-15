@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { FlowChartWithState } from "@mrblenny/react-flow-chart";
-import * as actions from "@mrblenny/react-flow-chart/src/container/actions";
+// import * as actions from "@mrblenny/react-flow-chart/src/container/actions";
 import * as dagre from "dagre";
+import Button from "@material-ui/core/Button";
 
 import Content from "../../Components/Content/Content";
 
@@ -200,7 +201,7 @@ const ActionTest = () => {
 
         const firstFilterId = Object.keys(clonedConfig.filters)[0];
         const firstFilter = clonedConfig.filters[firstFilterId];
-        firstFilter.children.push(newFilterId);
+        firstFilter.children = [newFilterId];
 
         clonedConfig.filters[newFilterId] = {
             type: "MONETARY_ACCOUNT",
@@ -214,8 +215,12 @@ const ActionTest = () => {
 
     return (
         <Content title="bunqAutomation - Action test">
-            <button onClick={addFilter}>add filter1</button>
-            <button onClick={addFilter2}>add filter2</button>
+            <Button variant="outlined" style={{ margin: 8 }} color="primary" onClick={addFilter}>
+                Add new filter
+            </Button>
+            <Button variant="outlined" style={{ margin: 8 }} color="primary" onClick={addFilter2}>
+                Add nested filter
+            </Button>
             <FlowChartWithState
                 key={JSON.stringify(flowChart)}
                 initialValue={flowChart}
