@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { FlowChartWithState } from "@mrblenny/react-flow-chart";
-// import * as actions from "@mrblenny/react-flow-chart/src/container/actions";
 import * as dagre from "dagre";
 import Button from "@material-ui/core/Button";
 
 import Content from "../../Components/Content/Content";
-
-import CustomCanvas from "../../Components/FlowChart/CustomCanvas";
-import CustomNode from "../../Components/FlowChart/CustomNode";
-import CustomNodeInner from "../../Components/FlowChart/CustomNodeInner";
-import CustomPort from "../../Components/FlowChart/CustomPort";
+import FlowChartWithState from "../../Components/FlowChart/FlowChartWithState";
 
 const standardLeftPort = id =>
     Object.assign(
@@ -221,16 +215,7 @@ const ActionTest = () => {
             <Button variant="outlined" style={{ margin: 8 }} color="primary" onClick={addFilter2}>
                 Add nested filter
             </Button>
-            <FlowChartWithState
-                key={JSON.stringify(flowChart)}
-                initialValue={flowChart}
-                Components={{
-                    Port: CustomPort,
-                    Node: CustomNode,
-                    NodeInner: CustomNodeInner,
-                    CanvasOuter: CustomCanvas
-                }}
-            />
+            <FlowChartWithState initialChart={flowChart} />
         </Content>
     );
 };
