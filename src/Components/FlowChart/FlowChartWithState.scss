@@ -1,0 +1,16 @@
+.custom-link-path {
+    stroke-dasharray: 10;
+    animation: dash 1s linear infinite;
+}
+.reverse-dash {
+    animation-direction: reverse;
+}
+
+@keyframes dash {
+    from {
+        stroke-dashoffset: 0;
+    }
+    to {
+        stroke-dashoffset: 20;
+    }
+}

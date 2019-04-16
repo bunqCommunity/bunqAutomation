@@ -1,86 +1,44 @@
 import React from "react";
 
 import { getNodeType } from "./NodeUtils";
+import { getSelectedStyle, standardNodeStyles } from "./Defaults";
 
-const standardStyles = {
-    position: "absolute",
-    borderRadius: 10
-};
+import BaseActionNode from "./Nodes/Actions/BaseActionNode";
+import BaseFilterNode from "./Nodes/Filters/BaseFilterNode";
+import BaseOutputNode from "./Nodes/Outputs/BaseOutputNode";
 
-const getSelectedStyle = isSelected => {
-    return isSelected
-        ? {
-              boxShadow: "rgba(0, 0, 0, 0.3) 0px 10px 20px"
-          }
-        : {};
-};
-
-const NodeCustom = ({ node, isSelected, style, children, ...otherProps }) => {
+const NodeCustom = ({ node, isSelected, ...props }) => {
     const nodeTypes = getNodeType(node.type);
     const selectedStyle = getSelectedStyle(isSelected);
 
     switch (nodeTypes.type) {
         case "action":
-            return (
-                <div
-                    {...otherProps}
-                    style={{
-                        ...style,
-                        ...standardStyles,
-                        ...selectedStyle,
-                        background: "#3772f8",
-                        color: "white"
-                    }}
-                >
-                    {children}
-                </div>
-            );
+            return <BaseActionNode node={node} isSelected={isSelected} {...props} />;
         case "filter":
-            return (
-                <div
-                    {...otherProps}
-                    style={{
-                        ...style,
-                        ...standardStyles,
-                        ...selectedStyle,
-                        background: "#ff0031",
-                        color: "white"
-                    }}
-                >
-                    {children}
-                </div>
-            );
+            return <BaseFilterNode node={node} isSelected={isSelected} {...props} />;
         case "output":
-            return (
-                <div
-                    {...otherProps}
-                    style={{
-                        ...style,
-                        ...standardStyles,
-                        ...selectedStyle,
-                        background: "#a200ff",
-                        color: "white"
-                    }}
-                >
-                    {children}
-                </div>
-            );
+            return <BaseOutputNode node={node} isSelected={isSelected} {...props} />;
         default:
             return (
                 <div
-                    {...otherProps}
+                    {...props}
                     style={{
-                        ...style,
-                        ...standardStyles,
+                        ...props.style,
+                        ...standardNodeStyles,
                         ...selectedStyle,
                         background: "#3e3e3e",
                         color: "white"
                     }}
                 >
-                    {children}
+                    {props.children}
                 </div>
             );
     }
+};
+
+NodeCustom.defaultProps = {
+    style: {},
+    children: ""
 };
 
 export default NodeCustom;

@@ -4,6 +4,8 @@ import ArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 
+const portSize = 24;
+
 const PortCustom = ({ port }) => {
     let portIcon = null;
     if (port.properties && port.properties.icon) {
@@ -23,12 +25,13 @@ const PortCustom = ({ port }) => {
     return (
         <div
             style={{
-                width: 24,
-                height: 24,
+                width: portSize,
+                height: portSize,
                 background: "cornflowerblue",
                 cursor: "pointer",
                 display: "flex",
                 justifyContent: "center",
+                borderRadius: portSize / 2,
                 alignItems: "center"
             }}
         >
