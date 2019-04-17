@@ -47,7 +47,7 @@ const Content = ({ classes, children, title = "bunqAutomation" }) => {
 
     useEffect(() => {
         if (!state.user && !state.userLoading && !state.authenticationLoading) dispatch(updateUser());
-    }, []);
+    }, [state.user, state.userLoading, state.authenticationLoading]);
 
     useEffect(() => {
         if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") logout();
