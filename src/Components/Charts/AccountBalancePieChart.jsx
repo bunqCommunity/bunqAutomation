@@ -60,7 +60,7 @@ const AccountBalancePieChart = ({ theme, monetaryAccounts }) => {
             monetaryAccounts.forEach((monetaryAccount, index) => {
                 tempBackgroundColors.push(getColorByIndex(index));
                 tempLabels.push(monetaryAccount.description);
-                tempData.push(parseFloat(monetaryAccount.balance.value));
+                tempData.push(monetaryAccount.balance.toUnit());
             });
             tempData.sort((a, b) => (a > b ? -1 : 1));
 

@@ -18,6 +18,8 @@ const styles = theme => ({
     }
 });
 
+const ignoredEvents = ["onLinkMouseEnter", "onLinkMouseLeave", "onDragCanvas", "onCanvasClick", "onDragNode"];
+
 class FlowChartWithState extends React.Component {
     constructor(props) {
         super(props);
@@ -40,8 +42,11 @@ class FlowChartWithState extends React.Component {
 
                 // always call the default callback
                 const modifiedChart = defaultCallback(this.state);
-                console.log(eventName, params);
                 this.setState(modifiedChart);
+
+                if (!ignoredEvents.includes(eventName)) {
+                    console.log(eventName, params);
+                }
             };
         });
 

@@ -16,7 +16,7 @@ export const updateMonetaryAccounts = () => {
 };
 
 export const setMonetaryAccounts = monetaryAccounts => ({
-    type: "MONETARY_ACCOUNTS_SET_INFO",
+    type: "MONETARY_ACCOUNTS_SET_ACCOUNTS",
     payload: {
         monetary_accounts: monetaryAccounts
     }

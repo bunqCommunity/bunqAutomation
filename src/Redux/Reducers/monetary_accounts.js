@@ -1,3 +1,5 @@
+import MonetaryAccount from "../../Models/MonetaryAccount";
+
 export const defaultState = {
     monetary_accounts: false,
     loading: false
@@ -5,12 +7,16 @@ export const defaultState = {
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case "MONETARY_ACCOUNTS_SET_INFO": {
+        case "MONETARY_ACCOUNTS_SET_ACCOUNTS": {
             const monetaryAccounts = action.payload.monetary_accounts;
+
+            const mappedMonetaryAccounts = monetaryAccounts.map(monetaryAccount => {
+                return new MonetaryAccount(monetaryAccount);
+            });
 
             return {
                 ...state,
-                monetary_accounts: monetaryAccounts
+                monetary_accounts: mappedMonetaryAccounts
             };
         }
         case "MONETARY_ACCOUNTS_LOADING":

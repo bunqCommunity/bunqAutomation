@@ -27,6 +27,7 @@ const PortCustom = ({ port }) => {
             style={{
                 width: portSize,
                 height: portSize,
+                opacity: 0,
                 background: "cornflowerblue",
                 cursor: "pointer",
                 display: "flex",

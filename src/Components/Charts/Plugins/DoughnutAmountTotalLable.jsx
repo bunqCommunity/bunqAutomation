@@ -22,9 +22,14 @@ export default {
             ctx.textBaseline = "top";
 
             // Ensure your first data is the percentage data in your dataset
-            const totalAmount = chart.chart.chart.data.datasets[0].data.reduce((total, value) => total + value, 0);
+            const totalAmount = chart.chart.chart.data.datasets[0].data.reduce((total, value) => {
+                return total + value * 100;
+            }, 0);
 
-            const text = formatMoney(totalAmount);
+            // turn amount into a dinero instance and format it
+            const text = formatMoney(totalAmount, "EUR", true);
+
+            // calculate font sizes and output the text
             const textSize = ctx.measureText(text);
             const textX = Math.round((width - textSize.width) / 2);
             const textY = height / 2 - 10;
