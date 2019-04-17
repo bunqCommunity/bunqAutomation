@@ -1,5 +1,5 @@
 import React from "react";
-import ParticleField from "react-particles-webgl";
+const ParticleField = React.lazy(() => import("react-particles-webgl"));
 
 export const particleConfig = {
     showCube: false,
@@ -48,6 +48,8 @@ export const particleConfig = {
 
 export default props => (
     <div {...props}>
-        <ParticleField config={particleConfig} />
+        <React.Suspense fallback={<div />}>
+            <ParticleField config={particleConfig} />
+        </React.Suspense>
     </div>
 );
