@@ -68,16 +68,19 @@ const mapState = state => ({
     userLoading: state.user.loading,
 
     apiKey: state.authentication.api_key,
+    authenticationLoading: state.authentication.loading,
 
     serverStatus: state.server_status.status
 });
 
 const MinimalContent = ({ alignTop = false, classes, children, className = "", title = "bunqAutomation" }) => {
     const dispatch = useDispatch();
-    const { darkMode, particles, serverStatus, user, userLoading, apiKey } = useMappedState(mapState);
+    const { darkMode, particles, serverStatus, user, userLoading, apiKey, authenticationLoading } = useMappedState(
+        mapState
+    );
 
     useEffect(() => {
-        if (!userLoading && !user && apiKey && serverStatus === "STATUS_API_READY") {
+        if (!userLoading && !user && apiKey && !authenticationLoading && serverStatus === "STATUS_API_READY") {
             dispatch(updateUser());
         }
     }, [user, apiKey, serverStatus]);

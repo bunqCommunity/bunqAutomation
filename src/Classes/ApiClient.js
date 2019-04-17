@@ -21,7 +21,9 @@ class ApiClient {
 
         // replace :key with selected bunq key if found
         const replaceKeyPattern = "/bunq/:key/";
+        const previousUrl = url;
         url = url.replace(replaceKeyPattern, `/bunq/${this.selectedBunqApiKey}/`);
+        if (url !== previousUrl && !this.selectedBunqApiKey) return false;
 
         // prepend basename
         if (url[0] === "/") url = `${apiBaseUrl}${url}`;
@@ -50,6 +52,8 @@ class ApiClient {
         }
 
         url = this.formatUrl(url, params);
+
+        if (!url)             throw new Error("No bunq API key selected or available");
 
         const requestConfig = {
             url: url,

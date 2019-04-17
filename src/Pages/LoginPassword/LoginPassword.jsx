@@ -31,6 +31,9 @@ const styles = theme => ({
 const mapState = state => ({
     darkMode: state.theme.darkMode,
 
+    bunqApiKeys: state.bunq_api_keys.bunq_api_keys,
+    bunqApiKeysLoading: state.bunq_api_keys.loading,
+
     apiKey: state.authentication.api_key,
 
     serverStatusChecked: state.server_status.checked,
@@ -39,18 +42,20 @@ const mapState = state => ({
 
 const LoginPassword = ({ classes }) => {
     const dispatch = useDispatch();
-    const { darkMode, serverStatus, serverStatusChecked, apiKey } = useMappedState(mapState);
+    const { darkMode, bunqApiKeys, bunqApiKeysLoading, serverStatus, serverStatusChecked, apiKey } = useMappedState(
+        mapState
+    );
 
     const [password, setPassword] = useState("testpassword1234");
 
     const themedLogo = ThemedLogo(darkMode);
 
-    if (serverStatusChecked && serverStatus === "STATUS_FIRST_INSTALL") {
+    if (!bunqApiKeys && !bunqApiKeysLoading && serverStatusChecked && serverStatus === "STATUS_FIRST_INSTALL") {
         return <Redirect to="/setup" />;
     }
 
     // console.log(serverStatusChecked, apiKey, serverStatus);
-    if (serverStatusChecked && apiKey && serverStatus === "STATUS_API_READY") {
+    if (bunqApiKeys && !bunqApiKeysLoading && serverStatusChecked && apiKey && serverStatus === "STATUS_API_READY") {
         return <Redirect to="/" />;
     }
 

@@ -16,7 +16,6 @@ import MoonIcon from "../Icons/Moon";
 import UserBunqImage from "../UserBunqImage";
 
 import { toggleTheme } from "../../Redux/Actions/theme";
-import { updateUser } from "../../Redux/Actions/user";
 import { logout as logoutAuth } from "../../Redux/Actions/authentication";
 
 const drawerWidth = 240;
@@ -87,12 +86,6 @@ const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
     const state = useMappedState(mapState);
 
     const logout = () => dispatch(logoutAuth());
-
-    useEffect(() => {
-        if (!state.user && !state.userLoading && !state.authenticationLoading) {
-            dispatch(updateUser(true));
-        }
-    }, [state.user, state.authenticationLoading]);
 
     useEffect(() => {
         if (state.serverStatusChecked && state.serverStatus === "STATUS_UNINITIALIZED") {

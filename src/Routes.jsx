@@ -35,6 +35,7 @@ const Routes = () => {
                     case "STATUS_PASSWORD_READY":
                         // first install or only a password means we need to do more setup actions
                         if (window.location.pathname !== "/setup") {
+                            console.log("Redirect login 1");
                             return <Redirect to="/setup" />;
                         }
                         break;
@@ -45,8 +46,10 @@ const Routes = () => {
 
             if (!loading && !route.ignoreRedirects) {
                 if (route.authenticated && !apiKey && window.location.pathname !== "/login") {
+                    console.log("Redirect login 2");
                     return <Redirect key={route.path} to="/login" />;
                 } else if (route.unauthenticated && apiKey && window.location.pathname !== "/") {
+                    console.log("Redirect login 3");
                     return <Redirect key={route.path} to="/" />;
                 }
             }

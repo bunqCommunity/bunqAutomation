@@ -13,6 +13,7 @@ export const loginWithPassword = (password, callback = false) => {
             })
             .then(data => {
                 dispatch(setApiKey(data.api_key));
+                dispatch(getBunqApiKeys());
                 dispatch(authenticationIsNotLoading());
                 window.socket && window.socket.emit("status");
             })
