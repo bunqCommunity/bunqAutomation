@@ -43,8 +43,8 @@ export class Authentication {
         const date = new Date();
 
         await this.apiKeyStorage.set(apiKey, {
-            created: date,
-            updated: date,
+            created: date.getTime(),
+            updated: date.getTime(),
             type: apiKeyType
         });
 
@@ -95,7 +95,7 @@ export class Authentication {
     async refreshApiKey(apiKey) {
         const storedApiKey = await this.apiKeyStorage.get(apiKey);
         if (!storedApiKey) return false;
-        storedApiKey.updated = new Date();
+        storedApiKey.updated = new Date().getTime();
 
         return this.apiKeyStorage.set(apiKey, storedApiKey);
     }

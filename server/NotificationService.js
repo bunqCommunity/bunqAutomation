@@ -5,7 +5,8 @@ import vapidKeys from "../storage/vapid-keys.json";
 import Encryption from "./Security/Encryption";
 
 class NotificationService {
-    constructor(socketServer) {
+    constructor(logger, socketServer) {
+        this.logger = logger;
         this.socketServer = socketServer;
         this.encryption = new Encryption();
         this.notificationStore = new LevelDb("bunq-automation-notifications");
@@ -37,7 +38,8 @@ class NotificationService {
     async notify(title, message = "") {
         this.socketEmit("notification", { title, message });
 
-        await this.emitWebPushAll({ title, message });
+        // return the web push output since the sockets have no response associated
+        return await this.emitWebPushAll({ title, message });
     }
 
     /**
@@ -66,9 +68,22 @@ class NotificationService {
             Object.keys(subscribers).map(subscriberId => {
                 const subscription = subscribers[subscriberId];
 
-                return this.emitSubscriberWebPush(subscription.data, formattedPayload);
+                return this.emitSubscriberWebPush(subscription.data, subscriberId, formattedPayload);
             })
         );
+
+        emittedPushEvents.forEach(emittedPushEvent => {
+            if (emittedPushEvent.error) {
+                switch (emittedPushEvent.error.statusCode) {
+                    case 403:
+                        /* ignore success and attempt to remove subscription */
+                        this.removeWebPushSubscription(emittedPushEvent.subscriberId)
+                            .then(() => {})
+                            .catch(error => this.logger.error(error));
+                        break;
+                }
+            }
+        });
 
         return emittedPushEvents;
     }
@@ -76,14 +91,26 @@ class NotificationService {
     /**
      * Emits a push event to all subscribers
      * @param subscription
+     * @param subscriberId
      * @param payload
      * @returns {Promise}
      */
-    async emitSubscriberWebPush(subscription, payload) {
+    async emitSubscriberWebPush(subscription, subscriberId, payload) {
         const formattedPayload = this.formatWebPushPayload(payload);
         const stringifiedPayload = JSON.stringify(formattedPayload);
 
-        return await webPush.sendNotification(subscription, stringifiedPayload, this.webPushOptions);
+        try {
+            const result = await webPush.sendNotification(subscription, stringifiedPayload, this.webPushOptions);
+
+            return {
+                result,
+                subscriberId,
+                subscription
+            };
+        } catch (error) {
+            // always succeed so we return the error
+            return { error, subscriberId, subscription };
+        }
     }
 
     /**
@@ -103,8 +130,12 @@ class NotificationService {
         // store the subscription in the list
         await this.notificationStore.set(subscriptionIdentifier.key, {
             data: subscription,
-            created: new Date()
+            created: new Date().getTime()
         });
+    }
+
+    async removeWebPushSubscription(subscriberId) {
+        await this.notificationStore.remove(subscriberId);
     }
 
     /**

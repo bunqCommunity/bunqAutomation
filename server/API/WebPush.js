@@ -21,9 +21,13 @@ export default (app, opts, next) => {
             tags: ["web-push"]
         },
         handler: async (request, reply) => {
-            await app.notificationService.notify("My title", "A longer message text");
+            try {
+                const result = await app.notificationService.notify("My title", "A longer message text");
 
-            reply.send("Done");
+                reply.send(result);
+            } catch (ex) {
+                reply.send(ex.message);
+            }
         }
     });
 

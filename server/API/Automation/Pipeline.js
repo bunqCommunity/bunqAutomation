@@ -65,6 +65,7 @@ export default (app, opts, next) => {
                         filterValues: [5060]
                     },
 
+                    // split for testing but could be used as 1 filter with [5060, 8370]
                     "7f0a4813-92a6-4bc6-a133-6c315b1ac6d9": {
                         children: ["32191185-918f-44e2-b2ef-4f6c6ed0656e"],
                         type: "MONETARY_ACCOUNT",

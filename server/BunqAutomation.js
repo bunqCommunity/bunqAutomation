@@ -28,7 +28,7 @@ class BunqAutomation {
         this.pipeline = new Pipeline(this.logger);
         this.authentication = new Authentication(this.logger);
         this.bunqClientWrapper = new BunqClientWrapper(this.logger);
-        this.notificationService = new NotificationService(this.socketServer);
+        this.notificationService = new NotificationService(this.logger, this.socketServer);
 
         // set a reference in the authentication handler
         this.authentication.bunqAutomation = this;
