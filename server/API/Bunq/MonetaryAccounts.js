@@ -27,17 +27,8 @@ export default (app, opts, next) => {
 
             const monetary_accounts = await app.bunqAutomation.getMonetaryAccounts(request.params.identifier, options);
 
-            const formattedObjects = [];
-            monetary_accounts.forEach(monetaryAccount => {
-                const accountType = Object.keys(monetaryAccount)[0];
-                const monetaryAccountInfo = monetaryAccount[accountType];
-                monetaryAccountInfo.accountType = accountType;
-
-                formattedObjects.push(monetaryAccountInfo);
-            });
-
             reply.send({
-                monetary_accounts: formattedObjects
+                monetary_accounts: monetary_accounts
             });
         }
     );

@@ -165,7 +165,7 @@ class BunqAutomation {
      * Get monetary accounts
      * @param keyIdentifier
      * @param options
-     * @returns {Promise<any>}
+     * @returns {Promise<Array>}
      */
     async getMonetaryAccounts(keyIdentifier, options = {}) {
         await this.isApiReadyCheck(keyIdentifier);
@@ -175,11 +175,21 @@ class BunqAutomation {
         const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
         const monetaryAccounts = await client.api.monetaryAccount.list(user.id, options);
 
+        const formattedAccounts = [];
+        monetaryAccounts.forEach(monetaryAccount => {
+            const accountType = Object.keys(monetaryAccount)[0];
+            const monetaryAccountInfo = monetaryAccount[accountType];
+
+            monetaryAccountInfo.accountType = accountType;
+
+            formattedAccounts.push(monetaryAccountInfo);
+        });
+
         // cache data for this identifier in memory
         if (!this.bunqApiData[keyIdentifier]) this.bunqApiData[keyIdentifier] = {};
-        this.bunqApiData[keyIdentifier].monetaryAccounts = monetaryAccounts;
+        this.bunqApiData[keyIdentifier].monetaryAccounts = formattedAccounts;
 
-        return monetaryAccounts;
+        return formattedAccounts;
     }
 
     /**
