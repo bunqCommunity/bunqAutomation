@@ -25,7 +25,6 @@ export default (app, opts, next) => {
             }
         },
         async (request, reply) => {
-            console.log("Health check:", app.bunqAutomation.status);
             reply.send({
                 status: app.bunqAutomation.status
             });

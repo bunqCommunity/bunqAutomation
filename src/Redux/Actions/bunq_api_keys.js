@@ -6,7 +6,7 @@ export const getBunqApiKeys = () => {
         dispatch(bunqApiKeysIsLoading());
 
         window.apiClient
-            .get(`/bunq-api-keys`)
+            .get(`/management/bunq-api-keys`)
             .then(data => {
                 dispatch(setBunqApiKeys(data.bunq_api_keys));
                 dispatch(bunqApiKeysIsNotLoading());

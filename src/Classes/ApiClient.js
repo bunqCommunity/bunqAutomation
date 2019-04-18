@@ -53,7 +53,7 @@ class ApiClient {
 
         url = this.formatUrl(url, params);
 
-        if (!url)             throw new Error("No bunq API key selected or available");
+        if (!url) throw new Error("No bunq API key selected or available");
 
         const requestConfig = {
             url: url,

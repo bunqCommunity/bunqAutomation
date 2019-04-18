@@ -1,6 +1,6 @@
 import React from "react";
 
-import {getSelectedStyle, standardNodeStyles} from "../../Defaults";
+import { getSelectedStyle, standardNodeStyles } from "../../Defaults";
 
 const NodeCustom = ({ node, isSelected, style, children, ...props }) => {
     const selectedStyle = getSelectedStyle(isSelected);

@@ -1,10 +1,11 @@
 import { swaggerSecuritySchema } from "../Plugins/SwaggerDocsPlugin";
 
 export default (app, opts, next) => {
-    const bunqClientWrapper = app.bunqAutomation.bunqClientWrapper;
+    const bunqAutomation = app.bunqAutomation;
+    const bunqClientWrapper = bunqAutomation.bunqClientWrapper;
 
     app.route({
-        url: "/",
+        url: "/bunq-api-keys",
         method: "GET",
         schema: {
             summary: "get the currently stored bunq API keys",
@@ -16,6 +17,20 @@ export default (app, opts, next) => {
             reply.send({
                 bunq_api_keys: bunqClientWrapper.getBunqApiKeyList()
             });
+        }
+    });
+
+    app.route({
+        url: "/bunq-api-data",
+        method: "GET",
+        schema: {
+            summary: "get the currently stored bunq API data in memory",
+            tags: ["server-management"],
+            security: swaggerSecuritySchema
+        },
+        preHandler: app.auth([app.apiKeyAuthentication]),
+        handler: async (request, reply) => {
+            reply.send(bunqAutomation.bunqApiData);
         }
     });
 

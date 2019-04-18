@@ -30,14 +30,11 @@ class BunqAutomation {
         this.bunqClientWrapper = new BunqClientWrapper(this.logger);
         this.notificationService = new NotificationService(this.logger, this.socketServer);
 
-        // set a reference in the authentication handler
-        this.authentication.bunqAutomation = this;
-
         // by default set as first install status
         this._status = STATUS_FIRST_INSTALL;
 
-        // bunq user info
-        this.user = false;
+        // api data stored under the bunq api key identifier
+        this.bunqApiData = {};
     }
 
     async startup(httpServer) {
@@ -136,9 +133,11 @@ class BunqAutomation {
         const users = await client.getUsers(forceUpdate);
         const userType = Object.keys(users)[0];
 
-        this.user = users[userType];
+        // cache data for this identifier in memory
+        if (!this.bunqApiData[keyIdentifier]) this.bunqApiData[keyIdentifier] = {};
+        this.bunqApiData[keyIdentifier].user = users[userType];
 
-        return this.user;
+        return users[userType];
     }
 
     /**
@@ -153,7 +152,13 @@ class BunqAutomation {
         const user = await this.getUser(keyIdentifier);
 
         const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
-        return await client.api.event.list(user.id, options);
+        const events = await client.api.event.list(user.id, options);
+
+        // cache data for this identifier in memory
+        if (!this.bunqApiData[keyIdentifier]) this.bunqApiData[keyIdentifier] = {};
+        this.bunqApiData[keyIdentifier].events = events;
+
+        return events;
     }
 
     /**
@@ -168,7 +173,13 @@ class BunqAutomation {
         const user = await this.getUser(keyIdentifier);
 
         const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
-        return await client.api.monetaryAccount.list(user.id, options);
+        const monetaryAccounts = await client.api.monetaryAccount.list(user.id, options);
+
+        // cache data for this identifier in memory
+        if (!this.bunqApiData[keyIdentifier]) this.bunqApiData[keyIdentifier] = {};
+        this.bunqApiData[keyIdentifier].monetaryAccounts = monetaryAccounts;
+
+        return monetaryAccounts;
     }
 
     /**

@@ -2,7 +2,7 @@ import { consoleMessageOutputId } from "../Outputs/ConsoleMessageOutput";
 import ToJSONHandler from "../ToJSONHandler";
 
 export const mutationLoggerActionId = "MUTATION_LOGGER";
-export const mutationLoggerActionDescription ="Logs to the console when triggered";
+export const mutationLoggerActionDescription = "Logs to the console when triggered";
 
 class MutationLoggerAction {
     constructor() {
