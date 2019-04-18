@@ -54,6 +54,7 @@ export default (app, opts, next) => {
                 active: false,
                 uuid: "800f9e55-e007-4dbe-8f27-ec460c344b6d",
                 action: "BALANCE_WARNING",
+                users: [3059],
                 children: ["e3fff355-c080-4f98-b7e7-5196e4a1fd04", "7f0a4813-92a6-4bc6-a133-6c315b1ac6d9"],
                 options: {
                     balance: 8000

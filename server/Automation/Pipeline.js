@@ -36,10 +36,13 @@ class Pipeline {
 
         // set options from the confing
         actionConfig.active = !!config.active;
+        actionConfig.users = config.users || [];
         actionConfig.action = config.action;
-        actionConfig.options = config.options;
-        actionConfig.filters = config.filters;
-        actionConfig.outputs = config.outputs;
+        actionConfig.options = config.options || {};
+        actionConfig.filters = config.filters || {};
+        actionConfig.outputs = config.outputs || {};
+
+        // TODO check if children IDs exist
         actionConfig.children = config.children;
 
         if (!actionConfig.action || !this.actions[actionConfig.action]) {
@@ -47,8 +50,6 @@ class Pipeline {
         } else {
             this.validateActionConfigOptions(actionConfig, this.actions[actionConfig.action]);
         }
-
-        // TODO check if children IDs exist
 
         this.validateActionConfigFilters(actionConfig);
         this.validateActionConfigOutputs(actionConfig);

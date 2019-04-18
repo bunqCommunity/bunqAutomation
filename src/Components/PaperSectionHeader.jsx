@@ -72,7 +72,7 @@ const PaperSectionHeader = ({ classes, title, icon, secondaryIcon, loading, onCl
 };
 
 PaperSectionHeader.defaultProps = {
-    onClick: () => console.log("Default on click?"),
+    onClick: () => {},
     icon: false,
     loading: false,
     secondaryIcon: false

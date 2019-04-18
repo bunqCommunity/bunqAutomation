@@ -13,8 +13,6 @@ export default (app, opts, next) => {
             }
         },
         async (request, reply) => {
-            console.log(request.body);
-
             reply.send({ status: "OK" });
         }
     );

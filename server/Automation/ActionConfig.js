@@ -6,6 +6,7 @@ class ActionConfig {
         this.uuid = uuid || uuidLib.v4();
 
         this.action = false;
+        this.users = [];
         this.options = {};
         this.filters = {};
         this.outputs = {};

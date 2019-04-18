@@ -44,6 +44,7 @@ class FlowChartWithState extends React.Component {
                 const modifiedChart = defaultCallback(this.state);
                 this.setState(modifiedChart);
 
+                // filter out certain events for debugging
                 if (!ignoredEvents.includes(eventName)) {
                     console.log(eventName, params);
                 }
