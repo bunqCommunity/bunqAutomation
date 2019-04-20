@@ -34,7 +34,23 @@ export default (app, opts, next) => {
         async (request, reply) => {
             const pipeline = app.bunqAutomation.pipeline;
 
-            reply.send(pipeline.activeActions);
+            reply.send(pipeline.configuredActions);
+        }
+    );
+
+    app.get(
+        "/history",
+        {
+            schema: {
+                tags: ["automation"],
+                summary: "List the currently active actions",
+                security: swaggerSecuritySchema
+            }
+        },
+        async (request, reply) => {
+            const pipeline = app.bunqAutomation.pipeline;
+
+            reply.send(pipeline.history);
         }
     );
 

@@ -18,7 +18,14 @@ const styles = theme => ({
     }
 });
 
-const ignoredEvents = ["onLinkMouseEnter", "onLinkMouseLeave", "onDragCanvas", "onCanvasClick", "onDragNode"];
+const ignoredEvents = [
+    "onPortPositionChange",
+    "onLinkMouseEnter",
+    "onLinkMouseLeave",
+    "onDragCanvas",
+    "onCanvasClick",
+    "onDragNode"
+];
 
 class FlowChartWithState extends React.Component {
     constructor(props) {

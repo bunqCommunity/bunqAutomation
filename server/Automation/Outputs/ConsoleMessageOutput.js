@@ -3,6 +3,7 @@ import ToJSONHandler from "../ToJSONHandler";
 import { instantScheduleId } from "../Schedules/InstantSchedule";
 
 export const consoleMessageOutputId = "CONSOLE_MESSAGE";
+export const consoleMessageOutputTitle = "Monetary account(s)";
 export const consoleMessageOutputDescription = "Outputs a message to the console";
 
 class ConsoleMessageOutput {
@@ -10,6 +11,7 @@ class ConsoleMessageOutput {
         this.store = store;
 
         this.id = consoleMessageOutputId;
+        this.title = consoleMessageOutputTitle;
         this.description = consoleMessageOutputDescription;
 
         // log it instantly

@@ -1,0 +1,119 @@
+const isObject = a => !!a && a.constructor === Object;
+
+class ActionConfigValidator {
+    constructor(pipelineRef) {
+        this.pipelineRef = pipelineRef;
+    }
+
+    validateActionConfigOptions(actionConfig, action) {
+        if (!actionConfig.options) return;
+
+        if (!isObject(actionConfig.options)) {
+            actionConfig.validationErrors.push(`Options property is not an Object`);
+            return;
+        }
+
+        if (!action.options) {
+            actionConfig.validationErrors.push(`Options property is not an Object`);
+        }
+
+        // go through each config option and cast to the configured value
+        Object.keys(actionConfig.options).forEach(optionKey => {
+            const optionValue = actionConfig.options[optionKey];
+
+            if (!action.options || !action.options[optionKey]) {
+                actionConfig.validationErrors.push(`Invalid or option given for option '${optionKey}'`);
+                return;
+            }
+
+            const actionOptionConfig = action.options[optionKey];
+            switch (actionOptionConfig.type) {
+                case "STRING":
+                    actionConfig.options[optionKey] = String(optionValue);
+                    break;
+                case "NUMBER":
+                    actionConfig.options[optionKey] = Number(optionValue);
+                    if (isNaN(actionConfig.options[optionKey])) {
+                        actionConfig.validationErrors.push(
+                            `The '${optionKey}' value failed to parse as a number 'NaN'`
+                        );
+                    }
+                    break;
+                case "BOOLEAN":
+                    actionConfig.options[optionKey] = optionValue === true || optionValue === "true";
+                    break;
+                default:
+                // nothing
+            }
+        });
+
+        // check the possible options and set default values
+        Object.keys(action.options).forEach(optionKey => {
+            const optionConfig = action.options[optionKey];
+
+            if (typeof actionConfig.options[optionKey] === "undefined") {
+                if (optionConfig.required) {
+                    actionConfig.validationErrors.push(`Missing required option '${optionKey}'`);
+                }
+                if (typeof optionConfig.defaultValue !== "undefined") {
+                    actionConfig.options[optionKey] = optionConfig.defaultValue;
+                }
+            }
+        });
+    }
+
+    validateActionConfigFilters(actionConfig) {
+        if (!actionConfig.filters) return;
+
+        if (!isObject(actionConfig.filters)) {
+            actionConfig.validationErrors.push("Filters property is not an Object");
+            return;
+        }
+
+        Object.keys(actionConfig.filters).forEach(filterId => {
+            const filter = actionConfig.filters[filterId];
+
+            if (!this.pipelineRef.filters[filter.type]) {
+                actionConfig.validationErrors.push(`Invalid or missing Filter type for index '${filterId}'`);
+            }
+
+            if (!Array.isArray(filter.filterValues)) {
+                actionConfig.validationErrors.push(
+                    `The given 'filterValues' option is not an array for index '${filterId}'`
+                );
+                return;
+            }
+        });
+    }
+
+    validateActionConfigOutputs(actionConfig) {
+        if (!actionConfig.outputs) return;
+
+        if (!isObject(actionConfig.outputs)) {
+            actionConfig.validationErrors.push(`Outputs property is not an Object`);
+            return;
+        }
+
+        Object.keys(actionConfig.outputs).forEach(outputId => {
+            const output = actionConfig.outputs[outputId];
+
+            if (!this.pipelineRef.outputs[output.type]) {
+                actionConfig.validationErrors.push(`Invalid or missing Output type for index '${outputId}'`);
+            }
+            if (!this.pipelineRef.schedules[output.schedule.type]) {
+                actionConfig.validationErrors.push(`Invalid or missing Schedule type for index '${outputId}'`);
+            }
+        });
+    }
+
+    validateRegistration(item) {
+        if (!item.id) return "No 'id' property set";
+        if (!item.title) return "No 'title' property set";
+        if (!item.description) return "No 'description' property set";
+
+        return true;
+    }
+
+}
+
+export default ActionConfigValidator;

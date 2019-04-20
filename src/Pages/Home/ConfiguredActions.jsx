@@ -51,8 +51,8 @@ const styles = theme => ({
     }
 });
 
-const ActionHistoryOverview = ({ classes, itemXs = 12, itemSm = 6, itemMd = 4 }) => {
-    const activeActions = [
+const ConfiguredActions = ({ classes, itemXs = 12, itemSm = 6, itemMd = 4 }) => {
+    const configuredActions = [
         {
             Icon: AccountCheck,
             primary: `Monthly request for ${formatMoney(5)}`,
@@ -85,7 +85,7 @@ const ActionHistoryOverview = ({ classes, itemXs = 12, itemSm = 6, itemMd = 4 })
         }
     ];
 
-    const activeActionComponents = activeActions.map((activeAction, index) => {
+    const activeActionComponents = configuredActions.map((activeAction, index) => {
         const Icon = activeAction.Icon;
         const inlineStyle = {
             borderLeft: `6px solid ${activeAction.color}`
@@ -122,4 +122,4 @@ const ActionHistoryOverview = ({ classes, itemXs = 12, itemSm = 6, itemMd = 4 })
     );
 };
 
-export default withStyles(styles)(ActionHistoryOverview);
+export default withStyles(styles)(ConfiguredActions);

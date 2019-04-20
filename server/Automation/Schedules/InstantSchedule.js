@@ -1,6 +1,7 @@
 import ToJSONHandler from "../ToJSONHandler";
 
 export const instantScheduleId = "INSTANT";
+export const instantScheduleTitle = "Instant";
 export const instantScheduleDescription = "An instant schedule";
 
 class InstantSchedule {
@@ -8,6 +9,7 @@ class InstantSchedule {
         this.store = store;
 
         this.id = instantScheduleId;
+        this.title = instantScheduleTitle;
         this.description = instantScheduleDescription;
 
         this.options = {};

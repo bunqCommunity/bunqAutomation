@@ -12,7 +12,7 @@ const styles = theme => ({
     }
 });
 
-const ActionTest = ({ classes }) => {
+const ActionDetails = ({ classes }) => {
     const [actionConfig, setActionConfig] = useState(false);
     const [flowChart, setFlowChart] = useState(false);
 
@@ -90,4 +90,4 @@ const ActionTest = ({ classes }) => {
     );
 };
 
-export default withStyles(styles)(ActionTest);
+export default withStyles(styles)(ActionDetails);

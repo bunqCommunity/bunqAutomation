@@ -6,7 +6,7 @@ import Content from "../../Components/Content/Content";
 
 import BalanceGraph from "./BalanceHistory";
 import ActionHistoryOverview from "./ActionHistoryOverview";
-import ActiveActions from "./ActiveActions";
+import ConfiguredActions from "./ConfiguredActions";
 import AccountBalance from "./AccountBalance";
 
 const styles = theme => ({
@@ -26,7 +26,7 @@ const Home = () => {
                     <AccountBalance />
                 </Grid>
                 <Grid item xs={12} sm={6} md={8}>
-                    <ActiveActions itemXs={12} itemSm={12} itemMd={6} />
+                    <ConfiguredActions itemXs={12} itemSm={12} itemMd={6} />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
                     <ActionHistoryOverview />

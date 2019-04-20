@@ -10,6 +10,16 @@ const routes = [
         component: "BunqApiKeys",
         authenticated: true
     },
+    {
+        path: "/actions",
+        component: "ActionOverview",
+        authenticated: true
+    },
+    {
+        path: "/action/:actionId",
+        component: "ActionDetails",
+        authenticated: true
+    },
 
     // login pages
     {
@@ -25,13 +35,6 @@ const routes = [
     {
         path: "/404",
         component: "NotFound"
-    },
-
-    // test pages
-    {
-        path: "/action-test",
-        component: "ActionTest",
-        authenticated: true
     }
 ];
 

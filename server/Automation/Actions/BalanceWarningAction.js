@@ -4,14 +4,15 @@ import { consoleMessageOutputId } from "../Outputs/ConsoleMessageOutput";
 import { monetaryAccountFilterId } from "../Filters/MonetaryAccountFilter";
 
 export const balanceWarningActionId = "BALANCE_WARNING";
-export const balanceWarningActionDescription =
-    "Warns if all or a subset of the user's monetary accounts reaches a limit";
+export const balanceWarningActionTitle = "Balance warnings";
+export const balanceWarningActionDescription = "Warns if all or a subset of monetaryaccounts reach a limit";
 
 class BalanceWarningAction {
     constructor(store) {
         this.store = store;
 
         this.id = balanceWarningActionId;
+        this.title = balanceWarningActionTitle;
         this.description = balanceWarningActionDescription;
 
         this.options = {

@@ -1,6 +1,7 @@
 import ToJSONHandler from "../ToJSONHandler";
 
 export const monetaryAccountFilterId = "MONETARY_ACCOUNT";
+export const monetaryAccountFilterTitle = "Monetary account(s)";
 export const monetaryAccountFilterDescription = "Filter if one or more monetary account IDs match the given input ";
 
 class MonetaryAccountFilter {
@@ -8,6 +9,7 @@ class MonetaryAccountFilter {
         this.store = store;
 
         this.id = monetaryAccountFilterId;
+        this.title = monetaryAccountFilterTitle;
         this.description = monetaryAccountFilterDescription;
     }
 

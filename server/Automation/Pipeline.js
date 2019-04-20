@@ -1,16 +1,14 @@
 import LevelDb from "../StorageHandlers/LevelDb";
-import ConfigValidator from "./ConfigValidator";
+import ActionConfigValidator from "./ActionConfigValidator";
 import ActionConfig from "./ActionConfig";
 
-export const ACTIVE_ACTIONS_LOCATION = "ACTIVE_ACTIONS_LOCATION";
-
-const isObject = a => !!a && a.constructor === Object;
+export const CONFIGURED_ACTIONS_LOCATION = "CONFIGURED_ACTIONS_LOCATION";
 
 class Pipeline {
     constructor(logger) {
         this.logger = logger;
         this.pipelineStore = new LevelDb("bunq-automation-pipeline");
-        this.validator = new ConfigValidator(this);
+        this.validator = new ActionConfigValidator(this);
 
         // available modules
         this.actions = {};
@@ -19,11 +17,11 @@ class Pipeline {
         this.schedules = {};
 
         // active modules configured by the user
-        this.activeActions = {};
+        this.configuredActions = {};
     }
 
     async startup() {
-        const storedActiveActions = await this.pipelineStore.get(ACTIVE_ACTIONS_LOCATION);
+        const storedConfiguredActions = await this.pipelineStore.get(CONFIGURED_ACTIONS_LOCATION);
     }
 
     updateAction(actionConfig) {
@@ -48,121 +46,13 @@ class Pipeline {
         if (!actionConfig.action || !this.actions[actionConfig.action]) {
             actionConfig.validationErrors.push("Invalid or missing Action type");
         } else {
-            this.validateActionConfigOptions(actionConfig, this.actions[actionConfig.action]);
+            this.validator.validateActionConfigOptions(actionConfig, this.actions[actionConfig.action]);
         }
 
-        this.validateActionConfigFilters(actionConfig);
-        this.validateActionConfigOutputs(actionConfig);
+        this.validator.validateActionConfigFilters(actionConfig);
+        this.validator.validateActionConfigOutputs(actionConfig);
 
         return actionConfig;
-    }
-
-    validateActionConfigFilters(actionConfig) {
-        if (!actionConfig.filters) return;
-
-        if (!isObject(actionConfig.filters)) {
-            actionConfig.validationErrors.push("Filters property is not an Object");
-            return;
-        }
-
-        Object.keys(actionConfig.filters).forEach(filterId => {
-            const filter = actionConfig.filters[filterId];
-
-            if (!this.filters[filter.type]) {
-                actionConfig.validationErrors.push(`Invalid or missing Filter type for index '${filterId}'`);
-            }
-
-            if (!Array.isArray(filter.filterValues)) {
-                actionConfig.validationErrors.push(
-                    `The given 'filterValues' option is not an array for index '${filterId}'`
-                );
-                return;
-            }
-        });
-    }
-
-    validateActionConfigOutputs(actionConfig) {
-        if (!actionConfig.outputs) return;
-
-        if (!isObject(actionConfig.outputs)) {
-            actionConfig.validationErrors.push(`Outputs property is not an Object`);
-            return;
-        }
-
-        Object.keys(actionConfig.outputs).forEach(outputId => {
-            const output = actionConfig.outputs[outputId];
-
-            if (!this.outputs[output.type]) {
-                actionConfig.validationErrors.push(`Invalid or missing Output type for index '${outputId}'`);
-            }
-            if (!this.schedules[output.schedule.type]) {
-                actionConfig.validationErrors.push(`Invalid or missing Schedule type for index '${outputId}'`);
-            }
-        });
-    }
-
-    validateActionConfigOptions(actionConfig, action) {
-        if (!actionConfig.options) return;
-
-        if (!isObject(actionConfig.options)) {
-            actionConfig.validationErrors.push(`Options property is not an Object`);
-            return;
-        }
-
-        if (!action.options) {
-            actionConfig.validationErrors.push(`Options property is not an Object`);
-        }
-
-        // go through each config option and cast to the configured value
-        Object.keys(actionConfig.options).forEach(optionKey => {
-            const optionValue = actionConfig.options[optionKey];
-
-            if (!action.options || !action.options[optionKey]) {
-                actionConfig.validationErrors.push(`Invalid or option given for option '${optionKey}'`);
-                return;
-            }
-
-            const actionOptionConfig = action.options[optionKey];
-            switch (actionOptionConfig.type) {
-                case "STRING":
-                    actionConfig.options[optionKey] = String(optionValue);
-                    break;
-                case "NUMBER":
-                    actionConfig.options[optionKey] = Number(optionValue);
-                    if (isNaN(actionConfig.options[optionKey])) {
-                        actionConfig.validationErrors.push(
-                            `The '${optionKey}' value failed to parse as a number 'NaN'`
-                        );
-                    }
-                    break;
-                case "BOOLEAN":
-                    actionConfig.options[optionKey] = optionValue === true || optionValue === "true";
-                    break;
-                default:
-                // nothing
-            }
-        });
-
-        // check the possible options and set default values
-        Object.keys(action.options).forEach(optionKey => {
-            const optionConfig = action.options[optionKey];
-
-            if (typeof actionConfig.options[optionKey] === "undefined") {
-                if (optionConfig.required) {
-                    actionConfig.validationErrors.push(`Missing required option '${optionKey}'`);
-                }
-                if (typeof optionConfig.defaultValue !== "undefined") {
-                    actionConfig.options[optionKey] = optionConfig.defaultValue;
-                }
-            }
-        });
-    }
-
-    validateRegistration(item) {
-        if (!item.id) return "No 'id' property set";
-        if (!item.description) return "No 'description' property set";
-
-        return true;
     }
 
     /**
@@ -171,7 +61,7 @@ class Pipeline {
     registerAction(action) {
         if (this.actions[action.id]) throw new Error("An Action with this ID has already been registered");
 
-        const validation = this.validateRegistration(action);
+        const validation = this.validator.validateRegistration(action);
         if (validation === true) {
             this.actions[action.id] = action;
             return true;
@@ -181,7 +71,7 @@ class Pipeline {
     registerFilter(filter) {
         if (this.actions[filter.id]) throw new Error("A Filter with this ID has already been registered");
 
-        const validation = this.validateRegistration(filter);
+        const validation = this.validator.validateRegistration(filter);
         if (validation === true) {
             this.filters[filter.id] = filter;
             return true;
@@ -191,7 +81,7 @@ class Pipeline {
     registerOutput(output) {
         if (this.actions[output.id]) throw new Error("An Output with this ID has already been registered");
 
-        const validation = this.validateRegistration(output);
+        const validation = this.validator.validateRegistration(output);
         if (validation === true) {
             this.outputs[output.id] = output;
             return true;
@@ -201,7 +91,7 @@ class Pipeline {
     registerSchedule(schedule) {
         if (this.actions[schedule.id]) throw new Error("A Schedule with this ID has already been registered");
 
-        const validation = this.validateRegistration(schedule);
+        const validation = this.validator.validateRegistration(schedule);
         if (validation === true) {
             this.schedules[schedule.id] = schedule;
             return true;

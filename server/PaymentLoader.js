@@ -26,6 +26,15 @@ class PaymentLoader {
     }
 
     async loadPayments(keyIdentifier, monetaryAccountId, options = {}) {
+        const apiOptions = {
+            count: options.count || 200
+        };
+        if (options.newer_id) {
+            apiOptions.newer_id = options.newer_id;
+        } else if (options.older_id) {
+            apiOptions.older_id = options.older_id;
+        }
+
         const user = await this.bunqAutomation.getUser(keyIdentifier, false);
         const bunqJSClient = this.bunqAutomation.bunqClientWrapper.getBunqJSClient(keyIdentifier);
 
@@ -33,11 +42,7 @@ class PaymentLoader {
 
         let isDone = false;
         while (isDone === false) {
-            // const newPayments = await bunqJSClient.api.payment.list(user.id, monetaryAccountId, {
-            //     count: 200,
-            //     newer_id: 1,
-            //     older_id: 1000
-            // });
+            // const newPayments = await bunqJSClient.api.payment.list(user.id, monetaryAccountId, apiOptions);
             //
             // paymentList = paymentList.concat(newPayments);
         }

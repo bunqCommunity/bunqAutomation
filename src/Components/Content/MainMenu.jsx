@@ -13,9 +13,9 @@ import Drawer from "@material-ui/core/Drawer";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import HomeIcon from "@material-ui/icons/Home";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import PaletteIcon from "@material-ui/icons/Palette";
 import KeyIcon from "@material-ui/icons/VpnKey";
 import BubbleChartIcon from "@material-ui/icons/BubbleChart";
+import PlaylistAddCheck from "@material-ui/icons/PlaylistAddCheck";
 
 const drawerWidth = 240;
 
@@ -92,11 +92,11 @@ const MainMenu = ({ classes, open, toggleMenu, logout }) => {
 
             <List className={classes.list}>
                 <StandardMenuItem to="/" primary="Dashboard" Icon={HomeIcon} />
+                <StandardMenuItem to="/actions" primary="Actions" Icon={PlaylistAddCheck} />
                 <StandardMenuItem to="/bunq-api-keys" primary="API keys" Icon={KeyIcon} />
 
                 <ListItem className={classes.listFiller} />
 
-                <StandardMenuItem to="/content-test" primary="Design preview" Icon={PaletteIcon} />
                 <StandardMenuItem to="/action-test" primary="Action test" Icon={BubbleChartIcon} />
                 <ListItem button onClick={logout}>
                     <ListItemIcon>
