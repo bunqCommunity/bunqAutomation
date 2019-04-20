@@ -58,10 +58,13 @@ const AvailableActions = ({ classes, pipeline }) => {
                             <Icon />
                         </SvgIcon>
                     )}
-                    <Typography variant="body1">{actionInfo.description}</Typography>
+                    <div>
+                        <Typography variant="body1">{actionInfo.title}</Typography>
+                        <Typography variant="body2">{actionInfo.description}</Typography>
+                    </div>
 
                     <div className={classes.fillerDiv} />
-                    <Button className={classes.button} variant="outlined">
+                    <Button className={classes.button} variant="outlined" color="primary">
                         <PlusIcon />
                     </Button>
                 </Paper>

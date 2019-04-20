@@ -10,7 +10,7 @@ class MutationLoggerAction {
         this.id = mutationLoggerActionId;
         this.title = mutationLoggerActionTitle;
         this.description = mutationLoggerActionDescription;
-        this.disabled = true;
+        // this.disabled = true;
 
         this.type = "MUTATION";
         this.filters = [];
