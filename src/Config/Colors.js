@@ -22,7 +22,7 @@ export const getColorByIndex = index => {
 };
 
 // random color from the color list
-export const randomColor = () => colors[randomIndex()];
+export const getRandomColor = () => colors[randomIndex()];
 
 export const colors = [
     "#e6261f",
@@ -34,6 +34,7 @@ export const colors = [
     "#1EB980",
     "#045D56",
     "#72DEFF",
+    "#a5adb2",
     "#34bbe6",
     "#4355db",
     "#B15DFF",

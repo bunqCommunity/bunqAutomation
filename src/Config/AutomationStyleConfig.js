@@ -7,44 +7,44 @@ import MailIcon from "@material-ui/icons/Mail";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import SavingsIcon from "@material-ui/icons/Save";
 
-import { darkGreen, green, lightBlue, purple, salmon, grey } from "./Colors";
+import { getColorByIndex } from "./Colors";
 
 export const getActionStyle = actionType => {
     switch (actionType) {
         case "AUTO_SAVE_PERCENTAGE":
             return {
                 Icon: SavingsIcon,
-                color: purple
+                color: getColorByIndex(1)
             };
         case "AUTOMATIC_REQUEST":
             return {
                 Icon: AccountCheck,
-                color: salmon
+                color: getColorByIndex(11)
             };
         case "BALANCE_WARNING":
             return {
                 Icon: NotificationIcon,
-                color: darkGreen
+                color: getColorByIndex(0)
             };
         case "MONTHLY_INVOICE":
             return {
                 Icon: MailIcon,
-                color: green
+                color: getColorByIndex(6)
             };
         case "MUTATION_LOGGER":
             return {
                 Icon: ConsoleIcon,
-                color: grey
+                color: getColorByIndex(9)
             };
         case "SCHEDULED_REQUEST":
             return {
                 Icon: AccessTime,
-                color: darkGreen
+                color: getColorByIndex(10)
             };
         case "SPLIT_INCOMING_FUNDS":
             return {
                 Icon: CallSplitIcon,
-                color: lightBlue
+                color: getColorByIndex(12)
             };
 
         default:

@@ -60,7 +60,7 @@ class BunqAutomation {
         }
 
         // check bunqClient inital startup status
-        await this.bunqClientWrapper.startup(this.authentication.encryptionKey);
+        await this.loadStoredBunqApiKeys();
     }
 
     /**

@@ -5,7 +5,7 @@ import { monetaryAccountFilterId } from "../Filters/MonetaryAccountFilter";
 
 export const automaticRequestActionId = "AUTOMATIC_REQUEST";
 export const automaticRequestActionTitle = "Automatic requests";
-export const automaticRequestActionDescription = "Schedule one or more requests on specific events or moments";
+export const automaticRequestActionDescription = "Send one or more requests in response to specific events";
 
 class AutomaticRequestAction {
     constructor(store) {
