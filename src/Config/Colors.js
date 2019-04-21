@@ -1,15 +1,38 @@
-export const lightBlue = "#72DEFF";
-export const purple = "#B15DFF";
+export const red = "#E6261F";
 export const salmon = "#FF6859";
+export const yellow = "#F7D038";
+export const lightGreen = "#A3E048";
 export const green = "#1EB980";
-export const uclaBLue = "#577399";
-export const sunsetOrange = "#FE5F55";
-export const yellow = "#FFCF44";
 export const darkGreen = "#045D56";
-export const richBlack = "#0A122A";
-export const grey = "#a5adb2";
+export const uclaBlue = "#577399";
+export const grey = "#A5ADB2";
+export const lightBlue = "#72DEFF";
+export const blue = "#34BBE6";
+export const darkBlue = "#4355DB";
+export const darkPurple = "#B15DFF";
+export const purple = "#D23BE7";
+export const white = "#EFEFEF";
+export const black = "#000000";
 
-// export const colors = [lightBlue, purple, salmon, green, uclaBLue, sunsetOrange, yellow, darkGreen, richBlack, grey];
+export const colors = [
+    red,
+    salmon,
+    yellow,
+    lightGreen,
+    green,
+    darkGreen,
+    uclaBlue,
+    grey,
+    lightBlue,
+    blue,
+    darkBlue,
+    darkPurple,
+    purple,
+    white,
+    black
+];
+
+export const mainColorPalette = [salmon, green, lightBlue, purple, lightGreen, red, lightGreen, darkBlue, yellow, blue];
 
 const getRandomNumber = (min, max) => Math.floor(Math.random() * max) + min;
 const randomIndex = () => getRandomNumber(0, colors.length);
@@ -17,26 +40,8 @@ const randomIndex = () => getRandomNumber(0, colors.length);
 // return the same color for the index
 export const getColorByIndex = index => {
     const colorIndex = index % (colors.length - 1);
-
     return colors[colorIndex];
 };
 
 // random color from the color list
 export const getRandomColor = () => colors[randomIndex()];
-
-export const colors = [
-    "#e6261f",
-    "#FF6859",
-    "#FE5F55",
-    "#f7d038",
-    "#a3e048",
-    "#577399",
-    "#1EB980",
-    "#045D56",
-    "#72DEFF",
-    "#a5adb2",
-    "#34bbe6",
-    "#4355db",
-    "#B15DFF",
-    "#d23be7"
-];

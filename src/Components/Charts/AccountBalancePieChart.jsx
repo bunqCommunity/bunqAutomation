@@ -58,7 +58,7 @@ const AccountBalancePieChart = ({ theme, monetaryAccounts }) => {
 
             // push a color/label/data to the arrays
             monetaryAccounts.forEach((monetaryAccount, index) => {
-                tempBackgroundColors.push(getColorByIndex(index));
+                tempBackgroundColors.push(getColorByIndex(index * 6));
                 tempLabels.push(monetaryAccount.description);
                 tempData.push(monetaryAccount.balance.toUnit());
             });

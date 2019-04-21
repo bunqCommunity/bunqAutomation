@@ -18,6 +18,8 @@ export const STATUS_UNINITIALIZED = "STATUS_UNINITIALIZED";
 export const STATUS_PASSWORD_READY = "STATUS_PASSWORD_READY";
 export const STATUS_API_READY = "STATUS_API_READY";
 
+export const MONETARY_ACCOUNT_COLORS = "MONETARY_ACCOUNT_COLORS";
+
 class BunqAutomation {
     constructor(logger) {
         this.logger = logger;
@@ -169,18 +171,23 @@ class BunqAutomation {
      */
     async getMonetaryAccounts(keyIdentifier, options = {}) {
         await this.isApiReadyCheck(keyIdentifier);
+        const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
 
         const user = await this.getUser(keyIdentifier);
-
-        const client = this.bunqClientWrapper.getBunqJSClient(keyIdentifier);
         const monetaryAccounts = await client.api.monetaryAccount.list(user.id, options);
+
+        let monetaryAccountColors = await this.settingsStore.get(MONETARY_ACCOUNT_COLORS);
+        if (!monetaryAccountColors) monetaryAccountColors = {};
 
         const formattedAccounts = [];
         monetaryAccounts.forEach(monetaryAccount => {
             const accountType = Object.keys(monetaryAccount)[0];
             const monetaryAccountInfo = monetaryAccount[accountType];
-
             monetaryAccountInfo.accountType = accountType;
+
+            if (monetaryAccountColors[monetaryAccountInfo.id]) {
+                monetaryAccountInfo.color = monetaryAccountColors[monetaryAccountInfo.id];
+            }
 
             formattedAccounts.push(monetaryAccountInfo);
         });

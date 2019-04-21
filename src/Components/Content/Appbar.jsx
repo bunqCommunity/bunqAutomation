@@ -13,7 +13,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import WbSunnyIcon from "@material-ui/icons/WbSunny";
 import MoonIcon from "../Icons/Moon";
 
-import UserBunqImage from "../UserBunqImage";
+import UserBunqImage from "../AvatarBunqImage";
 
 import { toggleTheme } from "../../Redux/Actions/theme";
 import { logout as logoutAuth } from "../../Redux/Actions/authentication";
@@ -93,7 +93,7 @@ const Appbar = ({ title, classes, menuOpen, toggleMenu }) => {
         }
     }, [state.serverStatusChecked, state.serverStatus]);
 
-    let userComponent = <UserBunqImage className={classes.userImage} user={state.user} />;
+    let userComponent = <UserBunqImage className={classes.userImage} object={state.user} />;
     const hasNotifications = false;
     if (hasNotifications) {
         userComponent = (

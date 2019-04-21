@@ -16,6 +16,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import KeyIcon from "@material-ui/icons/VpnKey";
 import BubbleChartIcon from "@material-ui/icons/BubbleChart";
 import PlaylistAddCheck from "@material-ui/icons/PlaylistAddCheck";
+import MoneyIcon from "@material-ui/icons/AttachMoney";
 
 const drawerWidth = 240;
 
@@ -93,6 +94,7 @@ const MainMenu = ({ classes, open, toggleMenu, logout }) => {
             <List className={classes.list}>
                 <StandardMenuItem to="/" primary="Dashboard" Icon={HomeIcon} />
                 <StandardMenuItem to="/actions" primary="Actions" Icon={PlaylistAddCheck} />
+                <StandardMenuItem to="/monetary-accounts" primary="Monetary accounts" Icon={MoneyIcon} />
                 <StandardMenuItem to="/bunq-api-keys" primary="API keys" Icon={KeyIcon} />
 
                 <ListItem className={classes.listFiller} />

@@ -2,10 +2,10 @@ import React from "react";
 
 import BunqImage from "./BunqImage";
 
-export default ({ user, ...props }) => {
+export default ({ object, ...props }) => {
     let imageUuid = false;
-    if (user) {
-        const image = user.avatar.image[0];
+    if (object) {
+        const image = object.avatar.image[0];
         imageUuid = image.attachment_public_uuid;
     }
     return <BunqImage imageUuid={imageUuid} {...props} />;

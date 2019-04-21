@@ -6,6 +6,7 @@ export default class MonetaryAccount {
 
     // account type of this monetary account
     _accountType = null;
+    _color = null;
 
     // standard fields
     _id = null;
@@ -97,6 +98,9 @@ export default class MonetaryAccount {
      */
     get accountType() {
         return this._accountType;
+    }
+    get color() {
+        return this._color;
     }
     get raw() {
         return this._rawData;

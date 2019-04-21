@@ -15,6 +15,7 @@ import SandboxIcon from "@material-ui/icons/BugReport";
 import ArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 
 import Content from "../../Components/Content/Content";
+import PaperSectionHeader from "../../Components/PaperSectionHeader";
 
 import { getBunqApiKeys, selectBunqApiKey } from "../../Redux/Actions/bunq_api_keys";
 
@@ -60,9 +61,7 @@ const BunqApiKeys = ({ classes }) => {
         <Content title="bunqAutomation - API key overview">
             <Grid container spacing={16}>
                 <Grid item xs={12} md={6}>
-                    <Typography variant="h5" style={{ marginBottom: 16 }}>
-                        bunq API keys
-                    </Typography>
+                    <PaperSectionHeader style={{ marginBottom: 16 }} variant="h5" title="bunq API keys" />
 
                     <Paper style={{ padding: 12 }}>
                         <Typography variant="h5" onClick={() => dispatch(getBunqApiKeys())}>

@@ -16,6 +16,11 @@ const routes = [
         authenticated: true
     },
     {
+        path: "/monetary-accounts",
+        component: "MonetaryAccounts",
+        authenticated: true
+    },
+    {
         path: "/action/:actionId",
         component: "ActionDetails",
         authenticated: true

@@ -19,7 +19,7 @@ export const getActionStyle = actionType => {
         case "AUTOMATIC_REQUEST":
             return {
                 Icon: AccountCheck,
-                color: getColorByIndex(11)
+                color: getColorByIndex(9)
             };
         case "BALANCE_WARNING":
             return {
@@ -34,7 +34,7 @@ export const getActionStyle = actionType => {
         case "MUTATION_LOGGER":
             return {
                 Icon: ConsoleIcon,
-                color: getColorByIndex(9)
+                color: getColorByIndex(7)
             };
         case "SCHEDULED_REQUEST":
             return {
@@ -44,7 +44,7 @@ export const getActionStyle = actionType => {
         case "SPLIT_INCOMING_FUNDS":
             return {
                 Icon: CallSplitIcon,
-                color: getColorByIndex(12)
+                color: getColorByIndex(11)
             };
 
         default:

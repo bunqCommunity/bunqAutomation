@@ -1,5 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
+import classnames from "classnames";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -18,6 +19,9 @@ const styles = () => ({
     paperHeaderText: {
         marginLeft: 8
     },
+    paperHeaderTextNoIcon: {
+        marginLeft: 0
+    },
     paperHeaderFill: {
         flexGrow: 1
     },
@@ -26,18 +30,18 @@ const styles = () => ({
     }
 });
 
-const PaperSectionHeader = ({ classes, title, icon, secondaryIcon, loading, onClick, ...otherProps }) => {
+const PaperSectionHeader = ({ classes, variant, title, icon, secondaryIcon, loading, onClick, ...otherProps }) => {
     let SecondaryIcon = null;
     let Icon = null;
 
     if (secondaryIcon) {
         if (secondaryIcon !== true || !loading) {
             // if true, default to refresh
-            SecondaryIcon = secondaryIcon === true ? Refresh : secondaryIcon;
+            let SecondaryIconWrapper = secondaryIcon === true ? Refresh : secondaryIcon;
             // wrap the icon in svg icon with the onClick handler
             SecondaryIcon = (
                 <SvgIcon className={classes.paperHeaderSecondaryIcon} onClick={onClick} color="action">
-                    <SecondaryIcon />
+                    <SecondaryIconWrapper />
                 </SvgIcon>
             );
         } else {
@@ -57,7 +61,10 @@ const PaperSectionHeader = ({ classes, title, icon, secondaryIcon, loading, onCl
                 </SvgIcon>
             )}
 
-            <Typography className={classes.paperHeaderText} variant="subtitle1">
+            <Typography
+                className={classnames(classes.paperHeaderText, classes.paperHeaderTextNoIcon)}
+                variant={variant}
+            >
                 {title}
             </Typography>
 
@@ -75,6 +82,7 @@ PaperSectionHeader.defaultProps = {
     onClick: () => {},
     icon: false,
     loading: false,
+    variant: "subtitle1",
     secondaryIcon: false
 };
 

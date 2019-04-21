@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Button from "@material-ui/core/Button";
 
+import PaperSectionHeader from "../../Components/PaperSectionHeader";
 import Content from "../../Components/Content/Content";
 import FlowChartWithState from "../../Components/FlowChart/FlowChartWithState";
+
 import { actionConfigToFlowChart } from "../../Components/FlowChart/Dagre";
 
 const styles = theme => ({
@@ -68,6 +70,8 @@ const ActionDetails = ({ classes }) => {
 
     return (
         <Content title="bunqAutomation - Action test">
+            <PaperSectionHeader variant="h5" title="Action test" />
+
             <Button variant="outlined" style={{ margin: 8 }} color="primary" onClick={addFilter}>
                 Add new filter
             </Button>

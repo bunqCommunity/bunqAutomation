@@ -39,6 +39,10 @@ const AvailableActions = ({ classes, pipeline }) => {
         );
     }
 
+    const createNewAction = actionType => () => {
+        console.log(actionType);
+    };
+
     return Object.keys(pipeline.available.actions).map(actionType => {
         const actionInfo = pipeline.available.actions[actionType];
 
@@ -64,7 +68,12 @@ const AvailableActions = ({ classes, pipeline }) => {
                     </div>
 
                     <div className={classes.fillerDiv} />
-                    <Button className={classes.button} variant="outlined" color="primary">
+                    <Button
+                        className={classes.button}
+                        variant="outlined"
+                        color="primary"
+                        onClick={createNewAction(actionType)}
+                    >
                         <PlusIcon />
                     </Button>
                 </Paper>

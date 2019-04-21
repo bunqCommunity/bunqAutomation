@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { useMappedState, useDispatch } from "redux-react-hook";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 
 import Content from "../../Components/Content/Content";
-import AvailableActions from "../ActionDetails/AvailableActions";
-import ConfiguredActions from "../ActionDetails/ConfiguredActions";
+import PaperSectionHeader from "../../Components/PaperSectionHeader";
+
+import AvailableActions from "./AvailableActions";
+import ConfiguredActions from "./ConfiguredActions";
 
 import { loadconfiguredActions, loadAvailable } from "../../Redux/Actions/pipeline";
 
@@ -27,7 +28,7 @@ const mapState = state => ({
 const ActionOverview = ({ classes }) => {
     const dispatch = useDispatch();
     const { pipeline } = useMappedState(mapState);
-    console.log(pipeline);
+    // console.log(pipeline);
 
     useEffect(() => {
         dispatch(loadconfiguredActions());
@@ -40,16 +41,12 @@ const ActionOverview = ({ classes }) => {
                 <Grid item xs={12}>
                     <Grid container spacing={8}>
                         <Grid item xs={12}>
-                            <Typography variant="h5" className={classes.title}>
-                                Configured actions
-                            </Typography>
+                            <PaperSectionHeader className={classes.title} variant="h5" title="Configured actions" />
                         </Grid>
                         <ConfiguredActions pipeline={pipeline} />
 
                         <Grid item xs={12}>
-                            <Typography variant="h5" className={classes.title}>
-                                Available actions
-                            </Typography>
+                            <PaperSectionHeader className={classes.title} variant="h5" title="Available actions" />
                         </Grid>
                         <AvailableActions pipeline={pipeline} />
                     </Grid>

@@ -34,5 +34,21 @@ export default (app, opts, next) => {
         }
     });
 
+    app.route({
+        url: "/monetary-accounts/colors",
+        method: "POST",
+        schema: {
+            // summary: "get the currently stored bunq API data in memory",
+            // tags: ["server-management"],
+            security: swaggerSecuritySchema
+        },
+        preHandler: app.auth([app.apiKeyAuthentication]),
+        handler: async (request, reply) => {
+            const colors = request.body;
+
+            reply.send(colors);
+        }
+    });
+
     next();
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import SvgIcon from "@material-ui/core/SvgIcon/index";
+import SvgIcon from "@material-ui/core/SvgIcon";
 import ArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import CheckCircle from "@material-ui/icons/CheckCircle";
