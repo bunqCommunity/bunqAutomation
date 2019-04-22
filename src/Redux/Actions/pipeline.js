@@ -21,7 +21,7 @@ export const loadconfiguredActions = () => {
         dispatch(actionsIsLoading());
 
         window.apiClient
-            .get(`/automation/pipeline/active`)
+            .get(`/automation/pipeline/configured`)
             .then(data => {
                 dispatch(setconfiguredActions(data));
                 dispatch(actionsIsNotLoading());

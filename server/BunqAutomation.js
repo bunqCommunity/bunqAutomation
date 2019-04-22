@@ -61,6 +61,9 @@ class BunqAutomation {
 
         // check bunqClient inital startup status
         await this.loadStoredBunqApiKeys();
+
+        // check bunqClient inital startup status
+        await this.pipeline.startup(this.authentication.encryptionKey);
     }
 
     /**

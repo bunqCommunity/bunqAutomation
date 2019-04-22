@@ -5,8 +5,34 @@ class ActionConfigValidator {
         this.pipelineRef = pipelineRef;
     }
 
+    validateActionConfig(actionConfig) {
+        if (!actionConfig.action || !this.pipelineRef.actions[actionConfig.action]) {
+            actionConfig.validationErrors.push("Invalid or missing Action type");
+        }
+
+        if (typeof actionConfig.filters !== "undefined" && !isObject(actionConfig.filters)) {
+            actionConfig.validationErrors.push("Actionconfig 'Filters' is not an Object");
+            return false;
+        }
+        if (typeof actionConfig.outputs !== "undefined" && !isObject(actionConfig.outputs)) {
+            actionConfig.validationErrors.push("Actionconfig 'Outputs' is not an Object");
+            return false;
+        }
+
+        if (actionConfig.children && !Array.isArray(actionConfig.children)) {
+            actionConfig.validationErrors.push("Actionconfig 'Children'is not an Array");
+        } else {
+            this.validateChildrenIds(actionConfig, actionConfig.children);
+        }
+    }
+
     validateActionConfigOptions(actionConfig, action) {
         if (!actionConfig.options) return;
+
+        if (!action) {
+            actionConfig.validationErrors.push(`No valid Action given to check Options against`);
+            return;
+        }
 
         if (!isObject(actionConfig.options)) {
             actionConfig.validationErrors.push(`Options property is not an Object`);
@@ -73,14 +99,18 @@ class ActionConfigValidator {
         Object.keys(actionConfig.filters).forEach(filterId => {
             const filter = actionConfig.filters[filterId];
 
+            if (filter.children && !Array.isArray(filter.children)) {
+                actionConfig.validationErrors.push(`Filter 'children' is not an Array  for '${filterId}'`);
+            } else {
+                this.validateChildrenIds(actionConfig, filter.children);
+            }
+
             if (!this.pipelineRef.filters[filter.type]) {
-                actionConfig.validationErrors.push(`Invalid or missing Filter type for index '${filterId}'`);
+                actionConfig.validationErrors.push(`Invalid or missing Filter type for '${filterId}'`);
             }
 
             if (!Array.isArray(filter.filterValues)) {
-                actionConfig.validationErrors.push(
-                    `The given 'filterValues' option is not an array for index '${filterId}'`
-                );
+                actionConfig.validationErrors.push(`The given 'filterValues' option is not an array for '${filterId}'`);
                 return;
             }
         });
@@ -98,10 +128,10 @@ class ActionConfigValidator {
             const output = actionConfig.outputs[outputId];
 
             if (!this.pipelineRef.outputs[output.type]) {
-                actionConfig.validationErrors.push(`Invalid or missing Output type for index '${outputId}'`);
+                actionConfig.validationErrors.push(`Invalid or missing Output type for '${outputId}'`);
             }
             if (!this.pipelineRef.schedules[output.schedule.type]) {
-                actionConfig.validationErrors.push(`Invalid or missing Schedule type for index '${outputId}'`);
+                actionConfig.validationErrors.push(`Invalid or missing Schedule type for '${outputId}'`);
             }
         });
     }
@@ -114,6 +144,20 @@ class ActionConfigValidator {
         return true;
     }
 
+    validateChildrenIds(actionConfig, childrenIdList) {
+        childrenIdList.forEach(childId => {
+            const isFilter = Object.keys(actionConfig.filters).some(filterId => {
+                return filterId === childId;
+            });
+            const isOutput = Object.keys(actionConfig.outputs).some(outputId => {
+                return outputId === childId;
+            });
+
+            if (!isFilter && !isOutput) {
+                actionConfig.validationErrors.push(`Output with ID: ${childId} not found`);
+            }
+        });
+    }
 }
 
 export default ActionConfigValidator;

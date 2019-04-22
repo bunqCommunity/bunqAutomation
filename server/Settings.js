@@ -31,8 +31,6 @@ class Settings {
             storedColors[accountId] = monetaryAccountColors[accountId];
         });
 
-        console.log(storedColors);
-
         await this.settingsStore.set(MONETARY_ACCOUNT_COLORS, storedColors);
     }
 

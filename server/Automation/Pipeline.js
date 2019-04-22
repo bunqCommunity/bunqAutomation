@@ -21,11 +21,23 @@ class Pipeline {
     }
 
     async startup() {
-        const storedConfiguredActions = await this.pipelineStore.get(CONFIGURED_ACTIONS_LOCATION);
+        let storedConfiguredActions = await this.pipelineStore.get(CONFIGURED_ACTIONS_LOCATION);
+        if (!storedConfiguredActions) storedConfiguredActions = {};
+
+        Object.keys(storedConfiguredActions).forEach(uuid => {
+            const actionConfig = this.actionConfigFromJson(storedConfiguredActions[uuid]);
+
+            this.configuredActions[uuid] = actionConfig;
+        });
     }
 
-    updateAction(actionConfig) {
-        return actionConfig;
+    async configureAction(actionConfig) {
+        // TODO update list
+    }
+    async removeAction(uuid) {
+        delete this.configuredActions[uuid];
+
+        // TODO update list
     }
 
     actionConfigFromJson(config) {
@@ -39,18 +51,14 @@ class Pipeline {
         actionConfig.options = config.options || {};
         actionConfig.filters = config.filters || {};
         actionConfig.outputs = config.outputs || {};
+        actionConfig.children = config.children || [];
 
-        // TODO check if children IDs exist
-        actionConfig.children = config.children;
-
-        if (!actionConfig.action || !this.actions[actionConfig.action]) {
-            actionConfig.validationErrors.push("Invalid or missing Action type");
-        } else {
+        const actionConfigValidation = this.validator.validateActionConfig(actionConfig);
+        if (actionConfigValidation) {
             this.validator.validateActionConfigOptions(actionConfig, this.actions[actionConfig.action]);
+            this.validator.validateActionConfigFilters(actionConfig);
+            this.validator.validateActionConfigOutputs(actionConfig);
         }
-
-        this.validator.validateActionConfigFilters(actionConfig);
-        this.validator.validateActionConfigOutputs(actionConfig);
 
         return actionConfig;
     }

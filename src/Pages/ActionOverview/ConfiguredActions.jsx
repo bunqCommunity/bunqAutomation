@@ -15,7 +15,7 @@ const ActionOverview = ({ classes, pipeline }) => {
         return (
             <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                    <Typography variant="body1">No active actions</Typography>
+                    <Typography variant="body1">No configured actions</Typography>
                 </Paper>
             </Grid>
         );

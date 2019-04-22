@@ -23,11 +23,11 @@ export default (app, opts, next) => {
     );
 
     app.get(
-        "/active",
+        "/configured",
         {
             schema: {
                 tags: ["automation"],
-                summary: "List the currently active actions",
+                summary: "List the currently configured actions",
                 security: swaggerSecuritySchema
             }
         },
@@ -43,7 +43,7 @@ export default (app, opts, next) => {
         {
             schema: {
                 tags: ["automation"],
-                summary: "List the currently active actions",
+                summary: "History of executed actions",
                 security: swaggerSecuritySchema
             }
         },
