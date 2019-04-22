@@ -38,15 +38,17 @@ export default (app, opts, next) => {
         url: "/monetary-accounts/colors",
         method: "POST",
         schema: {
-            // summary: "get the currently stored bunq API data in memory",
-            // tags: ["server-management"],
+            summary: "change the color setting for the associated account IDs",
+            tags: ["server-management"],
             security: swaggerSecuritySchema
         },
         preHandler: app.auth([app.apiKeyAuthentication]),
         handler: async (request, reply) => {
             const colors = request.body;
 
-            reply.send(colors);
+            await bunqAutomation.settings.setMonetaryAccountColors(colors);
+
+            reply.send(true);
         }
     });
 

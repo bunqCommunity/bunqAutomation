@@ -1,6 +1,5 @@
 import Pipeline from "./Automation/Pipeline";
 import FileStore from "./StorageHandlers/FileStore";
-import LevelDb from "./StorageHandlers/LevelDb";
 
 import {
     BunqJSClientNotReadyError,
@@ -12,21 +11,20 @@ import BunqClientWrapper from "./BunqClientWrapper";
 import Authentication from "./Security/Authentication";
 import SocketServer from "./SocketServer";
 import NotificationService from "./NotificationService";
+import Settings from "./Settings";
 
 export const STATUS_FIRST_INSTALL = "STATUS_FIRST_INSTALL";
 export const STATUS_UNINITIALIZED = "STATUS_UNINITIALIZED";
 export const STATUS_PASSWORD_READY = "STATUS_PASSWORD_READY";
 export const STATUS_API_READY = "STATUS_API_READY";
 
-export const MONETARY_ACCOUNT_COLORS = "MONETARY_ACCOUNT_COLORS";
-
 class BunqAutomation {
     constructor(logger) {
         this.logger = logger;
         this.fileStore = new FileStore();
-        this.settingsStore = new LevelDb("bunq-automation-settings");
 
         this.socketServer = new SocketServer(this);
+        this.settings = new Settings(this.logger);
         this.pipeline = new Pipeline(this.logger);
         this.authentication = new Authentication(this.logger);
         this.bunqClientWrapper = new BunqClientWrapper(this.logger);
@@ -176,8 +174,7 @@ class BunqAutomation {
         const user = await this.getUser(keyIdentifier);
         const monetaryAccounts = await client.api.monetaryAccount.list(user.id, options);
 
-        let monetaryAccountColors = await this.settingsStore.get(MONETARY_ACCOUNT_COLORS);
-        if (!monetaryAccountColors) monetaryAccountColors = {};
+        const monetaryAccountColors = await this.settings.getMonetaryAccountColors();
 
         const formattedAccounts = [];
         monetaryAccounts.forEach(monetaryAccount => {
@@ -185,9 +182,8 @@ class BunqAutomation {
             const monetaryAccountInfo = monetaryAccount[accountType];
             monetaryAccountInfo.accountType = accountType;
 
-            if (monetaryAccountColors[monetaryAccountInfo.id]) {
-                monetaryAccountInfo.color = monetaryAccountColors[monetaryAccountInfo.id];
-            }
+            const accountColor = monetaryAccountColors[monetaryAccountInfo.id];
+            if (accountColor) monetaryAccountInfo.color = accountColor;
 
             formattedAccounts.push(monetaryAccountInfo);
         });
@@ -249,7 +245,12 @@ class BunqAutomation {
     async import() {}
 
     async reset() {
-        await Promise.all([this.pipeline.reset(), this.bunqClientWrapper.reset(), this.authentication.reset()]);
+        await Promise.all([
+            this.pipeline.reset(),
+            this.bunqClientWrapper.reset(),
+            this.authentication.reset(),
+            this.settings.reset()
+        ]);
     }
 }
 

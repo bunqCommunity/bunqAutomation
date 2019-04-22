@@ -61,9 +61,21 @@ const ColorPickerSection = withStyles(colorPickerStyles)(({ classes, monetaryAcc
         if (!open) setOpen(true);
     };
     const closeColor = () => {
+        if (color !== monetaryAccount.color) {
+            updateApiColor();
+        }
         if (open) setOpen(false);
     };
     const onChange = color => setColor(color.hex);
+
+    const updateApiColor = () => {
+        window.apiClient
+            .post("/management/monetary-accounts/colors", {
+                [monetaryAccount.id]: color
+            })
+            .then(() => {})
+            .catch(console.error);
+    };
 
     return (
         <Button

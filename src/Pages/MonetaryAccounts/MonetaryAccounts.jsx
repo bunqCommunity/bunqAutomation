@@ -21,7 +21,12 @@ const MonetaryAccounts = ({ classes }) => {
                 return monetaryAccount.status === "ACTIVE";
             })
             .map(monetaryAccount => {
-                return <MonetaryAccountItem key={monetaryAccount.id} monetaryAccount={monetaryAccount} />;
+                return (
+                    <MonetaryAccountItem
+                        key={monetaryAccount.id + monetaryAccount.color}
+                        monetaryAccount={monetaryAccount}
+                    />
+                );
             });
     }
 

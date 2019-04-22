@@ -32,7 +32,10 @@ export const colors = [
     black
 ];
 
-export const mainColorPalette = [salmon, green, lightBlue, purple, lightGreen, red, lightGreen, darkBlue, yellow, blue];
+/**
+ * Prefered color palette for
+ */
+export const mainColors = [salmon, green, lightBlue, purple, lightGreen, red, lightGreen, darkBlue, yellow, blue];
 
 const getRandomNumber = (min, max) => Math.floor(Math.random() * max) + min;
 const randomIndex = () => getRandomNumber(0, colors.length);
