@@ -103,5 +103,23 @@ export default (app, opts, next) => {
         }
     );
 
+    app.get(
+        "/payment-test",
+        {
+            schema: {
+                tags: ["automation"],
+                summary: "test route 2",
+                security: swaggerSecuritySchema
+            }
+        },
+        async (request, reply) => {
+            const paymentLoader = app.bunqAutomation.paymentLoader;
+
+            const paymentList = await paymentLoader.load("ea8ad596975f32fe78da0eae57aa2094", { maximumCount: 50 });
+
+            reply.send(paymentList);
+        }
+    );
+
     next();
 };

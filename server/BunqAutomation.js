@@ -7,11 +7,12 @@ import {
     NoBunqApiKeyIdentifierError,
     NoPasswordSetError
 } from "./Errors";
-import BunqClientWrapper from "./BunqClientWrapper";
 import Authentication from "./Security/Authentication";
-import SocketServer from "./SocketServer";
+import BunqClientWrapper from "./BunqClientWrapper";
 import NotificationService from "./NotificationService";
+import PaymentLoader from "./PaymentLoader";
 import Settings from "./Settings";
+import SocketServer from "./SocketServer";
 
 export const STATUS_FIRST_INSTALL = "STATUS_FIRST_INSTALL";
 export const STATUS_UNINITIALIZED = "STATUS_UNINITIALIZED";
@@ -24,6 +25,7 @@ class BunqAutomation {
         this.fileStore = new FileStore();
 
         this.socketServer = new SocketServer(this);
+        this.paymentLoader = new PaymentLoader(this);
         this.settings = new Settings(this.logger);
         this.pipeline = new Pipeline(this.logger);
         this.authentication = new Authentication(this.logger);
@@ -239,7 +241,6 @@ class BunqAutomation {
         }
     }
     get status() {
-        console.log("bunqAutomation.status = ", this._status);
         return this._status;
     }
 

@@ -26,8 +26,14 @@ class PaymentLoader {
     }
 
     async loadPayments(keyIdentifier, monetaryAccountId, options = {}) {
+        let maximumCount = options.maximumCount;
+        if (typeof maximumCount !== "number") maximumCount = 1000000;
+
+        let initialCountValue = maximumCount && maximumCount >= 200 ? 200 : maximumCount;
+        let paymentCounter = 0;
+
         const apiOptions = {
-            count: options.count || 200
+            count: options.count || initialCountValue
         };
         if (options.newer_id) {
             apiOptions.newer_id = options.newer_id;
@@ -42,9 +48,22 @@ class PaymentLoader {
 
         let isDone = false;
         while (isDone === false) {
-            // const newPayments = await bunqJSClient.api.payment.list(user.id, monetaryAccountId, apiOptions);
-            //
-            // paymentList = paymentList.concat(newPayments);
+            // get new payments for this round and add to the list
+            const newPayments = await bunqJSClient.api.payment.list(user.id, monetaryAccountId, apiOptions);
+            paymentList = paymentList.concat(newPayments);
+
+            // increase payment counter
+            paymentCounter += newPayments.length;
+
+            if (newPayments.length === apiOptions.count && paymentList[0]) {
+                // get oldest id
+                apiOptions.older_id = paymentList[paymentList.length - 1].Payment.id;
+
+                // check if max count is reached
+                if (paymentCounter >= maximumCount) isDone = true;
+            } else {
+                isDone = true;
+            }
         }
 
         return paymentList;

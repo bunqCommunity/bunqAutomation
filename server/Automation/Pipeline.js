@@ -16,6 +16,9 @@ class Pipeline {
         this.outputs = {};
         this.schedules = {};
 
+        this.lastCheckedDate = null;
+        this.lastCheckedPaymentId = null;
+
         // active modules configured by the user
         this.configuredActions = {};
     }
