@@ -3,7 +3,7 @@ This project should become a self hosted, easy to install and user friendly auto
 
 Very much under development and NOT ready to be used for anything but sandbox testing!
 
-Feel free to discuss things on [Telegram](https://t.me/bunqCommunity) or [create an issue](https://github.com/bunqCommunity/bunqAutomation/issues/new)
+Feel free to discuss things on [Telegram](https://t.me/bunqCommunity) or [create an issue](https://github.com/bunqCommunity/bunqAutomation/issues/new).
 
 ## Project goals
 
