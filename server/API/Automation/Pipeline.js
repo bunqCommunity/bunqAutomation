@@ -115,7 +115,9 @@ export default (app, opts, next) => {
         async (request, reply) => {
             const paymentLoader = app.bunqAutomation.paymentLoader;
 
-            const paymentList = await paymentLoader.load("ea8ad596975f32fe78da0eae57aa2094", { maximumCount: 50 });
+            const paymentList = await paymentLoader.loadMonetaryAccounts("ea8ad596975f32fe78da0eae57aa2094", false, {
+                maximumCount: 5
+            });
 
             reply.send(paymentList);
         }

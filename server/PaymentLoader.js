@@ -2,34 +2,65 @@ class PaymentLoader {
     constructor(bunqAutomation) {
         this.logger = bunqAutomation.logger;
         this.bunqAutomation = bunqAutomation;
+
+        this.paymentData = {};
     }
 
-    async load(keyIdentifier, options = {}, monetaryAccountIds = false) {
-        let monetaryAccounts = await this.getMonetaryAccounts(keyIdentifier);
+    async storePaymentData() {}
+    async loadPaymentData() {}
 
-        if (Array.isArray(monetaryAccountIds) && monetaryAccountIds.length > 0) {
-            monetaryAccounts = monetaryAccounts.filter(monetaryAccount => {
-                return monetaryAccountIds.includes(monetaryAccount.id);
-            });
+    async loadMonetaryAccounts(
+        keyIdentifier,
+        monetaryAccountIds = false,
+        options = { cacheOnly: false, loadNewer: false }
+    ) {
+        if (typeof options.cacheOnly === "undefined") options.cacheOnly = false;
+        if (typeof options.loadNewer === "undefined") options.loadNewer = false;
+        if (typeof options.maximumCount === "undefined") options.maximumCount = 1000000;
+
+        // don't update, return current data
+        if (options.cacheOnly) return this.paymentData;
+
+        // get the required ids
+        if (!monetaryAccountIds) {
+            const monetaryAccounts = await this.getMonetaryAccounts(keyIdentifier);
+
+            monetaryAccountIds = monetaryAccounts.map(monetaryAccount => monetaryAccount.id);
+        } else if (!Array.isArray(monetaryAccountIds)) {
+            throw new Error("MonetaryAccountIds not an array or false");
         }
 
-        const paymentData = {};
+        // start a fetch queue for each monetary account
         await Promise.all(
-            monetaryAccounts.map(async monetaryAccount => {
-                const payments = await this.loadPayments(keyIdentifier, monetaryAccount.id);
+            monetaryAccountIds.map(async monetaryAccountId => {
+                let apiOptions = {
+                    maximumCount: options.maximumCount
+                };
+                if (!this.paymentData[monetaryAccountId]) {
+                    this.paymentData[monetaryAccountId] = {};
+                } else if (options.loadNewer) {
+                    const newestId = Object.keys(this.paymentData[monetaryAccountId])[0];
 
-                paymentData[monetaryAccount.id] = payments;
+                    if (newestId) apiOptions.newer_id = newestId;
+                }
+
+                await this.loadMonetaryAccount(keyIdentifier, monetaryAccountId, apiOptions);
             })
         );
 
-        return paymentData;
+        return this.paymentData;
     }
 
-    async loadPayments(keyIdentifier, monetaryAccountId, options = {}) {
-        let maximumCount = options.maximumCount;
-        if (typeof maximumCount !== "number") maximumCount = 1000000;
+    async loadMonetaryAccount(
+        keyIdentifier,
+        monetaryAccountId,
+        options = { newer_id: false, cacheOnly: false, loadNewer: false }
+    ) {
+        if (typeof options.cacheOnly === "undefined") options.cacheOnly = false;
+        if (typeof options.loadNewer === "undefined") options.loadNewer = false;
+        if (typeof options.maximumCount === "undefined") options.maximumCount = 1000000;
 
-        let initialCountValue = maximumCount && maximumCount >= 200 ? 200 : maximumCount;
+        let initialCountValue = options.maximumCount >= 200 ? 200 : options.maximumCount;
         let paymentCounter = 0;
 
         const apiOptions = {
@@ -39,6 +70,11 @@ class PaymentLoader {
             apiOptions.newer_id = options.newer_id;
         } else if (options.older_id) {
             apiOptions.older_id = options.older_id;
+        } else if (options.loadNewer && this.paymentData[monetaryAccountId]) {
+            // get newest id from existing list
+            const newestId = Object.keys(this.paymentData[monetaryAccountId])[0];
+
+            if (newestId) apiOptions.newer_id = newestId;
         }
 
         const user = await this.bunqAutomation.getUser(keyIdentifier, false);
@@ -60,13 +96,33 @@ class PaymentLoader {
                 apiOptions.older_id = paymentList[paymentList.length - 1].Payment.id;
 
                 // check if max count is reached
-                if (paymentCounter >= maximumCount) isDone = true;
+                if (paymentCounter >= options.maximumCount) isDone = true;
             } else {
                 isDone = true;
             }
         }
 
-        return paymentList;
+        // turn array into an object
+        const newPayments = {};
+        paymentList.forEach(payment => {
+            const paymentInfo = payment.Payment;
+            newPayments[paymentInfo.id] = paymentInfo;
+        });
+
+        // sort the payment list
+        const sortedPaymentList = {};
+        Object.keys(newPayments)
+            .sort((a, b) => {
+                return a > b ? -1 : 1;
+            })
+            .forEach(paymentId => {
+                sortedPaymentList[paymentId] = newPayments[paymentId];
+            });
+
+        // set payment list for the monetary account id
+        this.paymentData[monetaryAccountId] = sortedPaymentList;
+
+        return sortedPaymentList;
     }
 
     async getMonetaryAccounts(keyIdentifier) {
