@@ -41,9 +41,12 @@ class PaymentLoader {
                     maximumCount: options.maximumCount
                 };
                 if (!this.paymentData[monetaryAccountId]) {
-                    this.paymentData[monetaryAccountId] = {};
+                    this.paymentData[monetaryAccountId] = {
+                        lastUpdated: null,
+                        data: {}
+                    };
                 } else if (options.loadNewer) {
-                    const newestId = Object.keys(this.paymentData[monetaryAccountId])[0];
+                    const newestId = Object.keys(this.paymentData[monetaryAccountId]).data[0];
 
                     if (newestId) apiOptions.newer_id = newestId;
                 }
@@ -76,7 +79,7 @@ class PaymentLoader {
             apiOptions.older_id = options.older_id;
         } else if (options.loadNewer && this.paymentData[monetaryAccountId]) {
             // get newest id from existing list
-            const newestId = Object.keys(this.paymentData[monetaryAccountId])[0];
+            const newestId = Object.keys(this.paymentData[monetaryAccountId].data)[0];
 
             if (newestId) apiOptions.newer_id = newestId;
         }
@@ -124,7 +127,7 @@ class PaymentLoader {
             });
 
         // set payment list for the monetary account id
-        this.paymentData[monetaryAccountId] = sortedPaymentList;
+        this.paymentData[monetaryAccountId] = { data: sortedPaymentList, lastUpdated: new Date() };
 
         return sortedPaymentList;
     }
