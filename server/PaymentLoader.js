@@ -25,7 +25,11 @@ class PaymentLoader {
         if (!monetaryAccountIds) {
             const monetaryAccounts = await this.getMonetaryAccounts(keyIdentifier);
 
-            monetaryAccountIds = monetaryAccounts.map(monetaryAccount => monetaryAccount.id);
+            monetaryAccountIds = monetaryAccounts
+                .filter(monetaryAccount => {
+                    return monetaryAccount.status === "ACTIVE";
+                })
+                .map(monetaryAccount => monetaryAccount.id);
         } else if (!Array.isArray(monetaryAccountIds)) {
             throw new Error("MonetaryAccountIds not an array or false");
         }

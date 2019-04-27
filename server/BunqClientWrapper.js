@@ -19,17 +19,11 @@ class BunqClientWrapper {
         this.bunqApiKeyStorage = new LevelDb("bunq-automation-bunq-api-keys");
 
         // create an empty client to do api calls to non-authenticated endpoints E.G. create sandbox user
-        this.genericBunqJSClient = new BunqJSClient(this.bunqJSClientStorage);
+        this.genericBunqJSClient = new BunqJSClient(this.bunqJSClientStorage, this.logger);
         this.requestLimitFactory = this.genericBunqJSClient.ApiAdapter.RequestLimitFactory;
 
         // a list of bunq API keys with the unique key as their
         this.bunqApiKeyList = {};
-    }
-
-    async startup(encryptionKey = false) {
-        if (encryptionKey) {
-            await this.loadStoredBunqApiKeys(encryptionKey);
-        }
     }
 
     /**
@@ -39,6 +33,7 @@ class BunqClientWrapper {
     getBunqJSClient(identifier) {
         if (this.bunqApiKeyList[identifier]) {
             const selectedBunqApiKey = this.bunqApiKeyList[identifier];
+
             if (selectedBunqApiKey.bunqJSClient) {
                 return selectedBunqApiKey.bunqJSClient;
             }

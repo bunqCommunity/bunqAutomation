@@ -19,6 +19,8 @@ export const STATUS_UNINITIALIZED = "STATUS_UNINITIALIZED";
 export const STATUS_PASSWORD_READY = "STATUS_PASSWORD_READY";
 export const STATUS_API_READY = "STATUS_API_READY";
 
+export const PROXY_SETTINGS = "PROXY_SETTINGS";
+
 class BunqAutomation {
     constructor(logger) {
         this.logger = logger;
@@ -43,8 +45,9 @@ class BunqAutomation {
         // start the socket server and bind it to the http server
         await this.socketServer.setup(httpServer);
 
-        // check authentication inital startup status
+        // check startup methods
         await this.authentication.startup();
+        await this.settings.startup();
 
         if (this.authentication.hasStoredPassword) {
             // if a previous password has been saved, set uninitialzed status (versus first install)
@@ -63,6 +66,7 @@ class BunqAutomation {
 
         // check bunqClient inital startup status
         await this.loadStoredBunqApiKeys();
+        await this.loadStoredProxyDetails();
 
         // check bunqClient inital startup status
         await this.pipeline.startup(this.authentication.encryptionKey);
@@ -101,8 +105,11 @@ class BunqAutomation {
      */
     async setPassword(password) {
         const result = await this.authentication.setPassword(password);
+
+        this.settings.encryptionKey = this.authentication.encryptionKey;
         if (result) this.status = STATUS_PASSWORD_READY;
     }
+
     async addBunqApiKey(bunqApiKey, environment, deviceName) {
         const result = await this.bunqClientWrapper.addBunqApiKey(
             this.authentication.encryptionKey,
@@ -115,6 +122,17 @@ class BunqAutomation {
     async loadStoredBunqApiKeys() {
         const result = await this.bunqClientWrapper.loadStoredBunqApiKeys(this.authentication.encryptionKey);
         if (result) this.status = STATUS_API_READY;
+    }
+
+    async loadStoredProxyDetails() {
+        const proxySettings = await this.settings.getValue(PROXY_SETTINGS);
+        if (proxySettings) {
+            this.bunqClientWrapper.requestLimitFactory.setEnabledProxies(proxySettings);
+        }
+    }
+    async setProxyDetails(proxyDetails) {
+        await this.settings.setValue(PROXY_SETTINGS, proxyDetails);
+        this.bunqClientWrapper.requestLimitFactory.setEnabledProxies(proxyDetails);
     }
 
     // wraps around the bunqclientwrapper to get the active client
@@ -235,10 +253,8 @@ class BunqAutomation {
     // wrappers around the status property to update connected clients
     set status(status) {
         this._status = status;
-        if (this.socketServer) {
-            // emit the new status to all socket clients
-            this.socketServer.emit("status", this.status);
-        }
+        // emit the new status to all socket clients
+        if (this.socketServer) this.socketServer.emit("status", this.status);
     }
     get status() {
         return this._status;

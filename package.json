@@ -18,7 +18,7 @@
         "prettier": "./node_modules/.bin/prettier --write \"+(tests|src|server)/**/**.+(ts|js|jsx|scss|css)\""
     },
     "dependencies": {
-        "@bunq-community/bunq-js-client": "^0.40.2",
+        "@bunq-community/bunq-js-client": "^0.41.0",
         "@material-ui/core": "^3.9.3",
         "@material-ui/icons": "^3.0.2",
         "@mrblenny/react-flow-chart": "^0.0.5",

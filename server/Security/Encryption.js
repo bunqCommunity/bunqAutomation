@@ -13,9 +13,6 @@ const validateIterationCount = rounds => {
     return usedIterations;
 };
 
-// Amount of pbkdf2 iterations to be used
-const PBKDF2_ROUNDS = validateIterationCount(process.env.PBKDF2_ROUNDS);
-
 export default class Encryption {
     async encrypt(data, key, iv) {
         const string = JSON.stringify(data);

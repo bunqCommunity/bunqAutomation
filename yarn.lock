@@ -919,18 +919,17 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@bunq-community/bunq-js-client@^0.40.2":
-  version "0.40.2"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.40.2.tgz#bff6baac68ffe21a25389a301560897859180125"
-  integrity sha512-3nU7d6NpYBsuEdBAbR2ZfWqOz97Gj/WZ3UOpNNyBhgN1AkBRQ5/1wgC2RBMHX41gG37rZ/OMnX0PTvFrDrIR1Q==
+"@bunq-community/bunq-js-client@^0.41.0":
+  version "0.41.0"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.41.0.tgz#bdde5347524f777c702423dfd9892f2b3884bade"
+  integrity sha512-ptAT8RfLYjQBdze1hXrPZYJJc74Bzp5NhBhc1QTC2Am+1x1z+dsN3b/5f3SyDjVcrcp5ORAvju9KqExTcI1Okg==
   dependencies:
     awaiting "^3.0.0"
-    axios "^0.16.2"
-    es6-promise-promise "^1.0.0"
+    axios "^0.18.0"
     loglevel "^1.4.1"
     node-forge "^0.7.1"
+    socks-proxy-agent "^4.0.2"
     store "^2.0.12"
-    typescript "^2.5.3"
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
@@ -4336,18 +4335,6 @@ es-to-primitive@^1.2.0:
     is-callable "^1.1.4"
     is-date-object "^1.0.1"
     is-symbol "^1.0.2"
-
-es6-promise-promise@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/es6-promise-promise/-/es6-promise-promise-1.0.0.tgz#3a91f235fdd2b08c4492b5734dfd1f417289b994"
-  integrity sha1-OpHyNf3SsIxEkrVzTf0fQXKJuZQ=
-  dependencies:
-    es6-promise "^3.2.1"
-
-es6-promise@^3.2.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-3.3.1.tgz#a08cdde84ccdbf34d027a1451bc91d4bcd28a613"
-  integrity sha1-oIzd6EzNvzTQJ6FFG8kdS80ophM=
 
 es6-promise@^4.0.3:
   version "4.2.6"
@@ -11638,7 +11625,7 @@ sockjs@0.3.19:
     faye-websocket "^0.10.0"
     uuid "^3.0.1"
 
-socks-proxy-agent@^4.0.1:
+socks-proxy-agent@^4.0.1, socks-proxy-agent@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/socks-proxy-agent/-/socks-proxy-agent-4.0.2.tgz#3c8991f3145b2799e70e11bd5fbc8b1963116386"
   integrity sha512-NT6syHhI9LmuEMSK6Kd2V7gNv5KFZoLE7V5udWmn0de+3Mkj3UMA/AJPLyeNUVmElCurSHtUdM3ETpR3z770Wg==
@@ -12528,11 +12515,6 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
-
-typescript@^2.5.3:
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
-  integrity sha512-Gr4p6nFNaoufRIY4NMdpQRNmgxVIGMs4Fcu/ujdYk3nAZqk7supzBE9idmvfZIlH/Cuj//dvi+019qEue9lV0w==
 
 ua-parser-js@^0.7.18:
   version "0.7.19"
