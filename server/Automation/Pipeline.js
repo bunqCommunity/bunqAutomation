@@ -39,7 +39,6 @@ class Pipeline {
     }
     async removeAction(uuid) {
         delete this.configuredActions[uuid];
-
         // TODO update list
     }
 

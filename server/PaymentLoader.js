@@ -18,8 +18,10 @@ class PaymentLoader {
         if (typeof options.loadNewer === "undefined") options.loadNewer = false;
         if (typeof options.maximumCount === "undefined") options.maximumCount = 1000000;
 
+        if (!this.paymentData[keyIdentifier]) this.paymentData[keyIdentifier] = {};
+
         // don't update, return current data
-        if (options.cacheOnly) return this.paymentData;
+        if (options.cacheOnly) return this.paymentData[keyIdentifier];
 
         // get the required ids
         if (!monetaryAccountIds) {
@@ -40,13 +42,13 @@ class PaymentLoader {
                 let apiOptions = {
                     maximumCount: options.maximumCount
                 };
-                if (!this.paymentData[monetaryAccountId]) {
-                    this.paymentData[monetaryAccountId] = {
+                if (!this.paymentData[keyIdentifier][monetaryAccountId]) {
+                    this.paymentData[keyIdentifier][monetaryAccountId] = {
                         lastUpdated: null,
                         data: {}
                     };
                 } else if (options.loadNewer) {
-                    const newestId = Object.keys(this.paymentData[monetaryAccountId]).data[0];
+                    const newestId = Object.keys(this.paymentData[keyIdentifier][monetaryAccountId]).data[0];
 
                     if (newestId) apiOptions.newer_id = newestId;
                 }
@@ -55,7 +57,7 @@ class PaymentLoader {
             })
         );
 
-        return this.paymentData;
+        return this.paymentData[keyIdentifier];
     }
 
     async loadMonetaryAccount(
@@ -67,6 +69,8 @@ class PaymentLoader {
         if (typeof options.loadNewer === "undefined") options.loadNewer = false;
         if (typeof options.maximumCount === "undefined") options.maximumCount = 1000000;
 
+        if (!this.paymentData[keyIdentifier]) this.paymentData[keyIdentifier] = {};
+
         let initialCountValue = options.maximumCount >= 200 ? 200 : options.maximumCount;
         let paymentCounter = 0;
 
@@ -77,9 +81,9 @@ class PaymentLoader {
             apiOptions.newer_id = options.newer_id;
         } else if (options.older_id) {
             apiOptions.older_id = options.older_id;
-        } else if (options.loadNewer && this.paymentData[monetaryAccountId]) {
+        } else if (options.loadNewer && this.paymentData[keyIdentifier][monetaryAccountId]) {
             // get newest id from existing list
-            const newestId = Object.keys(this.paymentData[monetaryAccountId].data)[0];
+            const newestId = Object.keys(this.paymentData[keyIdentifier][monetaryAccountId].data)[0];
 
             if (newestId) apiOptions.newer_id = newestId;
         }
@@ -127,7 +131,7 @@ class PaymentLoader {
             });
 
         // set payment list for the monetary account id
-        this.paymentData[monetaryAccountId] = { data: sortedPaymentList, lastUpdated: new Date() };
+        this.paymentData[keyIdentifier][monetaryAccountId] = { data: sortedPaymentList, lastUpdated: new Date() };
 
         return sortedPaymentList;
     }
