@@ -6,8 +6,16 @@ class PaymentLoader {
         this.paymentData = {};
     }
 
-    async storePaymentData() {}
-    async loadPaymentData() {}
+    async storePaymentData(keyIdentifier) {
+        const storageKey = `PAYMENT_DATA:${keyIdentifier}`;
+
+        this.bunqAutomation.settings.set(storageKey, this.paymentData);
+    }
+    async loadPaymentData(keyIdentifier) {
+        const storageKey = `PAYMENT_DATA:${keyIdentifier}`;
+
+        this.bunqAutomation.settings.get(storageKey);
+    }
 
     async loadMonetaryAccounts(
         keyIdentifier,
