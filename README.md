@@ -27,29 +27,42 @@ Since this project should be useable for less experienced users, we can't guaran
  - 2 factor authentication for logins and optionally to confirm "dangerous" change
  - Share events or certain config files by url with optional expiry date.
 
-## Docker usage
+<!--## Docker usage-->
 
- - Create a `bunq-automation` network .
+<!-- - Create a `bunq-automation` network .-->
+<!-- -->
+<!--```docker network create bunq-automation```-->
+
+<!-- - Update the dependencies.-->
+<!-- -->
+<!--```docker-compose run --rm yarn``` -->
+
+<!-- - For development run the following commands to start both the front-end build process and the back-end server in development mode with watch mode enabled.-->
+
+<!--```docker-compose run --rm react```-->
+
+<!--```docker-compose run --rm server```-->
+<!-- -->
+<!-- - For production build the server and client files.-->
+<!--  -->
+<!--```docker-compose run --rm yarn build```  -->
+
+<!-- - Start the production server with the files that were built.-->
+
+<!--```docker-compose up -d app```-->
+
+## Development
+Start the front-end and back-end in development mode.
+```
+yarn run react
+yarn run server
+```
  
-```docker network create bunq-automation```
-
- - Update the dependencies.
- 
-```docker-compose run --rm yarn``` 
-
- - For development run the following commands to start both the front-end build process and the back-end server in development mode with watch mode enabled.
-
-```docker-compose run --rm react```
-
-```docker-compose run --rm server```
- 
- - For production build the server and client files.
-  
-```docker-compose run --rm yarn build```  
-
- - Start the production server with the files that were built.
-
-```docker-compose up -d app```
+To run the server in production mode:
+```
+yarn run build
+yarn run start
+```
  
 ## Contact
 [![Telegram chat badge](https://img.shields.io/badge/Telegram-Discuss-blue.svg) ](https://t.me/bunqcommunity) 
