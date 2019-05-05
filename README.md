@@ -52,6 +52,8 @@ Since this project should be useable for less experienced users, we can't guaran
 <!--```docker-compose up -d app```-->
 
 ## Development
+Make sure you haven node 10 installed, or use `nvm use` to select the one from `.nvmrc`.
+
 Start the front-end and back-end in development mode.
 ```
 yarn run react
