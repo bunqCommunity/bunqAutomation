@@ -1,15 +1,16 @@
-import ToJSONHandler from "../ToJSONHandler";
+import Action from "./Action";
 
 import { consoleMessageOutputId } from "../Outputs/ConsoleMessageOutput";
 import { monetaryAccountFilterId } from "../Filters/MonetaryAccountFilter";
 
 export const autoSavePercentageActionId = "AUTO_SAVE_PERCENTAGE";
 export const autoSavePercentageActionTitle = "Auto save percentage";
-export const autoSavePercentageActionDescription = "Save a percentage of each payment with optional minimum and maximum values";
+export const autoSavePercentageActionDescription =
+    "Save a percentage of each payment with optional minimum and maximum values";
 
-class AutoSavePercentageAction {
+class AutoSavePercentageAction extends Action {
     constructor(store) {
-        this.store = store;
+        super(store);
 
         this.id = autoSavePercentageActionId;
         this.title = autoSavePercentageActionTitle;
@@ -21,8 +22,6 @@ class AutoSavePercentageAction {
         this.filters = [monetaryAccountFilterId];
         this.outputs = [consoleMessageOutputId];
     }
-
-    toJSON = () => ToJSONHandler(this);
 
     check() {}
 }

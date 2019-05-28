@@ -1,4 +1,4 @@
-import ToJSONHandler from "../ToJSONHandler";
+import Action from "./Action";
 
 import { consoleMessageOutputId } from "../Outputs/ConsoleMessageOutput";
 
@@ -6,9 +6,9 @@ export const monthlyInvoiceActionId = "MONTHLY_INVOICE";
 export const monthlyInvoiceActionTitle = "Monthly invoice";
 export const monthlyInvoiceActionDescription = "Email the monthly invoice to specific email accounts";
 
-class MonthlyInvoiceAction {
+class MonthlyInvoiceAction extends Action {
     constructor(store) {
-        this.store = store;
+        super(store);
 
         this.id = monthlyInvoiceActionId;
         this.title = monthlyInvoiceActionTitle;
@@ -23,8 +23,6 @@ class MonthlyInvoiceAction {
         // TODO add a request output
         this.outputs = [consoleMessageOutputId];
     }
-
-    toJSON = () => ToJSONHandler(this);
 
     check() {}
 }

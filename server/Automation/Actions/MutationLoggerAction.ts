@@ -1,12 +1,15 @@
+import Action from "./Action";
+
 import { consoleMessageOutputId } from "../Outputs/ConsoleMessageOutput";
-import ToJSONHandler from "../ToJSONHandler";
 
 export const mutationLoggerActionId = "MUTATION_LOGGER";
 export const mutationLoggerActionTitle = "Mutation logger";
 export const mutationLoggerActionDescription = "Logs to the console when triggered";
 
-class MutationLoggerAction {
-    constructor() {
+class MutationLoggerAction extends Action {
+    constructor(store) {
+        super(store);
+
         this.id = mutationLoggerActionId;
         this.title = mutationLoggerActionTitle;
         this.description = mutationLoggerActionDescription;
@@ -17,7 +20,7 @@ class MutationLoggerAction {
         this.outputs = [consoleMessageOutputId];
     }
 
-    toJSON = () => ToJSONHandler(this);
+    check() {}
 }
 
 export default MutationLoggerAction;

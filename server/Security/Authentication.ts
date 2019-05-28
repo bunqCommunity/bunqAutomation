@@ -2,7 +2,6 @@ const uuid = require("uuid");
 import Encryption from "./Encryption";
 import LevelDb from "../StorageHandlers/LevelDb";
 import { UnAuthenticatedError } from "../Errors";
-import { STATUS_API_READY, STATUS_PASSWORD_READY, STATUS_UNINITIALIZED } from "../BunqAutomation";
 
 export const PASSWORD_IV_LOCATION = "PASSWORD_IV";
 export const PASSWORD_HASH_LOCATION = "PASSWORD_HASH";

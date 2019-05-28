@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2018",
+        "outDir": "./build-server/",
+        "sourceMap": false,
+        "declaration": true,
+        "noImplicitAny": false,
+        "removeComments": true
+    },
+    "include": ["server/**/*"]
+}
