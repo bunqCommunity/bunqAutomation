@@ -13,7 +13,7 @@
         "build": "yarn run build:server && yarn run build:client",
         "build:server": "./node_modules/.bin/tsc --build tsconfig.json --listFiles",
         "build:client": "react-scripts build",
-        "server": "./node_modules/.bin/nodemon --config .nodemonrc.json --exec ts-node server/Server.js",
+        "server": "./node_modules/.bin/nodemon --config .nodemonrc.json --exec ts-node server/Server.ts",
         "react": "react-scripts start",
         "postinstall": "node scripts/install.js",
         "test": "./node_modules/.bin/jest --config jest.config.js --no-cache --verbose",

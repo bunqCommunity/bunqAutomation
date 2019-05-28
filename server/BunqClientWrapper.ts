@@ -24,7 +24,7 @@ class BunqClientWrapper {
 
     public bunqApiKeyList: any;
 
-    constructor(logger) {
+    constructor(logger: LoggerInterface) {
         this.logger = logger;
         this.encryption = new Encryption();
 

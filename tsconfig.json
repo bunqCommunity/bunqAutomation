@@ -1,12 +1,16 @@
 {
     "compilerOptions": {
+        "outDir": "build-server",
+        "rootDir": "server",
+
+        "moduleResolution": "node",
+        "target": "es6",
         "module": "commonjs",
-        "target": "es2018",
-        "outDir": "./build-server/",
+
         "sourceMap": false,
         "declaration": true,
         "noImplicitAny": false,
-        "removeComments": true
-    },
-    "include": ["server/**/*"]
+        "removeComments": true,
+        "resolveJsonModule": true
+    }
 }

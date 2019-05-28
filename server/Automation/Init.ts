@@ -1,5 +1,5 @@
-import glob from "glob";
 import * as path from "path";
+const glob = require("glob");
 
 const normalizePath = modulePath => path.join("..", "..", modulePath);
 

@@ -13,7 +13,7 @@ class Settings {
 
     public encryptionKey: null | string;
 
-    constructor(logger) {
+    constructor(logger: LoggerInterface) {
         this.logger = logger;
         this.encryption = new Encryption();
         this.settingsStore = new LevelDb("bunq-automation-settings");

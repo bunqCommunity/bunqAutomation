@@ -1,7 +1,6 @@
 const fastifyPlugin = require("fastify-plugin");
 const fastifySwagger = require("fastify-swagger");
-// @ts-ignore
-import packageJson from "../../package.json";
+const packageJson = require("../../package.json");
 
 export const swaggerSecuritySchema = [
     {

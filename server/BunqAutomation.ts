@@ -39,7 +39,7 @@ class BunqAutomation {
 
     public bunqApiData: any;
 
-    constructor(logger) {
+    constructor(logger: LoggerInterface) {
         this.logger = logger;
         this.fileStore = new FileStore();
 

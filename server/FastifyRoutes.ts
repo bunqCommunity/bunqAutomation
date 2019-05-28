@@ -1,6 +1,6 @@
 import API from "./API/index.js";
 
-import clientRoutes from "../src/Config/routes";
+const clientRoutes = require("../src/Config/routes");
 
 export default app => {
     app.register((app, opts, next) => {

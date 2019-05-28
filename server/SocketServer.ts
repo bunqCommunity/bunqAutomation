@@ -1,5 +1,5 @@
 import LoggerInterface from "@bunq-community/bunq-js-client/dist/Interfaces/LoggerInterface";
-import io from "socket.io";
+const io: any = require("socket.io");
 
 import BunqAutomation from "./BunqAutomation";
 

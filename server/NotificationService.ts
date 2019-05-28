@@ -1,10 +1,9 @@
 import LoggerInterface from "@bunq-community/bunq-js-client/dist/Interfaces/LoggerInterface";
 const webPush = require("web-push");
 
-import LevelDb from "./StorageHandlers/LevelDb";
+const vapidKeys = require("../storage/vapid-keys.json");
 
-// @ts-ignore
-import vapidKeys from "../storage/vapid-keys.json";
+import LevelDb from "./StorageHandlers/LevelDb";
 import Encryption from "./Security/Encryption";
 import SocketServer from "./SocketServer";
 

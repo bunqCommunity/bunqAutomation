@@ -24,7 +24,7 @@ class Pipeline {
     // TODO action collection
     public configuredActions: any;
 
-    constructor(logger) {
+    constructor(logger: LoggerInterface) {
         this.logger = logger;
         this.pipelineStore = new LevelDb("bunq-automation-pipeline");
         this.validator = new ActionConfigValidator(this);

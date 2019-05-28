@@ -24,7 +24,7 @@ export class Authentication {
 
     public hasStoredPassword: boolean;
 
-    constructor(logger) {
+    constructor(logger: LoggerInterface) {
         this.logger = logger;
         this.encryption = new Encryption();
 
