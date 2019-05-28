@@ -1,6 +1,10 @@
+import Pipeline from "./Pipeline";
+
 const isObject = a => !!a && a.constructor === Object;
 
 class ActionConfigValidator {
+    private pipelineRef: Pipeline;
+
     constructor(pipelineRef) {
         this.pipelineRef = pipelineRef;
     }

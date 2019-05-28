@@ -1,9 +1,18 @@
+import LoggerInterface from "@bunq-community/bunq-js-client/dist/Interfaces/LoggerInterface";
+
 import LevelDb from "./StorageHandlers/LevelDb";
+
 import Encryption from "./Security/Encryption";
 
 export const MONETARY_ACCOUNT_COLORS = "MONETARY_ACCOUNT_COLORS";
 
 class Settings {
+    public logger: LoggerInterface;
+    public encryption: Encryption;
+    public settingsStore: LevelDb;
+
+    public encryptionKey: null | string;
+
     constructor(logger) {
         this.logger = logger;
         this.encryption = new Encryption();

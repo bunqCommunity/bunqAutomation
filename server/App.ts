@@ -3,21 +3,20 @@ import chalk from "chalk";
 const fastify = require("fastify");
 
 import * as Errors from "./Errors";
-import { API_KEY_HEADER } from "./Security/Authentication";
+import { BUNQ_API_KEY_HEADER } from "./Security/Authentication";
 
 import FastifyRoutes from "./FastifyRoutes";
 import FastifyPlugins from "./FastifyPlugins";
-import InitPipeline from "./Automation/Init";
 
 const DEVELOPMENT = process.env.NODE_ENV === "development";
 const SSL_ENABLED = process.env.SSL_ENABLED === "true";
 const SSL_PORT = SSL_ENABLED ? process.env.SSL_SERVER_PORT : false;
 // prefered port order SSL > Regular > Fallback
-const PORT = SSL_PORT || process.env.SERVER_PORT || process.env.PORT || 8080;
+const PORT: any = SSL_PORT || process.env.SERVER_PORT || process.env.PORT || 8080;
 
-const fastifyOptions = {
+const fastifyOptions: any = {
     logger: {
-        redact: [`req.headers["${API_KEY_HEADER}"]`],
+        redact: [`req.headers["${BUNQ_API_KEY_HEADER}"]`],
         level: process.env.LOG_LEVEL || "error",
         base: null,
         prettyPrint: DEVELOPMENT

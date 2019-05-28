@@ -1,3 +1,5 @@
+import LoggerInterface from "@bunq-community/bunq-js-client/dist/Interfaces/LoggerInterface";
+
 import Pipeline from "./Automation/Pipeline";
 import FileStore from "./StorageHandlers/FileStore";
 
@@ -22,6 +24,21 @@ export const STATUS_API_READY = "STATUS_API_READY";
 export const PROXY_SETTINGS = "PROXY_SETTINGS";
 
 class BunqAutomation {
+    public logger: LoggerInterface;
+    public fileStore: FileStore;
+
+    public socketServer: SocketServer;
+    public paymentLoader: PaymentLoader;
+    public settings: Settings;
+    public pipeline: Pipeline;
+    public authentication: Authentication;
+    public bunqClientWrapper: BunqClientWrapper;
+    public notificationService: NotificationService;
+
+    private _status: string;
+
+    public bunqApiData: any;
+
     constructor(logger) {
         this.logger = logger;
         this.fileStore = new FileStore();
@@ -69,7 +86,7 @@ class BunqAutomation {
         await this.loadStoredProxyDetails();
 
         // check bunqClient inital startup status
-        await this.pipeline.startup(this.authentication.encryptionKey);
+        await this.pipeline.startup();
     }
 
     /**
@@ -136,9 +153,6 @@ class BunqAutomation {
     }
 
     // wraps around the bunqclientwrapper to get the active client
-    get bunqJSClient() {
-        return this.bunqClientWrapper.bunqJSClient;
-    }
     get genericBunqJSClient() {
         return this.bunqClientWrapper.genericBunqJSClient;
     }

@@ -1,10 +1,29 @@
+import LoggerInterface from "@bunq-community/bunq-js-client/dist/Interfaces/LoggerInterface";
+
 import LevelDb from "../StorageHandlers/LevelDb";
+
 import ActionConfigValidator from "./ActionConfigValidator";
 import ActionConfig from "./ActionConfig";
 
 export const CONFIGURED_ACTIONS_LOCATION = "CONFIGURED_ACTIONS_LOCATION";
 
 class Pipeline {
+    public logger: LoggerInterface;
+    public pipelineStore: LevelDb;
+    public validator: ActionConfigValidator;
+
+    public actions: any;
+    public filters: any;
+    public outputs: any;
+    public schedules: any;
+
+    // TODO types for these two
+    public lastCheckedDate: any;
+    public lastCheckedPaymentId: any;
+
+    // TODO action collection
+    public configuredActions: any;
+
     constructor(logger) {
         this.logger = logger;
         this.pipelineStore = new LevelDb("bunq-automation-pipeline");
@@ -57,6 +76,7 @@ class Pipeline {
 
         const actionConfigValidation = this.validator.validateActionConfig(actionConfig);
         if (actionConfigValidation) {
+            // @ts-ignore
             this.validator.validateActionConfigOptions(actionConfig, this.actions[actionConfig.action]);
             this.validator.validateActionConfigFilters(actionConfig);
             this.validator.validateActionConfigOutputs(actionConfig);
@@ -108,6 +128,8 @@ class Pipeline {
         }
         throw new Error(`Invalid Schedule: ${validation}`);
     }
+
+    async reset() {}
 }
 
 export default Pipeline;

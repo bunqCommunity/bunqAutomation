@@ -1,19 +1,17 @@
-import ToJSONHandler from "../ToJSONHandler";
+import Filter from "./Filter";
 
 export const monetaryAccountFilterId = "MONETARY_ACCOUNT";
 export const monetaryAccountFilterTitle = "Monetary account(s)";
 export const monetaryAccountFilterDescription = "Filter if one or more monetary account IDs match the given input ";
 
-class MonetaryAccountFilter {
+class MonetaryAccountFilter extends Filter {
     constructor(store) {
-        this.store = store;
+        super(store);
 
         this.id = monetaryAccountFilterId;
         this.title = monetaryAccountFilterTitle;
         this.description = monetaryAccountFilterDescription;
     }
-
-    toJSON = () => ToJSONHandler(this);
 
     /**
      * Checks if the given inputValue(s) are included in the filterValue(s)
@@ -23,6 +21,8 @@ class MonetaryAccountFilter {
     filter(inputValues, filterValues) {
         if (!Array.isArray(filterValues)) filterValues = [filterValues];
         if (!Array.isArray(inputValues)) inputValues = [inputValues];
+
+        return true;
     }
 }
 

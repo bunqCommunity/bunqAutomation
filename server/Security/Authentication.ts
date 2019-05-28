@@ -1,8 +1,9 @@
+import LoggerInterface from "@bunq-community/bunq-js-client/dist/Interfaces/LoggerInterface";
 const uuid = require("uuid");
+
 import Encryption from "./Encryption";
 import LevelDb from "../StorageHandlers/LevelDb";
 import { UnAuthenticatedError } from "../Errors";
-import { STATUS_API_READY, STATUS_PASSWORD_READY, STATUS_UNINITIALIZED } from "../BunqAutomation";
 
 export const PASSWORD_IV_LOCATION = "PASSWORD_IV";
 export const PASSWORD_HASH_LOCATION = "PASSWORD_HASH";
@@ -12,6 +13,17 @@ export const DEFAULT_API_KEY_EXPIRY_TIME = 3600;
 export const YEARLY_API_KEY_EXPIRY_TIME = 3600 * 24 * 365;
 
 export class Authentication {
+    public logger: LoggerInterface;
+    public encryption: Encryption;
+
+    public apiKeyStorage: LevelDb;
+    public authenticationStorage: LevelDb;
+
+    public encryptionKey: string | null;
+    public encryptionIv: string | null;
+
+    public hasStoredPassword: boolean;
+
     constructor(logger) {
         this.logger = logger;
         this.encryption = new Encryption();
@@ -72,7 +84,9 @@ export class Authentication {
         expiryDate.setSeconds(expiryDate.getSeconds() + expiryTime);
         const isValid = currentDate < expiryDate;
 
-        this.logger.debug(`Valid: ${isValid}. Expires in ${Math.round((expiryDate - currentDate) / 1000)} seconds`);
+        this.logger.debug(
+            `Valid: ${isValid}. Expires in ${Math.round((expiryDate.getTime() - currentDate.getTime()) / 1000)} seconds`
+        );
 
         if (isValid) {
             if (refreshApiKey) {

@@ -1,4 +1,4 @@
-import ToJSONHandler from "../ToJSONHandler";
+import Output from "./Output";
 
 import { instantScheduleId } from "../Schedules/InstantSchedule";
 
@@ -6,9 +6,9 @@ export const consoleMessageOutputId = "CONSOLE_MESSAGE";
 export const consoleMessageOutputTitle = "Monetary account(s)";
 export const consoleMessageOutputDescription = "Outputs a message to the console";
 
-class ConsoleMessageOutput {
+class ConsoleMessageOutput extends Output {
     constructor(store) {
-        this.store = store;
+        super(store);
 
         this.id = consoleMessageOutputId;
         this.title = consoleMessageOutputTitle;
@@ -17,8 +17,6 @@ class ConsoleMessageOutput {
         // log it instantly
         this.schedule = instantScheduleId;
     }
-
-    toJSON = () => ToJSONHandler(this);
 
     output(message) {
         console.log(message);

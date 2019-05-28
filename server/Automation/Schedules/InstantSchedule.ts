@@ -1,12 +1,12 @@
-import ToJSONHandler from "../ToJSONHandler";
+import Schedule from "./Schedule";
 
 export const instantScheduleId = "INSTANT";
 export const instantScheduleTitle = "Instant";
 export const instantScheduleDescription = "An instant schedule";
 
-class InstantSchedule {
+class InstantSchedule extends Schedule {
     constructor(store) {
-        this.store = store;
+        super(store);
 
         this.id = instantScheduleId;
         this.title = instantScheduleTitle;
@@ -14,8 +14,6 @@ class InstantSchedule {
 
         this.options = {};
     }
-
-    toJSON = () => ToJSONHandler(this);
 }
 
 export default InstantSchedule;

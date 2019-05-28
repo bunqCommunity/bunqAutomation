@@ -1,4 +1,22 @@
+import LoggerInterface from "@bunq-community/bunq-js-client/dist/Interfaces/LoggerInterface";
+
+import BunqAutomation from "./BunqAutomation";
+
+type MonetaryAccountLoadOptions = {
+    newer_id?: number | false;
+    older_id?: number | false;
+    count?: number;
+    cacheOnly?: boolean;
+    loadNewer?: boolean;
+    maximumCount?: number;
+};
+
 class PaymentLoader {
+    public logger: LoggerInterface;
+    public bunqAutomation: BunqAutomation;
+
+    public paymentData: any;
+
     constructor(bunqAutomation) {
         this.logger = bunqAutomation.logger;
         this.bunqAutomation = bunqAutomation;
@@ -8,8 +26,8 @@ class PaymentLoader {
 
     async loadMonetaryAccounts(
         keyIdentifier,
-        monetaryAccountIds = false,
-        options = { cacheOnly: false, loadNewer: false }
+        monetaryAccountIds: false | any[] = false,
+        options: MonetaryAccountLoadOptions = { cacheOnly: false, loadNewer: false }
     ) {
         if (typeof options.cacheOnly === "undefined") options.cacheOnly = false;
         if (typeof options.loadNewer === "undefined") options.loadNewer = false;
@@ -36,7 +54,7 @@ class PaymentLoader {
         // start a fetch queue for each monetary account
         await Promise.all(
             monetaryAccountIds.map(async monetaryAccountId => {
-                let apiOptions = {
+                let apiOptions: any = {
                     maximumCount: options.maximumCount
                 };
                 if (!this.paymentData[keyIdentifier][monetaryAccountId]) {
@@ -45,7 +63,7 @@ class PaymentLoader {
                         data: {}
                     };
                 } else if (options.loadNewer) {
-                    const newestId = Object.keys(this.paymentData[keyIdentifier][monetaryAccountId]).data[0];
+                    const newestId = Object.keys(this.paymentData[keyIdentifier][monetaryAccountId].data)[0];
 
                     if (newestId) apiOptions.newer_id = newestId;
                 }
@@ -60,7 +78,7 @@ class PaymentLoader {
     async loadMonetaryAccount(
         keyIdentifier,
         monetaryAccountId,
-        options = { newer_id: false, cacheOnly: false, loadNewer: false }
+        options: MonetaryAccountLoadOptions = { newer_id: false, cacheOnly: false, loadNewer: false }
     ) {
         if (typeof options.cacheOnly === "undefined") options.cacheOnly = false;
         if (typeof options.loadNewer === "undefined") options.loadNewer = false;
@@ -71,7 +89,7 @@ class PaymentLoader {
         let initialCountValue = options.maximumCount >= 200 ? 200 : options.maximumCount;
         let paymentCounter = 0;
 
-        const apiOptions = {
+        const apiOptions: MonetaryAccountLoadOptions = {
             count: options.count || initialCountValue
         };
         if (options.newer_id) {
@@ -82,7 +100,7 @@ class PaymentLoader {
             // get newest id from existing list
             const newestId = Object.keys(this.paymentData[keyIdentifier][monetaryAccountId].data)[0];
 
-            if (newestId) apiOptions.newer_id = newestId;
+            if (newestId) apiOptions.newer_id = parseFloat(newestId);
         }
 
         const user = await this.bunqAutomation.getUser(keyIdentifier, false);

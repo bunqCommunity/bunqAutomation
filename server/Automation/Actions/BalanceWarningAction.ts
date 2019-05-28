@@ -1,4 +1,4 @@
-import ToJSONHandler from "../ToJSONHandler";
+import Action from "./Action";
 
 import { consoleMessageOutputId } from "../Outputs/ConsoleMessageOutput";
 import { monetaryAccountFilterId } from "../Filters/MonetaryAccountFilter";
@@ -7,8 +7,10 @@ export const balanceWarningActionId = "BALANCE_WARNING";
 export const balanceWarningActionTitle = "Balance warnings";
 export const balanceWarningActionDescription = "Warns if all or a subset of monetaryaccounts reach a limit";
 
-class BalanceWarningAction {
+class BalanceWarningAction extends Action {
     constructor(store) {
+        super(store);
+
         this.store = store;
 
         this.id = balanceWarningActionId;
@@ -37,8 +39,6 @@ class BalanceWarningAction {
         this.filters = [monetaryAccountFilterId];
         this.outputs = [consoleMessageOutputId];
     }
-
-    toJSON = () => ToJSONHandler(this);
 
     check() {}
 }

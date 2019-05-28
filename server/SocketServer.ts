@@ -1,6 +1,14 @@
+import LoggerInterface from "@bunq-community/bunq-js-client/dist/Interfaces/LoggerInterface";
 import io from "socket.io";
 
+import BunqAutomation from "./BunqAutomation";
+
 class SocketServer {
+    public bunqAutomation: BunqAutomation;
+    public logger: LoggerInterface;
+
+    public socketServer: any | false;
+
     constructor(bunqAutomation) {
         this.bunqAutomation = bunqAutomation;
 
