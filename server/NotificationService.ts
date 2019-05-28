@@ -1,11 +1,23 @@
+import LoggerInterface from "@bunq-community/bunq-js-client/dist/Interfaces/LoggerInterface";
+const webPush = require("web-push");
+
 import LevelDb from "./StorageHandlers/LevelDb";
 
-const webPush = require("web-push");
+// @ts-ignore
 import vapidKeys from "../storage/vapid-keys.json";
 import Encryption from "./Security/Encryption";
+import SocketServer from "./SocketServer";
 
 class NotificationService {
-    constructor(logger, socketServer) {
+    public logger: LoggerInterface;
+    public socketServer: SocketServer;
+    public encryption: Encryption;
+    public notificationStore: LevelDb;
+
+    public webPushOptions: any;
+    public standardWebPushPayload: any;
+
+    constructor(logger: LoggerInterface, socketServer: SocketServer) {
         this.logger = logger;
         this.socketServer = socketServer;
         this.encryption = new Encryption();

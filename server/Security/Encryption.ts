@@ -14,7 +14,7 @@ const validateIterationCount = rounds => {
 };
 
 export default class Encryption {
-    async encrypt(data, key, iv) {
+    async encrypt(data: string, key: string, iv: string = null) {
         const string = JSON.stringify(data);
 
         // create a random initialization vector
@@ -40,7 +40,7 @@ export default class Encryption {
         };
     }
 
-    async decrypt(data, key, iv) {
+    async decrypt(data: string, key: string, iv: string) {
         // get byte data from hex encoded strings
         const encrypedBytes = forgeUtil.hexToBytes(data);
 
@@ -77,7 +77,7 @@ export default class Encryption {
      * @param keySize
      * @param rounds
      */
-    derivePassword(password, iv = false, keySize = 32, rounds = false) {
+    derivePassword(password: string, iv: string | false = false, keySize = 32, rounds: number | false = false) {
         // generate a random iv
         let passwordIv;
         if (iv) {

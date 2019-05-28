@@ -1,6 +1,8 @@
 const level = require("level");
 
 class LevelDb {
+    public levelDb: any;
+
     constructor(location, overwriteLocation = false) {
         const storageLocation = overwriteLocation ? location : `storage/level/${location}`;
 

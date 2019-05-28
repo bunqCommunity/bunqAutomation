@@ -1,4 +1,6 @@
 import BunqJSClient from "@bunq-community/bunq-js-client";
+import LoggerInterface from "@bunq-community/bunq-js-client/dist/Interfaces/LoggerInterface";
+import RequestLimitFactory from "@bunq-community/bunq-js-client/dist/RequestLimitFactory";
 
 import LevelDb from "./StorageHandlers/LevelDb";
 import Encryption from "./Security/Encryption";
@@ -11,6 +13,17 @@ export const BUNQ_API_KEYS_LOCATION = "BUNQ_API_KEYS_LOCATION";
 const publicBunqApiKeyProperties = ["environment", "deviceName", "icon", "color", "errorState"];
 
 class BunqClientWrapper {
+    public logger: LoggerInterface;
+    public encryption: Encryption;
+
+    public bunqJSClientStorage: LevelDb;
+    public bunqApiKeyStorage: LevelDb;
+
+    public genericBunqJSClient: BunqJSClient;
+    public requestLimitFactory: RequestLimitFactory;
+
+    public bunqApiKeyList: any;
+
     constructor(logger) {
         this.logger = logger;
         this.encryption = new Encryption();
@@ -54,7 +67,7 @@ class BunqClientWrapper {
     async addBunqApiKey(encryptionKey, bunqApiKey, environment = "SANDBOX", deviceName = "bunqAutomation") {
         const bunqApiKeyIdentifier = this.calculateBunqApiKeyIdentifier(bunqApiKey);
 
-        let bunqApiKeyInfo = {};
+        let bunqApiKeyInfo: any = {};
         if (this.bunqApiKeyList[bunqApiKeyIdentifier]) {
             bunqApiKeyInfo = this.bunqApiKeyList[bunqApiKeyIdentifier];
         } else {
@@ -118,7 +131,13 @@ class BunqClientWrapper {
      * @param existingClient
      * @returns {Promise<BunqJSClient>}
      */
-    async setupBunqJSClient(encryptionKey, bunqApiKey, environment, deviceName, existingClient = false) {
+    async setupBunqJSClient(
+        encryptionKey,
+        bunqApiKey,
+        environment,
+        deviceName,
+        existingClient: false | BunqJSClient = false
+    ) {
         const bunqJSClient =
             existingClient instanceof BunqJSClient
                 ? existingClient
@@ -185,7 +204,7 @@ class BunqClientWrapper {
                         })
                         .catch(error => {
                             bunqApiKeyInfo.errorState = error;
-                            setupErrors.push(errors);
+                            setupErrors.push(error);
 
                             this.bunqApiKeyList[identifier] = bunqApiKeyInfo;
                             resolve();

@@ -21,7 +21,7 @@
         "prettier": "./node_modules/.bin/prettier --write \"+(tests|src|server)/**/**.+(ts|js|jsx|scss|css)\""
     },
     "dependencies": {
-        "@bunq-community/bunq-js-client": "^0.41.0",
+        "@bunq-community/bunq-js-client": "^0.41.4",
         "axios": "^0.18.0",
         "chalk": "^2.4.1",
         "dinero.js": "^1.6.0",

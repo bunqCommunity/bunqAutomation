@@ -128,6 +128,8 @@ class Pipeline {
         }
         throw new Error(`Invalid Schedule: ${validation}`);
     }
+
+    async reset() {}
 }
 
 export default Pipeline;
